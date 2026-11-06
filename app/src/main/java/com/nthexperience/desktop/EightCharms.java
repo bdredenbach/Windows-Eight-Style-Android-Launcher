@@ -21,12 +21,12 @@ final class EightCharms extends FrameLayout {
         FrameLayout.LayoutParams bounds=(FrameLayout.LayoutParams)scroller.getLayoutParams();bounds.width=kind.equals("charms")?dp(104):Math.min(dp(320),Math.max(dp(220),getResources().getDisplayMetrics().widthPixels-dp(30)));scroller.setLayoutParams(bounds);
         panel.setGravity(kind.equals("charms")?Gravity.CENTER_VERTICAL:Gravity.TOP);panel.setPadding(0,dp(16),0,dp(16));
         if(kind.equals("charms")){
-            charm("Search","search",()->{dismiss();host.open("@search");});charm("Share","share",()->{dismiss();host.share();});charm("Start","start",()->{dismiss();host.start();});charm("Devices","devices",()->show("devices"));charm("Settings","settings",()->show("settings"));
+            charm("Search","search",()->{dismiss();host.open("@context-search");});charm("Share","share",()->{dismiss();host.share();});charm("Start","start",()->{dismiss();host.start();});charm("Devices","devices",()->show("devices"));charm("Settings","settings",()->show("settings"));
         }else{
             link("←  "+(kind.equals("devices")?"Devices":"Settings"),()->show("charms"));
             TextView context=Aero.text(getContext(),host.context(),18,Color.WHITE);context.setPadding(dp(22),dp(20),dp(18),dp(20));panel.addView(context);
             if(kind.equals("devices")){link("Connected devices",()->launch("setting:android:connected"));link("Print",()->launch("setting:android:print"));link("Project / Cast",()->launch("setting:android:cast"));}
-            else{link(host.context().equals("Start")?"Personalize Start":"Control Panel",()->launch(host.context().equals("Start")?"eight-setting:personalize":"@legacycontrol"));link("Wi-Fi",()->launch("setting:android:wifi"));link("Volume",()->launch("@volume"));link("Brightness",()->launch("@brightness"));link("Power",()->launch("@power"));View space=new View(getContext());panel.addView(space,new LinearLayout.LayoutParams(1,0,1));link("Change PC settings",()->launch("@settings"));}
+            else{String contextName=host.context();boolean app=!contextName.equals("Start")&&!contextName.equals("Desktop")&&!contextName.equals("PC settings");link(contextName.equals("Start")?"Personalize Start":app?"App settings and commands":"Control Panel",()->launch(contextName.equals("Start")?"eight-setting:personalize":app?"@immersive-settings":"@legacycontrol"));link("Wi-Fi",()->launch("setting:android:wifi"));link("Volume",()->launch("@volume"));link("Brightness",()->launch("@brightness"));link("Power",()->launch("@power"));View space=new View(getContext());panel.addView(space,new LinearLayout.LayoutParams(1,0,1));link("Change PC settings",()->launch("@settings"));}
         }
         requestFocus();
     }

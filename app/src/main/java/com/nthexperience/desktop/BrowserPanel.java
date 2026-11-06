@@ -89,6 +89,14 @@ final class BrowserPanel extends LinearLayout {
         addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob)->{boolean wide=r-l>=dp(460);toolbar.getChildAt(4).setVisibility(wide?VISIBLE:GONE);toolbar.getChildAt(5).setVisibility(wide?VISIBLE:GONE);});
         restoreTabs();
     }
+    private boolean eightImmersive;
+    void immersive(boolean value,boolean commands,EightProfile profile){
+        if(eightImmersive!=value){eightImmersive=value;View tabs=(View)tabScroll.getParent();removeView(toolbar);removeView(tabs);if(value){addView(tabs,new LayoutParams(-1,dp(38)));addView(toolbar,new LayoutParams(-1,dp(48)));}else{addView(tabs,0,new LayoutParams(-1,dp(38)));addView(toolbar,1,new LayoutParams(-1,dp(48)));}}
+        if(!value){toolbar.setVisibility(VISIBLE);((View)tabScroll.getParent()).setVisibility(VISIBLE);status.setVisibility(VISIBLE);}else immersiveCommands(commands,profile);
+    }
+    void immersiveCommands(boolean commands,EightProfile profile){if(!eightImmersive)return;boolean shown=commands||profile==EightProfile.EIGHT_POINT_ONE&&activity.getSharedPreferences("desktop",0).getBoolean("eight_always_address",false);toolbar.setVisibility(shown?VISIBLE:GONE);((View)tabScroll.getParent()).setVisibility(commands?VISIBLE:GONE);status.setVisibility(GONE);}
+    void charmSearch(){find();}
+    void charmSettings(){options();}
     private int dp(int value){return Aero.dp(activity,value);}
     private BrowserGlyph glyph(String kind,String label,Runnable action,int width){BrowserGlyph view=new BrowserGlyph(activity,kind,label,action);view.setLayoutParams(new LayoutParams(dp(width),dp(42)));return view;}
     private TextView smallButton(String text,String label,Runnable action){TextView button=Aero.button(activity,text,action);button.setContentDescription(label);button.setPadding(dp(7),0,dp(7),0);button.setLayoutParams(new LayoutParams(dp(38),dp(42)));return button;}

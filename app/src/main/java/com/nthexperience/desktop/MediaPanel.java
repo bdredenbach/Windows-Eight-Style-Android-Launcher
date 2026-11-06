@@ -502,12 +502,15 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
         updatePlayback();
         post(tick);
     }
+    private int presentationTransfers;
+    void beginPresentationTransfer(){presentationTransfers++;}
+    void endPresentationTransfer(){presentationTransfers=Math.max(0,presentationTransfers-1);}
     @Override protected void onDetachedFromWindow() {
         attached = false;
         removeCallbacks(tick);
         if (!playback.released) {
             playback.player.removeListener(this);
-            if (playback.clearSurface(video)) playback.player.pause();
+            if (playback.clearSurface(video)&&presentationTransfers==0) playback.player.pause();
         }
         super.onDetachedFromWindow();
     }

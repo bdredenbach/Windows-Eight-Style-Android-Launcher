@@ -82,6 +82,10 @@ public final class MediaSmoke extends Instrumentation {
             await(() -> find(player, view -> view instanceof MediaTransportButton
                     && "Pause".equals(view.getContentDescription())) != null, "Playing glyph has an accessible Pause action");
             shot("nth-media-player.png");
+            runOnMainSync(()->home.openEightTile(MediaLibrary.PLAYER));
+            await(()->home.mediaPlayback()==playback&&find(root,v->v==player)!=null&&playback.player.getPlayWhenReady(),"Immersive audio transfer keeps the same live player and view");
+            runOnMainSync(()->home.open(MediaLibrary.PLAYER));
+            await(()->home.mediaPlayback()==playback&&player.isShown()&&playback.player.getPlayWhenReady(),"Desktop audio transfer preserves playback");
             runOnMainSync(() -> {
                 home.mediaLibrary().add(files);
                 playback.player.pause();
@@ -132,6 +136,10 @@ public final class MediaSmoke extends Instrumentation {
             runOnMainSync(() -> home.onBackPressed());
             await(() -> find(root, view -> MediaLibrary.CENTER_TITLE.equals(view.getContentDescription())) == null
                     && playback.player.getCurrentPosition() > 1300, "Back returns to the same playback session");
+            runOnMainSync(()->{playback.player.seekTo(200);playback.player.play();home.openEightTile(MediaLibrary.PLAYER);});
+            await(()->home.mediaPlayback()==playback&&playback.player.getPlayWhenReady(),"Immersive video transfer preserves the playback session");
+            runOnMainSync(()->home.open(MediaLibrary.PLAYER));
+            await(()->player.isShown()&&home.mediaPlayback()==playback&&playback.player.getPlayWhenReady(),"Desktop video transfer preserves the player");
             check(new MediaLibrary(store).items().size() == files.size(), "Library survives reload");
             result.putString("stream", "PASS: Explorer routes MP3 internally; real PCM drives the visualizer; "
                     + "MP3, H.264/AAC MP4, AAC M4A, PCM WAV, FLAC and VP8/Opus WebM play and seek; "

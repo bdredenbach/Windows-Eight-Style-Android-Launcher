@@ -1,30 +1,30 @@
 # Nth Desktop Eight
 
-A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. First preview: **0.1.0**. Android 8.0+; targets Android 16.
+A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Current preview: **0.2.0**. Android 8.0+; targets Android 16.
 
 Package: `com.nthexperience.desktop.eight`. Installs alongside Nth Desktop Ten, Seven and Vista.
 
-## First preview
+## Eight and EightPoint One
 
-- Full-screen Start with horizontal named tile groups, a separate Apps view, and a group overview.
-- Hold a tile to select it. The bottom command bar supports unpin, resize, move earlier/later and move between groups. Hold a selected tile again to drag it. Keyboard and accessibility reorder actions are available.
-- Windows 8 supports square and wide tiles. The 8.1 profile adds small and large tiles, a visible desktop Start button, optional startup at Desktop and desktop wallpaper on Start.
-- Each profile stores its own tile layout. Switching profiles preserves desktop windows, notes and files.
-- Desktop tiles restore the existing desktop; ordinary Home intents open Start. Back dismisses Charms and selection before returning to Desktop.
-- Five Charms with local Apps/Settings/Files search, supported contextual sharing, Start toggle, real device destinations and contextual Settings. Use the right-side handle or the Start command bar. Essential actions do not depend on Android's reserved edge gestures.
-- Full-screen PC settings with a shell selector, Start colors, profile name, accessibility and real Android destinations. A separate desktop Control Panel retains the existing advanced controls.
-- Optional Aero desktop finish, independent of the 8/8.1 shell profile.
-- Existing Explorer, resizable windows, browser, photos, media tools and free, opt-in Nota integration from the finished Ten baseline.
-- A scrollable desktop taskbar with ordinary app buttons and tray. The Ten Search, Task View, fixed Nota slot, News and Action Center buttons are omitted.
-- Eight-only backup format validates both profile layouts and rejects other launcher backups before changing preferences.
+- Full-screen horizontal Start, independent saved layouts, All Apps, group overview and a selection command bar. Original Eight supports square/wide tiles; 8.1 adds small/large formats, wallpaper on Start, startup at Desktop and Apps sorting.
+- The owner's 17-icon pack supplies Computer, Desktop folders, Documents, Downloads, Favorites, Music, Pictures, Videos, Network, Contacts, Links, UserFolder, Games, Searches and empty/full Recycle Bin artwork. Exact 256px ICO frames are converted losslessly to PNG. See `docs/EIGHT_ICON_PROVENANCE.json`. Other artwork uses original Nth fallbacks.
+- Supported Nth tools open from Start in a true immersive host: Notepad, Nota, Calculator, Calendar, Weather, Browser, Photos and Media Player. Desktop shortcuts keep their desktop presentation. Open on Desktop transfers the same app body/session, without creating a second browser or player or closing the assistant.
+- The left app switcher retains real owned sessions and treats Desktop as one surface. Use its left handle, Windows+Tab or Start's Switch apps command. Browser InPrivate content is excluded from switcher thumbnails. Other Android apps continue using real Android tasks.
+- Reveal immersive commands with the top-right ellipsis, Windows+Z or a short top-edge pull. A deliberate longer pull to the bottom closes the focused app. Commands offer switching, supported sharing, docking to Desktop, snap and close.
+- Original Eight uses a fixed 320dp compact companion when both apps remain usable. The 8.1 shell supports a movable divider within each app's minimum width. Narrow screens use full-screen switching; rotating back to a wide viewport restores the retained pair.
+- Five Charms provide scoped local search, supported contextual sharing, Start toggle, Android device routes and contextual settings. The browser has bottom immersive address/tab controls, page search and its own settings route; 8.1 optionally keeps the address bar visible.
+- PC settings uses separate original Eight and expanded 8.1 category hierarchies. Traditional Control Panel remains a desktop destination.
+- Optional 8.1 Update behavior coordinates mouse-revealed close/minimize controls, immersive app buttons in the desktop taskbar, and a taskbar peek from the bottom with a mouse.
+- Eight desktop chrome uses opaque accent frames, a red close control and a softly tinted taskbar. Aero is an independent optional desktop finish.
+- Session restoration keeps immersive apps, their contents, the snapped pair and the preceding Start/Settings/Desktop surface. Eight-only backups validate both profile layouts and supported appearance settings.
 
-Choose the shell in **Charms → Settings → Change PC settings → Personalize**. In original Eight, the desktop Start corner also works with touch; an optional visible Start button is under Ease of Access.
+Choose the shell in **Charms → Settings → Change PC settings → Personalize / PC and devices**. The 8.1 Update controls are optional on that page.
 
-## Preview boundaries
+## Scope and adaptations
 
-This is the first working shell slice, not a completed recreation of either release. Apps currently open in the existing desktop windows. Dedicated immersive app hosts, the historical left immersive switcher, compact immersive snap, app edge command bars, a complete 8.1-specific PC settings/search presentation, later 8.1 Update behavior and final period artwork/browser polish remain follow-up work. The current shared desktop artwork includes inherited Ten assets; research images are references, not runtime assets.
+Snap applies to supported launcher-owned app views and requires usable widths. The Windows 8 companion uses density-independent sizing appropriate for Android. Arbitrary Android apps are launched normally and are not embedded into Nth panes. The 8.1 Everywhere view combines real local providers rather than simulating Bing Smart Search. Cloud login/sync, Windows services and Internet Explorer's engine are not implemented; the browser retains the installed Android WebView and its existing privacy/security behavior.
 
-The right-side handle and always-available Apps/Charms commands are Nth touch adaptations. File search covers linked/recent locations. The 8.1 Everywhere scope combines local providers; it does not simulate Bing Smart Search. Devices opens supported Android controls. Desktop Share supports an active webpage, photo, selected Explorer files or Notepad text; unsupported contexts explain the next action.
+The supplied icons remain attributed to their rights holders. The archive's filenames and artwork are preserved; its file timestamps are not evidence of a particular Windows release. Research screenshots are references rather than application artwork.
 
 ## Build and validation
 
@@ -34,7 +34,7 @@ Use Java 17 and Android SDK 36:
 ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest :fixture:assembleDebug
 ```
 
-The main workflow builds for Android 11 and Android 16, runs the Eight surface/profile scenario and shared Browser, Explorer and Photo scenarios, and uploads APKs and native screenshots. `checks/EightTileLayoutCheck.java` checks 77,325 placements for bounds, overlap, determinism and profile-specific formats. Unit tests retain the shared calculator, AI lifecycle and accent checks. Historical Ten suites are preserved as source reference and are not asserted to pass against Eight's replacement shell.
+The main workflow builds for Android 11 and Android 16, runs the Eight surface/profile scenario plus the immersive session/snap scenario and shared Browser, Explorer, Photo and Media scenarios, and uploads APKs and native screenshots. `checks/EightTileLayoutCheck.java` checks 77,325 placements for bounds, overlap, determinism and profile-specific formats. Unit tests retain the shared calculator, AI lifecycle and accent checks. Historical Ten suites are preserved as source reference and are not asserted to pass against Eight's replacement shell.
 
 The complete visual gallery and illustrated brief are in the owner-supplied handoff ZIP; research text and source attribution are retained here.
 

@@ -1,0 +1,144 @@
+{
+  "source": "win8icons.zip supplied by project owner",
+  "archive_sha256": "24c5aa2558ca26734ce2fe5de9a29f076cf8ce7ced34549fa6270c1b37e682a5",
+  "conversion": "Existing 256x256 ICO frame decoded to lossless RGBA PNG; artwork and alpha preserved.",
+  "copyright": "Original artwork remains attributed to its rights holders; supplied assets are not original Nth artwork.",
+  "icons": [
+    {
+      "source": "Computer.ico",
+      "source_sha256": "10b946f889c1216f94cb34ffbd3389c523a56a3487ea9e6e57557087a4166aa4",
+      "resource": "win8_computer",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "264825322e5f0114b500b18bfc31d34227e2d28c1a7e5e88b2337a7c2fc0adbc"
+    },
+    {
+      "source": "Contacts.ico",
+      "source_sha256": "07b5c910368168138d6140f47110286012bea44cd8b8d91d481f6e9c2791da26",
+      "resource": "win8_contacts",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "cf019282ee288dda30e17b2da3ecec607c30fed1c512979d34dccc1e604318f9"
+    },
+    {
+      "source": "Desktop.ico",
+      "source_sha256": "18812c8914d47917fe9c0ab912de4e4fecbad21a4653b229291c4b4a10e52cd0",
+      "resource": "win8_desktop",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "da50365a7516b8dc2376c84cc6c71fd9ebacfd1277b75c6120efd6cafd4ba858"
+    },
+    {
+      "source": "Documents.ico",
+      "source_sha256": "2ef33fb6c7729a7f55008d8cf42a88f534a0adf2fcbac7ba421ac59354a5900e",
+      "resource": "win8_documents",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "132d72fded73f990a40e6a22214c359f5d1f80c854ab0ad832cdbb4375515c61"
+    },
+    {
+      "source": "Downloads.ico",
+      "source_sha256": "1505ddcc3b36afcc2a34be8787b5168f6295738d7314812c298d01175279e4db",
+      "resource": "win8_downloads",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "d3aaa73ffa047fbbbfa1bf3d764db4dbe44682826f538974cb1c63b62332b357"
+    },
+    {
+      "source": "Favorites.ico",
+      "source_sha256": "1cbb9a075ed97baa24da5fcc50883535c6097f01cc90ea0eb06ec590988a30bf",
+      "resource": "win8_favorites",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "cc852487d3f9712c6afa4d382e732d117249efd2ce8a493ae61468a6f8e451f1"
+    },
+    {
+      "source": "Folder.ico",
+      "source_sha256": "16c23df93414c26215a8d03aa7c7fd60b6e78164795f1b3dfdcde358ec3a8f15",
+      "resource": "win8_folder",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "4137a97b6ba0c54fecb62d9b4096ea53f97d33d046176b9c527cabb2e01c934f"
+    },
+    {
+      "source": "Games.ico",
+      "source_sha256": "5bcdf92d5b55c00d9958d54ca0d5c3aaec6409f8ee72fcd56c7949e47544b0fe",
+      "resource": "win8_games",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "34724158dd2970ef37ef099745c4f3eb66888112eb0353932aaf0533820f1eb1"
+    },
+    {
+      "source": "Links.ico",
+      "source_sha256": "302e24f8aeef1405209a6403404a6b14c57861306c43ea0dfee0a7c17a8ca6ac",
+      "resource": "win8_links",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "c01048a699c07474d3e670aa73aab7b24322d431f2a60ade3335cff6b4788018"
+    },
+    {
+      "source": "Music.ico",
+      "source_sha256": "c3e450b2dfa76530b0d941133df22b96074a025b89e9394dfbc28dd0111fef33",
+      "resource": "win8_music",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "ffcc0a64e47f27d11dca9776732163a931b6a234836a3d88a87764943a0297aa"
+    },
+    {
+      "source": "Network.ico",
+      "source_sha256": "ba19c7821bc8ccca28eac52da3f67a29e53bf4df739c4f1c48f37dc624def8e2",
+      "resource": "win8_network",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "af6253d79561dc94966b3d7b55fc40f08d02a3e67ee3e8ec99cd8fc47627e51f"
+    },
+    {
+      "source": "Pictures.ico",
+      "source_sha256": "8cfbc842bfeb49619c10dd472ebb7e7edc0b5a2b8c0d21fca4e1611ed4e00a00",
+      "resource": "win8_pictures",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "567db7a77cc2cc531591aa86dea62c4c5869af956cb093e51fceaee616a1eed2"
+    },
+    {
+      "source": "RecycleEmpty.ico",
+      "source_sha256": "22c41438835585cb2e1974284e0f4592e1135b0759498121c44cc73fa1147dbd",
+      "resource": "win8_recycleempty",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "387910c993a2d47854370b10e07c8cd6cf1928f9aeed0a239229ce3fd3b6c927"
+    },
+    {
+      "source": "RecycleFull.ico",
+      "source_sha256": "9de00f8c42bfba83f4dc4525328fa86ced7a7fe984197ce793fd94284bc09a69",
+      "resource": "win8_recyclefull",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "0560ab128696683d8b591ab8bb412245875bc1d978adc9fcd857263101608ac9"
+    },
+    {
+      "source": "Searches.ico",
+      "source_sha256": "bea2808cabae7453564d3f755010c9bab10dd2e8ac76226e2564afaf76812673",
+      "resource": "win8_searches",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "41e95ad711f009b0b7aefa1f250a5cc5d8f6d442954c8ad24c0169588b23411a"
+    },
+    {
+      "source": "UserFolder.ico",
+      "source_sha256": "8321cd254af21e9df5696c86962d81858396a8173fd797277e9bebd01a36a49f",
+      "resource": "win8_userfolder",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "7857e6a5f1bd9aed003713a0f606d02f3abff68a43a3ff286847c23bd3ff52d2"
+    },
+    {
+      "source": "Videos.ico",
+      "source_sha256": "f564c126a8e707abb935a43b592c2aedc49b7110668b22ac1daa5c38a63a74c3",
+      "resource": "win8_videos",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "04752ea2ba98b873317f1eae37fc45c837da3df534d0d6c495808ebed4010ed6"
+    }
+  ]
+}

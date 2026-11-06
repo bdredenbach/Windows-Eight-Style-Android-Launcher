@@ -13,7 +13,9 @@ collect() {
 adb install -r fixture/build/outputs/apk/debug/fixture-debug.apk
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
-for suite in EightSmoke BrowserSmoke ExplorerSmoke PhotoSmoke; do
+for suite in EightSmoke EightImmersiveSmoke BrowserSmoke ExplorerSmoke PhotoSmoke MediaSmoke; do
+  adb shell wm size reset
+  adb shell wm density reset
   adb shell am force-stop "$launcher"
   adb shell pm clear "$launcher"
   adb shell appops set --uid "$launcher" MANAGE_EXTERNAL_STORAGE allow

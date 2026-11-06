@@ -34,12 +34,14 @@ jobs:
           mkdir -p build/eight-checks
           javac -d build/eight-checks app/src/main/java/com/nthexperience/desktop/EightProfile.java app/src/main/java/com/nthexperience/desktop/EightTileLayout.java checks/EightTileLayoutCheck.java
           java -cp build/eight-checks com.nthexperience.desktop.EightTileLayoutCheck
+          javac -d build/eight-checks app/src/main/java/com/nthexperience/desktop/EightProfile.java app/src/main/java/com/nthexperience/desktop/EightAppSpec.java app/src/main/java/com/nthexperience/desktop/EightSnapPolicy.java checks/EightSnapCheck.java
+          java -cp build/eight-checks com.nthexperience.desktop.EightSnapCheck
       - run: ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest :fixture:assembleDebug :installprobe:assembleDebug --no-daemon
       - name: Check packaged runners and notification permission
         run: python3 checks/CheckEightManifest.py
       - uses: actions/upload-artifact@v4
         with:
-          name: Nth-Desktop-Eight-0.1.0-api-${{ matrix.api }}
+          name: Nth-Desktop-Eight-0.2.0-api-${{ matrix.api }}
           path: app/build/outputs/apk/debug/app-debug.apk
       - name: Enable emulator acceleration
         run: |

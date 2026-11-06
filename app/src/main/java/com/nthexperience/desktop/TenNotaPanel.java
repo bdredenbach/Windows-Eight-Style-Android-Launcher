@@ -61,8 +61,11 @@ final class TenNotaPanel extends LinearLayout {
     private void applyReply(){if(context==null||context.target==null||lastReply.isEmpty())return;TenNotaContext source=context;String reply=lastReply;Aero.dialog(getContext()).setTitle("Apply reply to "+source.title+"?").setMessage("Replace the passage you chose with this reply? Your source must still match the original text.").setPositiveButton("Apply",(d,w)->{boolean ok=source.apply(reply);status.setText(ok?"Reply applied to source":"Source changed or closed. Copy the reply to keep both versions.");if(ok)apply.setVisibility(GONE);}).setNegativeButton("Cancel",null).show();}
     private void save(){String text=lastReply.isEmpty()?store.prefs.getString("ten_nota_reply",""):lastReply;if(text.isEmpty())return;String old=store.prefs.getString("note","");String combined=old+(old.isEmpty()?"":"\n\n")+text;store.prefs.edit().putString("note",combined).apply();syncNotepad(getRootView(),combined);Toast.makeText(getContext(),"Saved to Notepad",Toast.LENGTH_SHORT).show();}
     private void syncNotepad(View view,String text){if(view instanceof EditText&&"Notepad text".contentEquals(view.getContentDescription()==null?"":view.getContentDescription())){((EditText)view).setText(text);return;}if(view instanceof ViewGroup)for(int i=0;i<((ViewGroup)view).getChildCount();i++)syncNotepad(((ViewGroup)view).getChildAt(i),text);}
-    void foreground(boolean active){assistant.foreground(active);}void close(){closed=true;assistant.close();}
-    @Override protected void onWindowVisibilityChanged(int visible){super.onWindowVisibilityChanged(visible);if(assistant!=null)assistant.foreground(visible==VISIBLE);}
-    @Override public void onVisibilityAggregated(boolean visible){super.onVisibilityAggregated(visible);if(assistant!=null)assistant.foreground(visible);}
-    @Override protected void onDetachedFromWindow(){super.onDetachedFromWindow();close();}
+    private int presentationTransfers;
+    void beginPresentationTransfer(){presentationTransfers++;}
+    void endPresentationTransfer(){presentationTransfers=Math.max(0,presentationTransfers-1);if(presentationTransfers==0)assistant.foreground(isShown());}
+    void foreground(boolean active){if(presentationTransfers==0)assistant.foreground(active);}void close(){closed=true;assistant.close();}
+    @Override protected void onWindowVisibilityChanged(int visible){super.onWindowVisibilityChanged(visible);if(assistant!=null&&presentationTransfers==0)assistant.foreground(visible==VISIBLE);}
+    @Override public void onVisibilityAggregated(boolean visible){super.onVisibilityAggregated(visible);if(assistant!=null&&presentationTransfers==0)assistant.foreground(visible);}
+    @Override protected void onDetachedFromWindow(){super.onDetachedFromWindow();if(presentationTransfers==0)close();}
 }

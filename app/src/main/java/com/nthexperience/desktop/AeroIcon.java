@@ -11,7 +11,7 @@ final class AeroIcon extends View {
     private final android.graphics.drawable.Drawable artwork;
     private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
     AeroIcon(Context c, String kind) { super(c); this.kind = kind;
-        artwork = TenIconAssets.drawable(c, kind);
+        artwork = EightIconAssets.drawable(c, kind);
         if (artwork != null) artwork.setBounds(0, 0, 64, 64);
         orb = kind.equals("orb") ? c.getDrawable(R.drawable.ic_launcher) : null;
         if (orb != null) orb.setBounds(0, 0, 64, 64);
@@ -21,7 +21,7 @@ final class AeroIcon extends View {
         canvas.save(); canvas.translate((getWidth()-64*s)/2,(getHeight()-64*s)/2); canvas.scale(s,s);
         p.setShader(null); p.setStyle(Paint.Style.FILL); p.setAlpha(255);
         if (artwork != null) { artwork.draw(canvas); canvas.restore(); return; }
-        if(TenIcons.draw(canvas,kind)){canvas.restore();return;}
+        if(!kind.equals("browser")&&TenIcons.draw(canvas,kind)){canvas.restore();return;}
         if (orb != null) {
             orb.draw(canvas);
             canvas.restore();

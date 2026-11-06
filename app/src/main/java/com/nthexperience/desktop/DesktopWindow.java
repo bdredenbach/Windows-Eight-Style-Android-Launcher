@@ -49,6 +49,7 @@ final class DesktopWindow extends LinearLayout {
     private final int touchSlop, snapEdge, snapMinWidth, snapMinHeight;
     private final AeroGlass glass;
     private final TextView minimizeButton,closeButton;
+    private android.graphics.drawable.Drawable closeOriginal,eightClosePaint;
     private boolean active=true,minimizing,peeking;private int beforePeekAccessibility;
     private int transition;private Runnable askNota=()->{};private java.util.function.Supplier<android.graphics.PointF> taskAnchor;
     private DesktopContextMenu systemMenu;
@@ -77,7 +78,7 @@ final class DesktopWindow extends LinearLayout {
         TextView minimize=chrome("—",this::minimize);minimizeButton=minimize;
         maximizeButton=chrome("□",this::toggleMaximize);
         TextView close=chrome("×",this::closeWindow);closeButton=close;
-        close.setTextColor(Aero.INK);
+        close.setTextColor(Aero.INK);closeOriginal=close.getBackground();android.graphics.drawable.StateListDrawable eightClose=new android.graphics.drawable.StateListDrawable();eightClose.addState(new int[]{android.R.attr.state_pressed},new android.graphics.drawable.ColorDrawable(0xffe04343));eightClose.addState(new int[]{android.R.attr.state_hovered},new android.graphics.drawable.ColorDrawable(0xffe04343));eightClose.addState(new int[]{},new android.graphics.drawable.ColorDrawable(0xffc75050));eightClosePaint=eightClose;
         bar.addView(minimize); bar.addView(maximizeButton); bar.addView(close);
         addView(bar,new LayoutParams(-1,Aero.dp(context,44)));
         body.setBackgroundColor(0xfff7f8f9); addView(body,new LayoutParams(-1,0,1));TenAppearance.bind(body);
@@ -161,7 +162,7 @@ final class DesktopWindow extends LinearLayout {
     void caption(String title){titleLabel.setText(title);titleLabel.setContentDescription(title+". Drag to move window.");}
     boolean minimizing(){return minimizing;}
     boolean active(){return active;}
-    void active(boolean value){active=value;glass.active(value);titleLabel.setTextColor(TenStyle.titleText(getContext(),value));titleLabel.setShadowLayer(0,0,0,0);minimizeButton.setTextColor(TenStyle.titleText(getContext(),value));maximizeButton.setTextColor(TenStyle.titleText(getContext(),value));closeButton.setTextColor(TenStyle.titleText(getContext(),value));minimizeButton.setAlpha(value?1:.65f);maximizeButton.setAlpha(value?1:.65f);closeButton.setAlpha(value?1:.6f);}
+    void active(boolean value){active=value;glass.active(value);titleLabel.setTextColor(TenStyle.titleText(getContext(),value));titleLabel.setShadowLayer(0,0,0,0);minimizeButton.setTextColor(TenStyle.titleText(getContext(),value));maximizeButton.setTextColor(TenStyle.titleText(getContext(),value));closeButton.setTextColor(TenStyle.titleText(getContext(),value));minimizeButton.setAlpha(value?1:.65f);maximizeButton.setAlpha(value?1:.65f);closeButton.setAlpha(value?1:.6f);if(TenThemes.aero(store.prefs)){if(closeButton.getBackground()!=closeOriginal)closeButton.setBackground(closeOriginal);}else{if(closeButton.getBackground()!=eightClosePaint)closeButton.setBackground(eightClosePaint);closeButton.setTextColor(android.graphics.Color.WHITE);}}
     @Override public boolean dispatchTouchEvent(MotionEvent e){if(peeking)return true;if(e.getActionMasked()==MotionEvent.ACTION_DOWN&&!minimizing){bringToFront();changed.run();}return super.dispatchTouchEvent(e);}
     private int cornerReach(){return Aero.dp(getContext(),22);}
     private int resizeCornerAt(float x,float y){
