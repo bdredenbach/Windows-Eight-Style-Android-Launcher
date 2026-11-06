@@ -1,0 +1,486 @@
+{
+  "baseline": "e04e1dec8c39ad9744175fe70f7ff2f414918815",
+  "research_date": "2026-11-06",
+  "sources": [
+    {
+      "id": "S01",
+      "title": "Tile and tile notification overview",
+      "publisher": "Microsoft Learn archive",
+      "scope": "Windows 8/8.1",
+      "url": "https://learn.microsoft.com/en-us/previous-versions/windows/apps/hh779724(v=win.10)",
+      "evidence_type": "primary",
+      "review_note": "Read archived notification, expiry, motion and secondary-tile concepts.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S02",
+      "title": "The tile template catalog",
+      "publisher": "Microsoft Learn archive",
+      "scope": "Windows 8/8.1; distinguish Phone-only templates",
+      "url": "https://learn.microsoft.com/en-us/previous-versions/windows/apps/hh761491(v=win.10)",
+      "evidence_type": "primary",
+      "review_note": "Read template families and explicit desktop/Phone differences.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S03",
+      "title": "EnableNotificationQueue",
+      "publisher": "Microsoft Learn",
+      "scope": "Historical API with explicit Windows 8.1 notes",
+      "url": "https://learn.microsoft.com/en-us/uwp/api/windows.ui.notifications.tileupdater.enablenotificationqueue?view=winrt-28000",
+      "evidence_type": "primary",
+      "review_note": "Five-item queue; tagged replacement; size-specific queuing in 8.1.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S04",
+      "title": "Badge overview",
+      "publisher": "Microsoft Learn archive",
+      "scope": "Windows 8/8.1",
+      "url": "https://learn.microsoft.com/en-us/previous-versions/windows/apps/hh779719(v=win.10)",
+      "evidence_type": "primary",
+      "review_note": "Numeric/glyph badges, placement, zero clears and 99+.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S05",
+      "title": "Secondary tiles overview",
+      "publisher": "Microsoft Learn archive",
+      "scope": "Windows 8/8.1",
+      "url": "https://learn.microsoft.com/en-us/previous-versions/windows/apps/hh465372(v=win.10)",
+      "evidence_type": "primary",
+      "review_note": "User-pinned content deep links, separate from the main tile.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S06",
+      "title": "Getting around in Windows 8",
+      "publisher": "Microsoft Windows Blog",
+      "scope": "2012-03-08; Consumer Preview context",
+      "url": "https://blogs.windows.com/windowsexperience/2012/03/08/getting-around-in-windows-8/",
+      "evidence_type": "primary",
+      "review_note": "Edge input, Charms, contextual commands; preview details cross-checked.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S07",
+      "title": "Start screen and user interface part 1",
+      "publisher": "Microsoft AskPerf",
+      "scope": "Originally 2012-10-23; republished 2019",
+      "url": "https://techcommunity.microsoft.com/blog/askperf/windows-8--windows-server-2012-start-screen-and-user-interface-part-1/375111",
+      "evidence_type": "primary",
+      "review_note": "Shipping Eight tiles, groups, selection and semantic zoom.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S08",
+      "title": "Continuing the Windows 8 vision with Windows 8.1",
+      "publisher": "Microsoft Windows Blog",
+      "scope": "2013-05-30; pre-release announcement",
+      "url": "https://blogs.windows.com/windowsexperience/2013/05/30/continuing-the-windows-8-vision-with-windows-8-1/",
+      "evidence_type": "primary",
+      "review_note": "Version boundaries; later guides used to confirm shipping behavior.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S09",
+      "title": "Windows 8.1 Update refinements",
+      "publisher": "Microsoft Windows Blog",
+      "scope": "2014-04-02",
+      "url": "https://blogs.windows.com/windowsexperience/2014/04/02/windows-8-1-update-important-refinements-to-the-windows-experience/",
+      "evidence_type": "primary",
+      "review_note": "Mouse captions, Start controls, taskbar and contextual tile menus.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S10",
+      "title": "Windows 8 File Explorer",
+      "publisher": "Microsoft AskPerf",
+      "scope": "Originally 2012-10-26; republished 2019",
+      "url": "https://techcommunity.microsoft.com/blog/askperf/windows-8--windows-server-2012-file-explorer/375135",
+      "evidence_type": "primary",
+      "review_note": "Minimized ribbon, QAT, contextual tools; actual figure reviewed.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S11",
+      "title": "Windows 8 Task Manager in-depth",
+      "publisher": "Microsoft Windows Blog",
+      "scope": "2013-06-06",
+      "url": "https://blogs.windows.com/windowsexperience/2013/06/06/windows-8-task-manager-in-depth/",
+      "evidence_type": "primary",
+      "review_note": "Simple/detail modes, Processes heat map and Performance views.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S12",
+      "title": "Desktop Window Manager is always on",
+      "publisher": "Microsoft Compatibility Cookbook",
+      "scope": "Explicit Windows 8 / Server 2012",
+      "url": "https://learn.microsoft.com/en-us/windows/compatibility/desktop-window-manager-is-always-on",
+      "evidence_type": "primary",
+      "review_note": "Composition remains even when the normal glass frame changes.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S13",
+      "title": "Desktop App Tiles on the Start Screen",
+      "publisher": "Microsoft Learn",
+      "scope": "Explicit Windows 8 guidance",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/shell/desktop-app-tiles-on-the-start-screen",
+      "evidence_type": "primary",
+      "review_note": "Desktop shortcut icon/name treatment; reference geometry.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S14",
+      "title": "Windows 8.1 Product Guide",
+      "publisher": "Microsoft",
+      "scope": "109 PDF pages; includes 2014 Update material",
+      "url": "https://news.microsoft.com/download/presskits/windows/docs/Windows8_1ProductGuide.pdf",
+      "evidence_type": "primary",
+      "review_note": "Read selected app/gesture sections; do not treat all pages as 2013 RTM.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S15",
+      "title": "Windows 8.1 Administration Pocket Consultant sample",
+      "publisher": "Microsoft Press / William R. Stanek",
+      "scope": "2013 copyright; 2014 second printing",
+      "url": "https://www.microsoftpressstore.com/content/images/9780735682658/samplepages/9780735682658.pdf",
+      "evidence_type": "primary",
+      "review_note": "Selected PC settings and navigation sections; printed pp. 98-103, 135-136.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S16",
+      "title": "Canonical names of Control Panel items",
+      "publisher": "Microsoft Learn",
+      "scope": "Explicit Windows 8.1 item list; edition/hardware dependent",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/shell/controlpanel-canonical-names",
+      "evidence_type": "primary",
+      "review_note": "Applet identities, version support and deprecated entries.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S17",
+      "title": "Windows 8.1 inbox app package updates",
+      "publisher": "Microsoft KB 2971128",
+      "scope": "2014 package chart; current wrapper metadata is generic",
+      "url": "https://learn.microsoft.com/en-us/troubleshoot/windows-client/application-management/windows-81-microsoft-store-app-package-updates",
+      "evidence_type": "primary",
+      "review_note": "Confirms inbox app names; not evidence that every edition/OEM is identical.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S18",
+      "title": "Right from the Start: Reading List",
+      "publisher": "Microsoft Windows Blog",
+      "scope": "2013-09-27",
+      "url": "https://blogs.windows.com/windowsexperience/2013/09/27/right-from-the-start-reading-list/",
+      "evidence_type": "primary",
+      "review_note": "Share-to-save, original source navigation and side-by-side use.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S19",
+      "title": "Apps for Creative Expression",
+      "publisher": "Microsoft Windows Blog",
+      "scope": "2013-10-15",
+      "url": "https://blogs.windows.com/windowsexperience/2013/10/15/right-from-the-start-apps-for-creative-expression/",
+      "evidence_type": "primary",
+      "review_note": "Camera/Photos changes; Fresh Paint and Movie Moments ecosystem scope.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S20",
+      "title": "New Bing Apps Arrive with Windows 8.1",
+      "publisher": "Microsoft Bing Blog",
+      "scope": "2013-06-26; Preview",
+      "url": "https://blogs.bing.com/search/2013/6/New-Bing-Apps-Arrive-with-Windows-8-1/",
+      "evidence_type": "primary",
+      "review_note": "Food and Drink, Health and Fitness and the existing Bing app family.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S21",
+      "title": "Right from the Start: Bing Apps",
+      "publisher": "Microsoft Windows Blog",
+      "scope": "2013-09-20",
+      "url": "https://blogs.windows.com/windowsexperience/2013/09/20/right-from-the-start-bing-apps/",
+      "evidence_type": "primary",
+      "review_note": "Shipping-period Bing app roles and larger Weather tile.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S22",
+      "title": "The best web is on Windows with Internet Explorer 11",
+      "publisher": "Microsoft Windows Blog",
+      "scope": "2013-10-07",
+      "url": "https://blogs.windows.com/windowsexperience/2013/10/07/right-from-the-start-the-best-web-is-on-windows-with-internet-explorer-11/",
+      "evidence_type": "primary",
+      "review_note": "Immersive IE11 tabs, persistent address option and side-by-side browsing.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S23",
+      "title": "Windows 8.1 Update tips",
+      "publisher": "Microsoft Windows Blog",
+      "scope": "2014-04-10",
+      "url": "https://blogs.windows.com/windowsexperience/2014/04/10/some-tips-and-tricks-for-using-the-windows-8-1-update-updated/",
+      "evidence_type": "primary",
+      "review_note": "Input-dependent desktop defaults and navigation properties.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S24",
+      "title": "Eight Enthusiast Updates in Windows 8",
+      "publisher": "Microsoft Windows Blog",
+      "scope": "2012-12-06",
+      "url": "https://blogs.windows.com/windowsexperience/2012/12/06/eight-enthusiast-updates-in-windows-8/",
+      "evidence_type": "primary",
+      "review_note": "Actual copy dialog graphs/pause and Quick Link menu.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S25",
+      "title": "Worldwide Partner Conference keynote transcript",
+      "publisher": "Microsoft News",
+      "scope": "2013-07-08; 8.1 Preview demonstration",
+      "url": "https://news.microsoft.com/speeches/tami-reller-worldwide-partner-conference-2013-keynote/",
+      "evidence_type": "primary_transcript",
+      "review_note": "Read Jensen Harris demonstration text; not claimed as a played video.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S26",
+      "title": "ApplicationExecutionState",
+      "publisher": "Microsoft Learn",
+      "scope": "Historical Windows 8 versus 8.1 behavior explicitly documented",
+      "url": "https://learn.microsoft.com/en-us/uwp/api/windows.applicationmodel.activation.applicationexecutionstate?view=winrt-28000",
+      "evidence_type": "primary",
+      "review_note": "Close/state restoration semantics differ across versions.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "S27",
+      "title": "Windows 8 close gestures retrospective",
+      "publisher": "Microsoft / Raymond Chen",
+      "scope": "2017 retrospective; Windows 8 family",
+      "url": "https://devblogs.microsoft.com/oldnewthing/20170411-00/?p=95945%2F",
+      "evidence_type": "primary_retrospective",
+      "review_note": "Use with version-specific sources; broad family wording mixes later mouse UI.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "P01",
+      "title": "Windows 8.1 In Depth sample",
+      "publisher": "Pearson / Brian Knittel and Paul McFedries",
+      "scope": "2014; 132 PDF pages",
+      "url": "https://ptgmedia.pearsoncmg.com/images/9780789752819/samplepages/0789752816.pdf",
+      "evidence_type": "period_book",
+      "review_note": "Selected original screenshots/captions and file/Recycle Bin sections, PDF pp. 35-43.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "P02",
+      "title": "Windows 8 end-user brochure",
+      "publisher": "Microsoft",
+      "scope": "May 2013, before 8.1 Preview",
+      "url": "https://download.microsoft.com/download/6/F/5/6F512314-780B-42D7-9D56-BA501352B78A/W8_brochure_download.pdf",
+      "evidence_type": "existing_handoff_reference",
+      "review_note": "Existing handoff research reused; current retrieval reports unsupported application/octet-stream.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "R01",
+      "title": "Windows 8 review",
+      "publisher": "Ars Technica",
+      "scope": "2012-10-25",
+      "url": "https://arstechnica.com/information-technology/2012/10/windows-reimagined-a-review-of-windows-8/",
+      "evidence_type": "period_review",
+      "review_note": "Independent usability cross-check, not an implementation specification.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "R02",
+      "title": "Windows 8.1: What a difference a year makes",
+      "publisher": "Ars Technica",
+      "scope": "2013-10-17",
+      "url": "https://arstechnica.com/information-technology/2013/10/windows-8-1-what-a-difference-a-year-makes/",
+      "evidence_type": "period_review",
+      "review_note": "Independent cross-check of the settings divide and discoverability.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "R03",
+      "title": "Windows 8.1: The great compromise",
+      "publisher": "PCWorld / Brad Chacos",
+      "scope": "2013-09-11",
+      "url": "https://www.pcworld.com/article/447608/windows-8-1-review-the-great-compromise.html",
+      "evidence_type": "period_review",
+      "review_note": "Desktop defaults and Libraries visibility cross-check.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "R04",
+      "title": "Windows 8.1: New version, same mess",
+      "publisher": "InfoWorld / Woody Leonhard",
+      "scope": "2013-09-10",
+      "url": "https://www.infoworld.com/article/2192924/microsoft-windows-windows-8-1-review-new-version-same-mess.html",
+      "evidence_type": "period_review",
+      "review_note": "A contrasting critical perspective on mixed desktop/modern workflows.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "R05",
+      "title": "Hands-on with new Modern UI apps",
+      "publisher": "AddictiveTips",
+      "scope": "2013-06-29; 8.1 Preview",
+      "url": "https://www.addictivetips.com/windows-tips/hands-on-with-the-new-modern-ui-apps-in-windows-8-1/",
+      "evidence_type": "period_capture",
+      "review_note": "Original screenshots and utility-mode descriptions; preview scope retained.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "R06",
+      "title": "A visual tour of Windows 8",
+      "publisher": "Ars Technica / Sean Gallagher",
+      "scope": "2012-10-26",
+      "url": "https://arstechnica.com/information-technology/2012/10/the-windows-8-visual-tour-this-ones-a-looker/",
+      "evidence_type": "period_capture",
+      "review_note": "Actual release-era desktop and immersive screenshots.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "V01",
+      "title": "Microsoft Surface User Interface",
+      "publisher": "Jensen Harris, original designer",
+      "scope": "76.27 seconds; prototype footage",
+      "url": "https://jensenharris.com/videos/surface-ui",
+      "evidence_type": "video_observed",
+      "review_note": "Played in browser; full timeline frame-sampled at 4-second intervals.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "V02",
+      "title": "The Story of Windows 8",
+      "publisher": "Jensen Harris / Adaptive Path",
+      "scope": "UX Week 2012; 66:57",
+      "url": "https://jensenharris.com/videos/ux-week-2012-story-of-windows-8",
+      "evidence_type": "video_observed",
+      "review_note": "Selected 25:27-31:03 demo and 45:22-47:22 tile sections sampled; transcript cross-checked. Not the entire talk.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "V03",
+      "title": "8 traits of great Metro style apps",
+      "publisher": "Jensen Harris / Microsoft Build",
+      "scope": "2011-09-13; Developer Preview",
+      "url": "https://jensenharris.com/videos/build-2011-metro-style-apps",
+      "evidence_type": "transcript_only",
+      "review_note": "Relevant chapters read; not claimed as watched footage or shipping UI.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "V04",
+      "title": "First look at Windows 8.1, original upload",
+      "publisher": "Microsoft WindowsVideos",
+      "scope": "2013-06-05; Preview",
+      "url": "https://www.youtube.com/watch?v=VQb5caeSo00",
+      "evidence_type": "video_unavailable",
+      "review_note": "Browser verified that the original upload is now private; no sign-in attempted.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "V05",
+      "title": "First look at Windows 8.1, period mirror",
+      "publisher": "jumboload; credited Microsoft recording",
+      "scope": "2013-06-05; 4:31",
+      "url": "https://www.youtube.com/watch?v=O_zilCNY__M",
+      "evidence_type": "video_not_decoded",
+      "review_note": "Page/metadata and seek poster visible, but media did not load; not counted as watched.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "V06",
+      "title": "Windows 8.1 interview with Antoine Leblond",
+      "publisher": "Microsoft Learn",
+      "scope": "2013-09-30",
+      "url": "https://learn.microsoft.com/en-us/shows/one-dev-minute/windows-81-interview-antoine-leblond",
+      "evidence_type": "video_unavailable",
+      "review_note": "Page accessible, player reported Unable to play media.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "V07",
+      "title": "Windows 8.1 Update navigation clip",
+      "publisher": "Manuals+ rehost, attributed to Microsoft",
+      "scope": "41-second clip; release attribution unverified",
+      "url": "https://manuals.plus/video/92605ab33ded50e4a5c24c018a26ae86e7f6e6cee3f8f1b8fe62e21384e6c4f8",
+      "evidence_type": "video_unavailable",
+      "review_note": "Search/text accessible, browser required sign-in; not watched or relied on for release-specific facts.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "A01",
+      "title": "PdfRenderer",
+      "publisher": "Android Developers",
+      "scope": "Current reference checked 2026-11-06",
+      "url": "https://developer.android.com/reference/android/graphics/pdf/PdfRenderer",
+      "evidence_type": "android_primary",
+      "review_note": "PDF backend and seekable descriptor; gate newer functions by API level.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "A02",
+      "title": "Schedule alarms",
+      "publisher": "Android Developers",
+      "scope": "Current guide checked 2026-11-06",
+      "url": "https://developer.android.com/develop/background-work/services/alarms",
+      "evidence_type": "android_primary",
+      "review_note": "Exact/inexact timing and access constraints; UI timers do not guarantee alarms.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "A03",
+      "title": "NotificationListenerService",
+      "publisher": "Android Developers",
+      "scope": "Current reference checked 2026-11-06",
+      "url": "https://developer.android.com/reference/android/service/notification/NotificationListenerService",
+      "evidence_type": "android_primary",
+      "review_note": "Notification events are not another app private inbox database.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "A04",
+      "title": "MediaRecorder overview",
+      "publisher": "Android Developers",
+      "scope": "Current guide checked 2026-11-06",
+      "url": "https://developer.android.com/media/platform/mediarecorder",
+      "evidence_type": "android_primary",
+      "review_note": "Recording backend and runtime microphone permission.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "A05",
+      "title": "Calendar provider",
+      "publisher": "Android Developers",
+      "scope": "Current guide checked 2026-11-06",
+      "url": "https://developer.android.com/identity/providers/calendar-provider",
+      "evidence_type": "android_primary",
+      "review_note": "Reading/writing device events requires the corresponding permissions.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "A06",
+      "title": "CameraX overview",
+      "publisher": "Android Developers",
+      "scope": "Current guide checked 2026-11-06",
+      "url": "https://developer.android.com/media/camera/camerax",
+      "evidence_type": "android_primary",
+      "review_note": "Real camera preview/capture backend candidate.",
+      "accessed": "2026-11-06"
+    }
+  ]
+}

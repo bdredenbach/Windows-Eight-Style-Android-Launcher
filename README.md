@@ -44,7 +44,7 @@ The complete visual gallery and illustrated brief are in the owner-supplied hand
 
 See [the passing device validation and delivered package details](docs/EIGHT_0_3_VALIDATION.md).
 
-See [the immersive and icon implementation notes](docs/EIGHT_0_2.md), [first-preview notes](docs/EIGHT_0_1.md), [original research handoff](docs/eight-handoff/00-START-HERE.md).
+See [the detailed Windows 8 / 8.1 investigation and proposed live-tile plan](docs/eight-research/README.md), [the immersive and icon implementation notes](docs/EIGHT_0_2.md), [first-preview notes](docs/EIGHT_0_1.md), [original research handoff](docs/eight-handoff/00-START-HERE.md).
 
 ## Source and notices
 
