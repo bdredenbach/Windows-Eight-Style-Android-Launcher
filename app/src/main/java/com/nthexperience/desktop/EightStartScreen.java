@@ -41,7 +41,7 @@ final class EightStartScreen extends LinearLayout {
     private TileDrag dragging;private View dragSource;private DropPreview dropPreview;
     private EightStartData.Group dropGroup;private int dropIndex,edgeSpeed;
     private float dragX,dragY,downX,downY;private boolean pendingRender,swipeCandidate,swiping;
-    private final Runnable edgeScroll=new Runnable(){public void run(){if(dragging==null||horizontal==null)return;horizontal.scrollBy(edgeSpeed,0);updateDrop(dragX,dragY);if(edgeSpeed!=0)handler.postDelayed(this,16);}};
+    private final Runnable edgeScroll=new Runnable(){public void run(){if(dragging==null||horizontal==null)return;int before=horizontal.getScrollX();horizontal.scrollBy(edgeSpeed,0);updateDrop(dragX,dragY);if(edgeSpeed!=0&&horizontal.getScrollX()!=before)handler.postDelayed(this,16);}};
     private static final class TileGroup{final EightStartData.Group group;final View grid;final List<EightTileLayout.Cell> cells;final int unit;TileGroup(EightStartData.Group g,View v,List<EightTileLayout.Cell> c,int u){group=g;grid=v;cells=c;unit=u;}}
     private final class DropPreview extends View{
         final Paint paint=new Paint(3);final RectF target=new RectF();String label="";
