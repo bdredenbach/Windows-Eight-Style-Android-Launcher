@@ -1,5 +1,9 @@
 name: Nth Desktop Eight preview and regression
 on:
+  push:
+    branches: [main]
+    paths-ignore: ['docs/**', 'README.md', 'THIRD_PARTY_NOTICES.md']
+  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
