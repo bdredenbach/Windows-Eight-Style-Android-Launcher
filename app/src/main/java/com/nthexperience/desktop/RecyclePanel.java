@@ -23,7 +23,7 @@ final class RecyclePanel extends VistaShell {
     private View tenRibbon;
     private TextView restoreSelection;
     private final Map<TextView,LinearLayout> ribbonCommands=new LinkedHashMap<>();
-    private int viewWidth;
+    private int viewWidth;private boolean ribbonExpanded;private HorizontalScrollView ribbonScroll;private final Map<String,TextView> ribbonTabs=new LinkedHashMap<>();
 
     RecyclePanel(Context context,DesktopStore store,Actions actions,Runnable changed){
         super(context,store,actions,"Search Recycle Bin");
@@ -61,13 +61,15 @@ final class RecyclePanel extends VistaShell {
         restoreSelection=command("Restore this item",this::restoreSelected);
         LinearLayout ribbon=Aero.column(getContext());tenRibbon=ribbon;ribbon.setBackgroundColor(0xfff5f6f7);ribbon.setContentDescription("Recycle Bin ribbon");
         LinearLayout tabs=new LinearLayout(getContext());ribbon.addView(tabs,new LayoutParams(-1,dp(34)));
-        HorizontalScrollView scroll=new HorizontalScrollView(getContext());scroll.setHorizontalScrollBarEnabled(false);tenRibbonTools=new LinearLayout(getContext());scroll.addView(tenRibbonTools);ribbon.addView(scroll,new LayoutParams(-1,dp(66)));
+        HorizontalScrollView scroll=new HorizontalScrollView(getContext());ribbonScroll=scroll;ribbonExpanded=store.prefs.getBoolean("eight_recycle_ribbon",false);scroll.setVisibility(ribbonExpanded?VISIBLE:GONE);scroll.setHorizontalScrollBarEnabled(false);tenRibbonTools=new LinearLayout(getContext());scroll.addView(tenRibbonTools);ribbon.addView(scroll,new LayoutParams(-1,dp(66)));
         for(String name:new String[]{"File","Home","View","Manage"}){
-            TextView tab=command(name,()->{if(name.equals("File")){menu("File");return;}recycleRibbon(name);});tab.setTag(R.id.ten_appearance_accent,null);tab.setTextColor(name.equals("File")?android.graphics.Color.WHITE:Aero.INK);tab.setBackgroundColor(name.equals("File")?0xff006fc4:android.graphics.Color.TRANSPARENT);if(name.equals("File"))TenAppearance.preserve(tab);tab.setContentDescription("Recycle Bin "+name+" ribbon tab");tabs.addView(tab,new LayoutParams(dp(64),-1));
+            TextView tab=command(name,()->{if(name.equals("File")){menu("File");return;}ribbonExpanded=true;ribbonScroll.setVisibility(VISIBLE);store.prefs.edit().putBoolean("eight_recycle_ribbon",true).apply();recycleRibbon(name);});tab.setTag(R.id.ten_appearance_accent,null);tab.setTextColor(name.equals("File")?android.graphics.Color.WHITE:Aero.INK);tab.setBackgroundColor(name.equals("File")?0xff006fc4:android.graphics.Color.TRANSPARENT);if(name.equals("File"))TenAppearance.preserve(tab);tab.setContentDescription("Recycle Bin "+name+" ribbon tab");ribbonTabs.put(name,tab);tabs.addView(tab,new LayoutParams(dp(64),-1));
         }
+        TextView collapse=command("⌃",()->{ribbonExpanded=!ribbonExpanded;ribbonScroll.setVisibility(ribbonExpanded?VISIBLE:GONE);store.prefs.edit().putBoolean("eight_recycle_ribbon",ribbonExpanded).apply();});collapse.setContentDescription("Expand or collapse Recycle Bin ribbon");tabs.addView(collapse,new LayoutParams(dp(40),-1));
         ((View)commands.getParent()).setVisibility(GONE);addView(ribbon,0,new LayoutParams(-1,-2));recycleRibbon("Manage");
     }
     private void recycleRibbon(String tab){
+        for(Map.Entry<String,TextView> entry:ribbonTabs.entrySet())if(!entry.getKey().equals("File"))entry.getValue().setBackgroundColor(entry.getKey().equals(tab)?entry.getKey().equals("Manage")?0xffc9e6b8:0xffffffff:android.graphics.Color.TRANSPARENT);
         // The command instances retain their enabled state while moving between ribbon tabs.
         for(TextView button:new TextView[]{emptyButton,restoreButton,restoreSelection})if(button.getParent() instanceof android.view.ViewGroup)((android.view.ViewGroup)button.getParent()).removeView(button);
         tenRibbonTools.removeAllViews();ribbonCommands.clear();

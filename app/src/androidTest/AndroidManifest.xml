@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <instrumentation android:name="com.nthexperience.desktop.EightSmoke" android:targetPackage="${launcherApplicationId}" android:functionalTest="true" />
+    <instrumentation android:name="com.nthexperience.desktop.EightGestureSmoke" android:targetPackage="${launcherApplicationId}" android:functionalTest="true" />
     <instrumentation android:name="com.nthexperience.desktop.EightAuditSmoke" android:targetPackage="${launcherApplicationId}" android:functionalTest="true" />
     <instrumentation android:name="com.nthexperience.desktop.EightImmersiveSmoke" android:targetPackage="${launcherApplicationId}" android:functionalTest="true" />
     <instrumentation android:name="com.nthexperience.desktop.ExplorerSmoke" android:targetPackage="${launcherApplicationId}" android:functionalTest="true" />

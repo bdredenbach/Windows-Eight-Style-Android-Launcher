@@ -2,6 +2,9 @@ package com.nthexperience.desktop;
 
 import android.content.*;
 import android.graphics.Color;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.*;
 import android.text.*;
@@ -32,6 +35,19 @@ final class EightStartScreen extends LinearLayout {
     int lastWidth,lastHeight;
     HorizontalScrollView horizontal;
     final ScaleGestureDetector zoom;
+    private final List<TileGroup> dragGroups=new ArrayList<>();
+    private final Map<String,View> tileViews=new HashMap<>();
+    private String armedTile,weatherKey="";private float pressX,pressY;
+    private TileDrag dragging;private View dragSource;private DropPreview dropPreview;
+    private EightStartData.Group dropGroup;private int dropIndex,edgeSpeed;
+    private float dragX,dragY,downX,downY;private boolean pendingRender,swipeCandidate,swiping;
+    private final Runnable edgeScroll=new Runnable(){public void run(){if(dragging==null||horizontal==null)return;horizontal.scrollBy(edgeSpeed,0);updateDrop(dragX,dragY);if(edgeSpeed!=0)handler.postDelayed(this,16);}};
+    private static final class TileGroup{final EightStartData.Group group;final View grid;final List<EightTileLayout.Cell> cells;final int unit;TileGroup(EightStartData.Group g,View v,List<EightTileLayout.Cell> c,int u){group=g;grid=v;cells=c;unit=u;}}
+    private final class DropPreview extends View{
+        final Paint paint=new Paint(3);final RectF target=new RectF();String label="";
+        DropPreview(Context c){super(c);setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);}
+        protected void onDraw(Canvas c){if(dropGroup==null)return;paint.setColor(Color.WHITE);paint.setStrokeWidth(dp(3));paint.setStyle(Paint.Style.STROKE);c.drawRect(target,paint);paint.setStyle(Paint.Style.FILL);paint.setColor(0xe632165e);c.drawRect(0,getHeight()-dp(34),getWidth(),getHeight(),paint);paint.setColor(Color.WHITE);paint.setTextSize(dp(14));c.drawText(label,dp(16),getHeight()-dp(11),paint);}
+    }
     final Runnable live=new Runnable(){public void run(){if(isShown()){render();handler.postDelayed(this,60000-System.currentTimeMillis()%60000);}}};
 
     EightStartScreen(Context context,StartMenu.Actions actions,DesktopStore store,AeroWallpaper wallpaper,Runnable surfaceChanged){
@@ -52,6 +68,7 @@ final class EightStartScreen extends LinearLayout {
         commands=new LinearLayout(context);commands.setGravity(Gravity.CENTER_VERTICAL);commands.setPadding(dp(12),0,dp(12),0);commandScroll.addView(commands,new HorizontalScrollView.LayoutParams(-2,-1));addView(commandScroll,new LayoutParams(-1,dp(56)));
         zoom=new ScaleGestureDetector(context,new ScaleGestureDetector.SimpleOnScaleGestureListener(){public boolean onScale(ScaleGestureDetector detector){if(detector.getScaleFactor()<.92f&&surface==Surface.START){surface=Surface.OVERVIEW;selected=null;post(()->render());return true;}return false;}});
         viewport.addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob)->{if(r-l!=lastWidth||b-t!=lastHeight){lastWidth=r-l;lastHeight=b-t;renderContent();}});
+        viewport.setOnDragListener((v,event)->tileDrag(event));
         render();
     }
     private int dp(int value){return Aero.dp(getContext(),value);}
@@ -63,6 +80,7 @@ final class EightStartScreen extends LinearLayout {
     void refreshHome(){if(isShown())appearanceChanged();}
     void appearanceChanged(){EightProfile next=EightDefaults.profile(store);if(next!=profile){profile=next;data=new EightStartData(store,profile);selected=null;scope=profile==EightProfile.EIGHT?"Apps":"Everywhere";}render();}
     private void render(){
+        if(dragging!=null){pendingRender=true;return;}
         boolean update=profile==EightProfile.EIGHT_POINT_ONE&&store.prefs.getBoolean("eight_81_update",false)&&surface==Surface.START;updatePower.setVisibility(update?VISIBLE:GONE);updateSearch.setVisibility(update?VISIBLE:GONE);
         refreshName();boolean wallpaper=profile==EightProfile.EIGHT_POINT_ONE&&store.prefs.getBoolean("eight_start_wallpaper",false);
         setBackground(new EightBackdrop(store.prefs.getInt("eight_start_color",0xff21164f),wallpaper?this.wallpaper:null));
@@ -86,12 +104,13 @@ final class EightStartScreen extends LinearLayout {
         command("⋯","More Start commands",()->Aero.dialog(getContext()).setTitle("Start commands").setItems(new String[]{"Search","Charms","Switch apps"},(d,n)->{if(n==0)showSearch(profile==EightProfile.EIGHT?"Apps":"Everywhere");else actions.open(n==1?"@charms":"@eight-switcher");}).show());
     }
     private void renderContent(){
-        dockSearch();int scroll=horizontal==null?0:horizontal.getScrollX();viewport.removeAllViews();
+        if(dragging!=null){pendingRender=true;return;}
+        armedTile=null;dragGroups.clear();tileViews.clear();dockSearch();int scroll=horizontal==null?0:horizontal.getScrollX();viewport.removeAllViews();
         if(surface==Surface.SEARCH){horizontal=null;renderSearch();return;}
         horizontal=new HorizontalScrollView(getContext());horizontal.setFillViewport(false);horizontal.setHorizontalScrollBarEnabled(true);horizontal.setContentDescription(surface==Surface.ALL_APPS?"All apps horizontal view":"Horizontal Start groups");
         LinearLayout groups=new LinearLayout(getContext());groups.setPadding(dp(24),dp(8),dp(24),dp(20));horizontal.addView(groups,new HorizontalScrollView.LayoutParams(-2,-1));viewport.addView(horizontal,new FrameLayout.LayoutParams(-1,-1));
         if(surface==Surface.ALL_APPS)renderApps(groups);else for(EightStartData.Group group:data.groups)renderGroup(groups,group,surface==Surface.OVERVIEW);
-        horizontal.post(()->{if(horizontal!=null)horizontal.scrollTo(scroll,0);});
+        HorizontalScrollView rendered=horizontal;rendered.post(()->{if(horizontal==rendered)rendered.scrollTo(scroll,0);});
     }
     private void renderGroup(LinearLayout parent,EightStartData.Group group,boolean overview){
         LinearLayout block=Aero.column(getContext());LayoutParams blockParams=new LayoutParams(-2,-1);blockParams.rightMargin=dp(34);parent.addView(block,blockParams);
@@ -102,25 +121,52 @@ final class EightStartScreen extends LinearLayout {
         for(int i=0;i<group.items.size();i++){
             EightStartData.Item item=group.items.get(i);EightTileLayout.Cell cell=cells.get(i);StartSearch.Result resolved=resolve(item.id);
             View tile=tile(resolved,item.size,overview);FrameLayout.LayoutParams position=new FrameLayout.LayoutParams(Math.max(1,cell.w*unit-dp(5)),Math.max(1,cell.h*unit-dp(5)));position.leftMargin=cell.col*unit;position.topMargin=cell.row*unit;grid.addView(tile,position);width=Math.max(width,(cell.col+cell.w)*unit);
-            tile.setOnDragListener((v,e)->{if(!(e.getLocalState() instanceof TileDrag))return false;if(e.getAction()==DragEvent.ACTION_DROP){data.move(((TileDrag)e.getLocalState()).id,group,group.items.indexOf(item));selected=null;post(this::render);}return true;});
+            tileViews.put(item.id,tile);
         }
         block.addView(grid,new LayoutParams(overview?Math.max(dp(110),width):width,rows*unit));
-        block.setOnDragListener((v,e)->{if(!(e.getLocalState() instanceof TileDrag))return false;if(e.getAction()==DragEvent.ACTION_DROP){data.move(((TileDrag)e.getLocalState()).id,group,group.items.size());selected=null;post(this::render);}return true;});
+        dragGroups.add(new TileGroup(group,grid,cells,unit));
         if(overview){title.setOnClickListener(v->{surface=Surface.START;render();int index=data.groups.indexOf(group);post(()->{if(horizontal!=null&&horizontal.getChildCount()>0){LinearLayout content=(LinearLayout)horizontal.getChildAt(0);if(index<content.getChildCount())horizontal.smoothScrollTo(content.getChildAt(index).getLeft(),0);}});});title.setOnLongClickListener(v->{groupOptions(group);return true;});}
     }
     private View tile(StartSearch.Result item,String size,boolean overview){
         FrameLayout tile=new FrameLayout(getContext());int color=color(item.id);android.graphics.drawable.GradientDrawable fill=new android.graphics.drawable.GradientDrawable();fill.setColor(color);if(item.id.equals(selected))fill.setStroke(dp(3),Color.WHITE);tile.setBackground(item.id.equals("@desktop")&&!item.id.equals(selected)?new EightBackdrop(0xff174266,wallpaper):fill);tile.setFocusable(true);tile.setContentDescription(item.title+", "+size+" Start tile");
-        int iconSize=dp(overview?20:size.equals("Small")?22:38);FrameLayout.LayoutParams iconParams=new FrameLayout.LayoutParams(iconSize,iconSize,Gravity.CENTER);if(!overview&&!size.equals("Small"))iconParams.bottomMargin=dp(16);if(!item.id.equals("@desktop"))tile.addView(icon(item,Color.WHITE),iconParams);
+        boolean weatherLive=!size.equals("Small")&&item.id.equals("@weather")&&store.prefs.getBoolean("eight_live_tiles",true)&&!overview;WeatherClient.Snapshot forecast=weatherLive?cachedWeather():null;
+        int iconSize=dp(overview?20:size.equals("Small")?22:38);FrameLayout.LayoutParams iconParams=new FrameLayout.LayoutParams(iconSize,iconSize,Gravity.CENTER);if(!overview&&!size.equals("Small"))iconParams.bottomMargin=dp(16);if(!item.id.equals("@desktop")){if(weatherLive&&forecast!=null){iconParams.gravity=Gravity.CENTER_VERTICAL|Gravity.START;iconParams.leftMargin=dp(12);tile.addView(new EightWeatherIcon(getContext(),forecast.symbol,Color.WHITE),iconParams);TextView temp=label(forecast.temperature(store.prefs.getBoolean("weather_f",Locale.getDefault().getCountry().equals("US")))+"°",size.equals("Small")?16:32);temp.setGravity(Gravity.CENTER);FrameLayout.LayoutParams tp=new FrameLayout.LayoutParams(-1,-1);tp.leftMargin=dp(size.equals("Small")?18:45);tp.bottomMargin=dp(size.equals("Small")?0:28);tile.addView(temp,tp);}else tile.addView(icon(item,Color.WHITE),iconParams);}
         if(!size.equals("Small")&&!overview){TextView text=label(liveText(item),13);text.setMaxLines(2);text.setPadding(dp(9),0,dp(6),dp(6));tile.addView(text,new FrameLayout.LayoutParams(-1,-2,Gravity.BOTTOM));}
         tile.setOnClickListener(v->{if(overview){surface=Surface.START;render();}else if(selected!=null){selected=selected.equals(item.id)?null:item.id;render();}else actions.open(item.id);});
         tile.setOnContextClickListener(v->{if(profile==EightProfile.EIGHT_POINT_ONE&&store.prefs.getBoolean("eight_81_update",false))tileMenu(tile,item);else{selected=item.id;render();}return true;});
-        tile.setOnLongClickListener(v->{if(item.id.equals(selected)){tile.startDragAndDrop(ClipData.newPlainText("Eight tile",item.id),new View.DragShadowBuilder(tile),new TileDrag(item.id),0);}else{selected=item.id;render();}return true;});
+        tile.setOnLongClickListener(v->{if(overview)return false;selected=item.id;armedTile=item.id;swipeCandidate=false;tile.getParent().requestDisallowInterceptTouchEvent(true);updateSelection();renderCommands();return true;});
+        tile.setOnTouchListener((v,event)->{if(event.getActionMasked()==MotionEvent.ACTION_DOWN){pressX=event.getX();pressY=event.getY();armedTile=null;}else if(event.getActionMasked()==MotionEvent.ACTION_MOVE&&item.id.equals(armedTile)&&Math.hypot(event.getX()-pressX,event.getY()-pressY)>dp(8)){armedTile=null;getParent().requestDisallowInterceptTouchEvent(true);return tile.startDragAndDrop(ClipData.newPlainText("Eight tile",item.id),new View.DragShadowBuilder(tile),new TileDrag(item.id),0);}else if(event.getActionMasked()==MotionEvent.ACTION_UP||event.getActionMasked()==MotionEvent.ACTION_CANCEL)armedTile=null;return false;});
         tile.setOnKeyListener((v,key,event)->{if(event.getAction()==KeyEvent.ACTION_DOWN&&event.isCtrlPressed()&&(key==KeyEvent.KEYCODE_DPAD_LEFT||key==KeyEvent.KEYCODE_DPAD_RIGHT)){selected=item.id;moveSelected(key==KeyEvent.KEYCODE_DPAD_LEFT?-1:1);return true;}return false;});
         tile.setAccessibilityDelegate(new View.AccessibilityDelegate(){public void onInitializeAccessibilityNodeInfo(View v,AccessibilityNodeInfo node){super.onInitializeAccessibilityNodeInfo(v,node);node.addAction(new AccessibilityNodeInfo.AccessibilityAction(0x01020051,"Move tile earlier"));node.addAction(new AccessibilityNodeInfo.AccessibilityAction(0x01020052,"Move tile later"));}public boolean performAccessibilityAction(View v,int action,Bundle args){if(action==0x01020051||action==0x01020052){selected=item.id;moveSelected(action==0x01020051?-1:1);return true;}return super.performAccessibilityAction(v,action,args);}});
         return tile;
     }
     private void tileMenu(View anchor,StartSearch.Result item){DesktopContextMenu menu=new DesktopContextMenu(getContext(),"8.1 Update tile menu");menu.item("Open","programs",()->actions.open(item.id));menu.item("Unpin from Start","delete",()->{data.unpin(item.id);selected=null;render();});menu.item("Resize","appearance",()->Aero.dialog(getContext()).setTitle("Tile size").setItems(profile.sizes(),(d,n)->{EightStartData.Item tile=data.item(item.id);if(tile!=null){tile.size=profile.sizes()[n];data.save();render();}}).show());List<String> pins=store.quickLaunch();menu.item(pins.contains(item.id)?"Unpin from taskbar":"Pin to taskbar","programs",()->{if(pins.contains(item.id))pins.remove(item.id);else if(pins.size()<DesktopStore.MAX_QUICK)pins.add(item.id);store.quickLaunch(pins);surfaceChanged.run();});ContextMenus.centered(anchor,(x,y)->ContextMenus.show(menu,anchor,x,y));}
     private static final class TileDrag{final String id;TileDrag(String id){this.id=id;}}
+    private void updateSelection(){for(Map.Entry<String,View> entry:tileViews.entrySet()){android.graphics.drawable.GradientDrawable fill=new android.graphics.drawable.GradientDrawable();fill.setColor(color(entry.getKey()));if(entry.getKey().equals(selected))fill.setStroke(dp(3),Color.WHITE);entry.getValue().setBackground(entry.getKey().equals("@desktop")&&!entry.getKey().equals(selected)?new EightBackdrop(0xff174266,wallpaper):fill);}}
+    private boolean tileDrag(DragEvent event){
+        if(!(event.getLocalState() instanceof TileDrag))return false;
+        switch(event.getAction()){
+            case DragEvent.ACTION_DRAG_STARTED:dragging=(TileDrag)event.getLocalState();dragSource=tileViews.get(dragging.id);if(dragSource!=null)dragSource.setAlpha(.35f);dropPreview=new DropPreview(getContext());viewport.addView(dropPreview,new FrameLayout.LayoutParams(-1,-1));swipeCandidate=false;return true;
+            case DragEvent.ACTION_DRAG_LOCATION:dragX=event.getX();dragY=event.getY();edgeSpeed=dragX<dp(56)?-Math.max(dp(2),(int)((dp(56)-dragX)/5)):dragX>viewport.getWidth()-dp(56)?Math.max(dp(2),(int)((dragX-viewport.getWidth()+dp(56))/5)):0;edgeSpeed=Math.max(-dp(14),Math.min(dp(14),edgeSpeed));handler.removeCallbacks(edgeScroll);updateDrop(dragX,dragY);if(edgeSpeed!=0)handler.post(edgeScroll);return true;
+            case DragEvent.ACTION_DRAG_EXITED:edgeSpeed=0;handler.removeCallbacks(edgeScroll);dropGroup=null;if(dropPreview!=null)dropPreview.invalidate();return true;
+            case DragEvent.ACTION_DROP:updateDrop(event.getX(),event.getY());if(dropGroup!=null){data.move(dragging.id,dropGroup,dropIndex);pendingRender=true;selected=null;return true;}return false;
+            case DragEvent.ACTION_DRAG_ENDED:finishDrag();return true;
+            default:return true;
+        }
+    }
+    private void finishDrag(){handler.removeCallbacks(edgeScroll);edgeSpeed=0;dragging=null;dropGroup=null;if(dragSource!=null)dragSource.setAlpha(1);dragSource=null;if(dropPreview!=null)viewport.removeView(dropPreview);dropPreview=null;boolean refresh=pendingRender;pendingRender=false;if(refresh)render();else{updateSelection();renderCommands();}}
+    private void updateDrop(float x,float y){
+        if(dragging==null||dropPreview==null||dragGroups.isEmpty())return;
+        int[] origin=new int[2],point=new int[2];viewport.getLocationOnScreen(origin);TileGroup nearest=null;float best=Float.MAX_VALUE;
+        for(TileGroup group:dragGroups){group.grid.getLocationOnScreen(point);float left=point[0]-origin[0],distance=Math.max(left-x,Math.max(x-left-group.grid.getWidth(),0));if(distance<best){best=distance;nearest=group;}}
+        if(nearest==null)return;nearest.grid.getLocationOnScreen(point);float left=point[0]-origin[0],top=point[1]-origin[1];dropGroup=nearest.group;dropIndex=0;int target=-1;boolean after=false;best=Float.MAX_VALUE;int index=0;
+        for(int i=0;i<nearest.cells.size();i++){if(nearest.group.items.get(i).id.equals(dragging.id))continue;EightTileLayout.Cell cell=nearest.cells.get(i);float l=left+cell.col*nearest.unit,t=top+cell.row*nearest.unit,r=l+cell.w*nearest.unit,b=t+cell.h*nearest.unit;float dx=Math.max(l-x,Math.max(x-r,0)),dy=Math.max(t-y,Math.max(y-b,0));float distance=dx*dx+dy*dy;if(distance<best){best=distance;target=i;after=x>r||x>=l&&y>(t+b)/2;dropIndex=index+(after?1:0);}index++;}
+        if(target<0){dropPreview.target.set(left,top,left+nearest.unit*2,top+nearest.unit*2);dropPreview.label="Move to "+nearest.group.name;}
+        else{EightTileLayout.Cell cell=nearest.cells.get(target);float l=left+cell.col*nearest.unit,t=top+(cell.row+(after?cell.h:0))*nearest.unit;dropPreview.target.set(l,t-dp(2),l+cell.w*nearest.unit-dp(5),t+dp(2));dropPreview.label=(after?"After ":"Before ")+resolve(nearest.group.items.get(target).id).title+" · "+nearest.group.name;}
+        dropPreview.invalidate();
+    }
+    private WeatherClient.Snapshot cachedWeather(){try{return WeatherClient.Snapshot.parse(store.prefs.getString("weather_json",""));}catch(Exception ignored){return null;}}
+    void weatherChanged(){String key=store.prefs.getString("weather_json","")+store.prefs.getString("weather_city","")+store.prefs.getBoolean("weather_f",false);if(key.equals(weatherKey))return;weatherKey=key;if(isShown())renderContent();}
     private void moveSelected(int delta){for(EightStartData.Group group:data.groups){for(int i=0;i<group.items.size();i++)if(group.items.get(i).id.equals(selected)){data.move(selected,group,i+delta);render();return;}}}
     private void nameGroup(EightStartData.Group group){EditText input=new EditText(getContext());input.setSingleLine();input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40)});input.setText(group==null?"":group.name);android.app.AlertDialog dialog=Aero.dialog(getContext()).setTitle(group==null?"New group":"Name group").setView(input).setPositiveButton("Save",null).setNegativeButton("Cancel",null).create();dialog.setOnShowListener(d->dialog.getButton(-1).setOnClickListener(v->{if(data.name(group,input.getText().toString())){dialog.dismiss();render();}else input.setError("Choose a unique name (1–40 characters).");}));dialog.show();}
     private void groupOptions(EightStartData.Group group){Aero.dialog(getContext()).setTitle(group.name).setItems(new String[]{"Rename","Move earlier","Move later"},(d,n)->{if(n==0){nameGroup(group);return;}int at=data.groups.indexOf(group),to=Math.max(0,Math.min(data.groups.size()-1,at+(n==1?-1:1)));data.groups.remove(group);data.groups.add(to,group);data.save();render();}).show();}
@@ -154,12 +200,18 @@ final class EightStartScreen extends LinearLayout {
     private StartSearch.Result resolve(String id){for(StartSearch.Result item:builtins())if(item.id.equals(id))return item;for(AppCatalog.Entry app:all)if(app.id.equals(id))return new StartSearch.Result(id,app.label,"Installed apps","programs",app.icon,true);return new StartSearch.Result(id,"Unavailable app","Missing app","programs",null,false);}
     private View icon(StartSearch.Result item,int ink){if(item.icon!=null){ImageView image=new ImageView(getContext());image.setImageDrawable(item.icon);return image;}if(item.id.equals("@nota"))return new TenStyle.Glyph(getContext(),"nota",ink);if(EightAppSpec.get(item.id)!=null)return new EightTileGlyph(getContext(),item.id);return new AeroIcon(getContext(),item.kind);}
     private int color(String id){switch(id){case "@desktop":return 0xff007ca8;case "@nota":return 0xff6b3f98;case "@browser":return 0xff007db5;case "@weather":return 0xff006c90;case "@calendar":return 0xff64448e;case "@photos":return 0xffa12a75;case "@settings":return 0xff3a5c99;case "@notes":return 0xff9a4c08;default:int[] colors={0xff00885c,0xff824095,0xffad3f20,0xff2f5698};return colors[Math.floorMod(id.hashCode(),colors.length)];}}
-    private String liveText(StartSearch.Result item){if(!store.prefs.getBoolean("eight_live_tiles",true))return item.title;if(item.id.equals("@calendar"))return new java.text.SimpleDateFormat("EEEE d",Locale.getDefault()).format(new Date());if(item.id.equals("@weather"))return "Weather · "+store.prefs.getString("weather_city","Choose a place");return item.title;}
+    private String liveText(StartSearch.Result item){if(!store.prefs.getBoolean("eight_live_tiles",true))return item.title;if(item.id.equals("@calendar"))return new java.text.SimpleDateFormat("EEEE d",Locale.getDefault()).format(new Date());if(item.id.equals("@weather")){WeatherClient.Snapshot forecast=cachedWeather();return store.prefs.getString("weather_city","Weather · Add a location")+(forecast==null?"":"\n"+forecast.condition());}return item.title;}
     void show(boolean keyboard){surface=keyboard?Surface.SEARCH:Surface.START;selected=null;if(keyboard)scope=profile==EightProfile.EIGHT?"Apps":"Everywhere";setVisibility(VISIBLE);bringToFront();appearanceChanged();search.setText("");requestFocus();if(keyboard)search.requestFocus();handler.removeCallbacks(live);handler.postDelayed(live,60000-System.currentTimeMillis()%60000);surfaceChanged.run();}
-    void hide(){handler.removeCallbacks(live);((InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(getWindowToken(),0);search.clearFocus();setVisibility(GONE);surfaceChanged.run();}
+    void hide(){if(dragging!=null){cancelDragAndDrop();finishDrag();}handler.removeCallbacks(live);((InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(getWindowToken(),0);search.clearFocus();setVisibility(GONE);surfaceChanged.run();}
     boolean back(){if(selected!=null){selected=null;render();return true;}if(surface!=Surface.START){surface=Surface.START;search.setText("");render();return true;}return false;}
     JSONObject state(){JSONObject result=new JSONObject();GadgetLayout.put(result,"visible",getVisibility()==VISIBLE);GadgetLayout.put(result,"surface",surface.name());GadgetLayout.put(result,"scope",scope);GadgetLayout.put(result,"query",search.getText().toString());GadgetLayout.put(result,"scroll",horizontal==null?0:horizontal.getScrollX());return result;}
     void restore(JSONObject state){if(state==null||!state.optBoolean("visible")){hide();return;}show(false);try{surface=Surface.valueOf(state.optString("surface","START"));}catch(IllegalArgumentException ignored){surface=Surface.START;}scope=state.optString("scope","Apps");search.setText(state.optString("query"));render();post(()->{if(horizontal!=null)horizontal.scrollTo(state.optInt("scroll"),0);});}
-    @Override public boolean dispatchTouchEvent(MotionEvent event){zoom.onTouchEvent(event);return super.dispatchTouchEvent(event);}
+    @Override public boolean dispatchTouchEvent(MotionEvent event){
+        int action=event.getActionMasked();if(action==MotionEvent.ACTION_DOWN){downX=event.getX();downY=event.getY();swipeCandidate=dragging==null&&(surface==Surface.START||surface==Surface.ALL_APPS)&&downY<getHeight()-dp(56);swiping=false;}
+        if(event.getPointerCount()>1)swipeCandidate=false;
+        if(action==MotionEvent.ACTION_MOVE&&swipeCandidate&&dragging==null){float dx=event.getX()-downX,dy=event.getY()-downY;if(Math.abs(dx)>dp(28)&&Math.abs(dx)>Math.abs(dy))swipeCandidate=false;else if(dy>dp(48)&&dy>Math.abs(dx)*1.5f){MotionEvent cancel=MotionEvent.obtain(event);cancel.setAction(MotionEvent.ACTION_CANCEL);super.dispatchTouchEvent(cancel);cancel.recycle();swiping=true;swipeCandidate=false;}}
+        if(swiping){if(action==MotionEvent.ACTION_UP){swiping=false;actions.open("@desktop");}else if(action==MotionEvent.ACTION_CANCEL)swiping=false;return true;}
+        zoom.onTouchEvent(event);return super.dispatchTouchEvent(event);
+    }
     @Override protected void onDetachedFromWindow(){handler.removeCallbacksAndMessages(null);super.onDetachedFromWindow();}
 }
