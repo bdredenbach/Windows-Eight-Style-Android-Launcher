@@ -28,8 +28,8 @@ final class TenNotaActions {
         out.add(new Target("Notepad","@notes","nth notepad","notes"));out.add(new Target("File Explorer","@files","files","explorer","nth explorer","file manager"));
         out.add(new Target("Calculator","@gadget:calculator","calc","nth calculator"));out.add(new Target("Unit converter","@gadget:converter"));out.add(new Target("Text counter","@gadget:textcounter"));
         out.add(new Target("Calendar","@calendar"));out.add(new Target("Weather","@weather","forecast"));out.add(new Target("News","@news","news feed"));
-        out.add(new Target("Settings","@settings","control panel","nth settings"));out.add(new Target("Switch apps","@eight-switcher","app switcher","switcher"));out.add(new Target("Task Manager","@taskmanager"));
-        out.add(new Target("Action Center","@actioncenter"));out.add(new Target("Recycle Bin","@recycle"));out.add(new Target("Photos","@photos","photo gallery"));out.add(new Target("Sticky Notes","@sticky"));
+        out.add(new Target("PC settings","@settings","settings","nth settings"));out.add(new Target("Switch apps","@eight-switcher","app switcher","switcher"));out.add(new Target("Task Manager","@taskmanager"));
+        out.add(new Target("Action Center","@actioncenter"));out.add(new Target("Control Panel","@legacycontrol"));out.add(new Target("Recycle Bin","@recycle"));out.add(new Target("Photos","@photos","photo gallery"));out.add(new Target("Sticky Notes","@sticky"));
         out.add(new Target("Documents","@documents","documents folder"));out.add(new Target("Pictures","@pictures","pictures folder"));out.add(new Target("Music","@music","music folder"));out.add(new Target("Nth Media Player","@mediaplayer","media player"));
         out.add(new Target("Tile puzzle","@gadget:puzzle","puzzle"));out.add(new Target("Dice roller","@gadget:dice","dice"));
         out.add(new Target("Wi-Fi settings","setting:android:wifi","wifi","wi fi","wireless settings"));out.add(new Target("Bluetooth settings","setting:android:bluetooth","bluetooth"));
@@ -43,6 +43,7 @@ final class TenNotaActions {
         String text=input.trim().replaceAll("[?!.]+$","").trim();
         text=text.replaceFirst("(?i)^(?:hey |hi )?(?:nth )?nota[, ]+","").replaceFirst("(?i)^(?:can you|could you|would you|will you)(?: please)?\\s+","").replaceFirst("(?i)^please\\s+","").replaceFirst("(?i)[, ]+please$","").trim();
         String k=key(text);
+        if(k.equals("switch apps"))return new Plan("Switch between apps and Desktop.",new Action("Switch apps",Kind.OPEN,"@eight-switcher"));
         if(Arrays.asList("what can you do","what else can you do","help","help me use nth nota","show commands","show suggestions","what can nota do").contains(k))return help();
         if(k.matches("(?:show|go to)(?: the| my)? desktop"))return new Plan("Show your desktop by minimizing its built-in windows. Use their taskbar buttons to restore them.",new Action("Show desktop",Kind.DESKTOP,""));
         if(k.matches("(?:create|make|add)(?: a)?(?: new)?(?: virtual)? desktop"))return new Plan("Eight uses one Desktop surface and the app switcher.",new Action("Switch apps",Kind.OPEN,"@eight-switcher"));
