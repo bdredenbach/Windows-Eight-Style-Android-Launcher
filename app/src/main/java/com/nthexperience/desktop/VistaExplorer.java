@@ -98,7 +98,10 @@ final class VistaExplorer extends VistaShell {
     private void updateRibbon(){if(ribbonTools==null)return;boolean any=!selected.isEmpty(),remove=any&&!busy&&selected.values().stream().allMatch(r->DocumentOps.writable(getContext(),r.uri,DocumentsContract.Document.FLAG_SUPPORTS_DELETE,r.item));ribbonEnabled("Copy",any&&!busy);ribbonEnabled("Cut",remove);ribbonEnabled("Delete",remove);ribbonEnabled("Paste",!busy&&canCreate()&&!ExplorerClipboard.files.isEmpty());ribbonEnabled("New folder",!busy&&canCreate());ribbonEnabled("Rename",selected.size()==1&&!busy&&DocumentOps.writable(getContext(),selected.values().iterator().next().uri,DocumentsContract.Document.FLAG_SUPPORTS_RENAME,selected.values().iterator().next().item));ribbonEnabled("Properties",parentInfo!=null||selected.size()==1);ribbonEnabled("Select all",listing!=null&&!listing.items.isEmpty());ribbonEnabled("Share",any&&!busy&&selected.values().stream().noneMatch(r->r.item.directory()));ribbonEnabled("Copy path",any);}
     private void ribbonEnabled(String label,boolean value){View v=ribbonButtons.get(label);if(v!=null){v.setEnabled(value);v.setAlpha(value?1:.35f);}}
     private void ribbonSelection(boolean cut,boolean delete){List<DocumentOps.Ref> refs=new ArrayList<>(selected.values());if(refs.isEmpty()){toast("Select an item first.");return;}if(busy)return;if((cut||delete)&&refs.stream().anyMatch(r->!DocumentOps.writable(getContext(),r.uri,DocumentsContract.Document.FLAG_SUPPORTS_DELETE,r.item))){toast("Changes are not allowed for this selection.");return;}if(delete)confirmDelete(refs);else copy(refs,cut);}
+    private EightProfile renderedProfile;
+    void profileChanged(){if(renderedProfile!=EightDefaults.profile(store))render();}
     @Override void render(){
+        renderedProfile=EightDefaults.profile(store);
         post(this::updateRibbon);
         if(closed)return;renderTree();updateAddress();String page=page();
         if(!page.equals(previewPage)){previewPage=page;if(preview!=null)preview.clear();}if(!page.startsWith("folder:")&&!page.startsWith("library:")){selected.clear();selectionChanged();}
