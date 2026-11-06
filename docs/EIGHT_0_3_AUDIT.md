@@ -7,6 +7,7 @@ The owner reported Windows 10 leftovers and a Seven-branded Usage Access illustr
 | Facet | Finding in 0.2.0 | Result in 0.3.0 |
 |---|---|---|
 | Usage Access setup | Embedded bitmap showed Nth Desktop Seven and N⁷ | Bitmap removed from the package. A native instruction card reads the installed Eight name and launcher icon. Android permission/recovery flow is retained. |
+| Immersive command handle | Floating handle could cover Media/Calendar/Nota header controls | A reserved collapsed bottom app-command strip keeps the ellipsis outside app content. The expanded bar includes Hide commands. |
 | Full-screen safe area | Transparent padding above Start exposed desktop shortcuts around camera insets | The Eight layer paints an opaque background behind the protected content area. Controls remain below the cutout. |
 | Desktop settings | Personalize, Colors, Fonts, System, taskbar and other deep links could construct TenSettings | EightDesktopOptions supplies traditional Control Panel pages. EightSettingsCatalog resolves old shortcut IDs, Run and Nota destinations to Eight pages or actual Android settings. |
 | PC settings | Eight categories existed, but links leaked into Ten Settings | Separate original Eight / expanded 8.1 categories remain. The light navigation/page presentation and PC/device links are refined. Desktop controls stay separate. |
