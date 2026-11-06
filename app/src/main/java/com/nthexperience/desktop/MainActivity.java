@@ -705,9 +705,9 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
         if(id.startsWith("eight-setting:")){showEightSettings(id.substring(14));return;}
         if(id.startsWith("eight-search:")){String scope=id.substring(13);showStart(true);startMenu.showSearch(scope);return;}
         if(id.equals("@search")){showStart(true);return;}
-        if(id.equals("@volume")){eightSettings.setVisibility(View.GONE);startMenu.hide();tray.show("volume");return;}
+        if(id.equals("@volume")){eightCharms.show("volume");return;}
         if(Arrays.asList("@taskview","@flip3d","@tenactions","@actioncenter","@news").contains(id)){toast("Use Charms for Search, Devices and Settings.");return;}
-        if(eightImmersive!=null&&!eightPreparingImmersive){if(eightImmersive.owns(id))eightImmersive.dock(id,false);eightImmersive.hideSurface();}
+        if(eightImmersive!=null&&!eightPreparingImmersive){peekEightTaskbar(false);if(eightImmersive.owns(id))eightImmersive.dock(id,false);eightImmersive.hideSurface();}
         eightSettings.setVisibility(View.GONE);
         startMenu.hide();if(tray!=null)tray.dismiss();
         TenSystemTools.record(id);
@@ -1678,7 +1678,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
         if(videoOverlay==null&&!restoringBackup&&(event.getKeyCode()==KeyEvent.KEYCODE_META_LEFT||event.getKeyCode()==KeyEvent.KEYCODE_META_RIGHT)){if(event.getAction()==KeyEvent.ACTION_DOWN){if(event.getRepeatCount()==0)eightMetaChord=false;return true;}if(event.getAction()==KeyEvent.ACTION_UP){if(!eightMetaChord)toggleEightStart();return true;}}
         if(event.getAction()==KeyEvent.ACTION_DOWN&&event.isMetaPressed())eightMetaChord=true;
         if(event.getAction()==KeyEvent.ACTION_DOWN&&event.getRepeatCount()==0&&videoOverlay==null&&!restoringBackup){
-            int eightKey=event.getKeyCode();
+            int eightKey=event.getKeyCode();if(eightImmersive!=null&&eightImmersive.visible()&&event.isAltPressed()&&eightKey==KeyEvent.KEYCODE_F4){eightImmersive.close(eightImmersive.focused==null?eightImmersive.primary:eightImmersive.focused);return true;}
             if(eightKey==KeyEvent.KEYCODE_ESCAPE){if(event.isCtrlPressed()&&event.isShiftPressed())open("@taskmanager");else handleBack();return true;}
             if(event.isCtrlPressed()&&eightKey==KeyEvent.KEYCODE_TAB&&startMenu.getVisibility()==View.VISIBLE){showStart(false);startMenu.surface=EightStartScreen.Surface.ALL_APPS;startMenu.appearanceChanged();return true;}
             if(event.isMetaPressed()){
@@ -1696,7 +1696,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
                     case KeyEvent.KEYCODE_Z:if(eightImmersive.visible())eightImmersive.commands(true);return true;
                 }
             }
-            int key=event.getKeyCode();if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_R){open("@run");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_X){ContextMenus.centered(tenStartButton,(x,y)->startOrbMenu(tenStartButton,x,y));return true;}if(event.isMetaPressed()&&event.isCtrlPressed()){if(key==KeyEvent.KEYCODE_DPAD_LEFT||key==KeyEvent.KEYCODE_DPAD_RIGHT){tenDesktops.adjacent(key==KeyEvent.KEYCODE_DPAD_LEFT?-1:1);return true;}if(key==KeyEvent.KEYCODE_D){String created=tenDesktops.create();if(created!=null)tenDesktops.select(created);return true;}}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_N){open("@nota");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_W){open("@news");return true;}if(key==KeyEvent.KEYCODE_ESCAPE&&tenNews!=null&&tenNews.dismiss())return true;if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_A){open("@tenactions");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_I){open("@settings");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_TAB){showTenTasks();return true;}if(event.isAltPressed()&&key==KeyEvent.KEYCODE_TAB){eightDesktop();previews.show();return true;}if(event.isCtrlPressed()&&event.isShiftPressed()&&key==KeyEvent.KEYCODE_ESCAPE){open("@taskmanager");return true;}
+            int key=event.getKeyCode();if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_R){open("@run");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_X){ContextMenus.centered(tenStartButton,(x,y)->startOrbMenu(tenStartButton,x,y));return true;}if(event.isMetaPressed()&&event.isCtrlPressed()){if(key==KeyEvent.KEYCODE_DPAD_LEFT||key==KeyEvent.KEYCODE_DPAD_RIGHT){tenDesktops.adjacent(key==KeyEvent.KEYCODE_DPAD_LEFT?-1:1);return true;}if(key==KeyEvent.KEYCODE_D){String created=tenDesktops.create();if(created!=null)tenDesktops.select(created);return true;}}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_N){open("@nota");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_W){open("@news");return true;}if(key==KeyEvent.KEYCODE_ESCAPE&&tenNews!=null&&tenNews.dismiss())return true;if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_A){open("@tenactions");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_I){open("@settings");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_TAB){showTenTasks();return true;}if(event.isAltPressed()&&key==KeyEvent.KEYCODE_TAB){if(!eightImmersive.sessions.isEmpty())showEightSwitcher();else{eightDesktop();previews.show();}return true;}if(event.isCtrlPressed()&&event.isShiftPressed()&&key==KeyEvent.KEYCODE_ESCAPE){open("@taskmanager");return true;}
             if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_D){eightSettings.setVisibility(View.GONE);showDesktop();return true;}
             if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_E){open("@files");return true;}
             DesktopWindow front=null;for(DesktopWindow window:orderedWindows())if(window.getVisibility()==View.VISIBLE&&!window.minimizing())front=window;

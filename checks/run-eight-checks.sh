@@ -25,5 +25,6 @@ for suite in EightSmoke EightImmersiveSmoke BrowserSmoke ExplorerSmoke PhotoSmok
   if ! timeout -k 3s 300s adb shell am instrument -w "$launcher.test/com.nthexperience.desktop.$suite" | tee "$output"; then failed=1; fi
   if ! grep -q 'PASS:' "$output" || grep -Eq 'FAIL:|shortMsg=|Process crashed|INSTRUMENTATION_FAILED' "$output"; then failed=1; fi
   collect "$suite"
+  if [[ "$failed" -ne 0 ]]; then exit "$failed"; fi
 done
 exit "$failed"
