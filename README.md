@@ -34,13 +34,13 @@ Use Java 17 and Android SDK 36:
 ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest :fixture:assembleDebug
 ```
 
-The main workflow builds for Android 11 and Android 16, runs the Eight surface/profile scenario plus the immersive session/snap scenario and shared Browser, Explorer, Photo and Media scenarios, and uploads APKs and native screenshots. `checks/EightTileLayoutCheck.java` checks 77,325 placements for bounds, overlap, determinism and profile-specific formats. Unit tests retain the shared calculator, AI lifecycle and accent checks. Historical Ten suites are preserved as source reference and are not asserted to pass against Eight's replacement shell.
+The main workflow builds for Android 11 and Android 16, runs the Eight surface/profile scenario plus the immersive session/snap scenario and shared Browser, Explorer, Photo and Media scenarios, and uploads APKs and native screenshots. `checks/EightTileLayoutCheck.java` checks 77,325 placements for bounds, overlap, determinism and profile-specific formats. `checks/EightSnapCheck.java` checks 59,192 supported combinations for classic/flexible sizing, per-app minimum widths and narrow fallback. Unit tests retain the shared calculator, AI lifecycle and accent checks. Historical Ten suites are preserved as source reference and are not asserted to pass against Eight's replacement shell.
 
 The complete visual gallery and illustrated brief are in the owner-supplied handoff ZIP; research text and source attribution are retained here.
 
-See [the passing device validation and delivered package details](docs/EIGHT_0_1_VALIDATION.md).
+See [the passing device validation and delivered package details](docs/EIGHT_0_2_VALIDATION.md).
 
-See [the first-preview implementation notes](docs/EIGHT_0_1.md), [original research handoff](docs/eight-handoff/00-START-HERE.md).
+See [the immersive and icon implementation notes](docs/EIGHT_0_2.md), [first-preview notes](docs/EIGHT_0_1.md), [original research handoff](docs/eight-handoff/00-START-HERE.md).
 
 ## Source and notices
 

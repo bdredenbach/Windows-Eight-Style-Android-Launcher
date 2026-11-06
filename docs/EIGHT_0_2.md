@@ -8,7 +8,7 @@ The owner requested the follow-up work and supplied `win8icons.zip`. This pass i
 
 Desktop wrappers of immersive sessions stay hidden. Default Eight taskbar enumeration omits them; the optional 8.1 Update path uses explicit immersive open/dock/close actions. Task Manager and the left switcher close actual sessions rather than orphaning their bodies. Desktop is one switcher item. Owned previews are bounded and memory-only; InPrivate browser content is excluded.
 
-Activity state serializes stable app IDs, direct body UI state, primary/secondary IDs, divider ratio and visibility. Existing desktop geometry and engine serialization remain authoritative. Separate return targets avoid overwriting the PC settings return route when Start is toggled above it.
+Activity state serializes stable app IDs, direct body UI state, primary/secondary IDs, divider ratio, recent ordering, focused pane and visibility. Existing desktop geometry and engine serialization remain authoritative. Separate return targets avoid overwriting the PC settings return route when Start is toggled above it. Android Back follows actual browser history before returning to Desktop. Global command controls do not change which snapped pane owns focus. Music volume and brightness remain in the right-side Charms flyout above the current immersive surface.
 
 ## Snap
 
