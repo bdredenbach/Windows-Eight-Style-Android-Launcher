@@ -1659,8 +1659,8 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
         if(event.getAction()==KeyEvent.ACTION_DOWN&&event.isMetaPressed())eightMetaChord=true;
         if(event.getAction()==KeyEvent.ACTION_DOWN&&event.getRepeatCount()==0&&videoOverlay==null&&!restoringBackup){
             int eightKey=event.getKeyCode();
-            if(eightKey==KeyEvent.KEYCODE_ESCAPE){handleBack();return true;}
-            if(event.isCtrlPressed()&&eightKey==KeyEvent.KEYCODE_TAB){showStart(false);startMenu.surface=EightStartScreen.Surface.ALL_APPS;startMenu.appearanceChanged();return true;}
+            if(eightKey==KeyEvent.KEYCODE_ESCAPE){if(event.isCtrlPressed()&&event.isShiftPressed())open("@taskmanager");else handleBack();return true;}
+            if(event.isCtrlPressed()&&eightKey==KeyEvent.KEYCODE_TAB&&startMenu.getVisibility()==View.VISIBLE){showStart(false);startMenu.surface=EightStartScreen.Surface.ALL_APPS;startMenu.appearanceChanged();return true;}
             if(event.isMetaPressed()){
                 if(event.isCtrlPressed()){if(eightKey==KeyEvent.KEYCODE_D||eightKey==KeyEvent.KEYCODE_DPAD_LEFT||eightKey==KeyEvent.KEYCODE_DPAD_RIGHT)return true;}
                 switch(eightKey){
@@ -1672,11 +1672,11 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
                     case KeyEvent.KEYCODE_H:shareEightContext();return true;
                     case KeyEvent.KEYCODE_K:eightCharms.show("devices");return true;
                     case KeyEvent.KEYCODE_A:return true;
-                    case KeyEvent.KEYCODE_TAB:previews.show();return true;
+                    case KeyEvent.KEYCODE_TAB:eightDesktop();previews.show();return true;
                 }
             }
-            int key=event.getKeyCode();if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_R){open("@run");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_X){ContextMenus.centered(tenStartButton,(x,y)->startOrbMenu(tenStartButton,x,y));return true;}if(event.isMetaPressed()&&event.isCtrlPressed()){if(key==KeyEvent.KEYCODE_DPAD_LEFT||key==KeyEvent.KEYCODE_DPAD_RIGHT){tenDesktops.adjacent(key==KeyEvent.KEYCODE_DPAD_LEFT?-1:1);return true;}if(key==KeyEvent.KEYCODE_D){String created=tenDesktops.create();if(created!=null)tenDesktops.select(created);return true;}}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_N){open("@nota");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_W){open("@news");return true;}if(key==KeyEvent.KEYCODE_ESCAPE&&tenNews!=null&&tenNews.dismiss())return true;if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_A){open("@tenactions");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_I){open("@settings");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_TAB){showTenTasks();return true;}if(event.isAltPressed()&&key==KeyEvent.KEYCODE_TAB){previews.show();return true;}if(event.isCtrlPressed()&&event.isShiftPressed()&&key==KeyEvent.KEYCODE_ESCAPE){open("@taskmanager");return true;}
-            if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_D){showDesktop();return true;}
+            int key=event.getKeyCode();if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_R){open("@run");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_X){ContextMenus.centered(tenStartButton,(x,y)->startOrbMenu(tenStartButton,x,y));return true;}if(event.isMetaPressed()&&event.isCtrlPressed()){if(key==KeyEvent.KEYCODE_DPAD_LEFT||key==KeyEvent.KEYCODE_DPAD_RIGHT){tenDesktops.adjacent(key==KeyEvent.KEYCODE_DPAD_LEFT?-1:1);return true;}if(key==KeyEvent.KEYCODE_D){String created=tenDesktops.create();if(created!=null)tenDesktops.select(created);return true;}}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_N){open("@nota");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_W){open("@news");return true;}if(key==KeyEvent.KEYCODE_ESCAPE&&tenNews!=null&&tenNews.dismiss())return true;if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_A){open("@tenactions");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_I){open("@settings");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_TAB){showTenTasks();return true;}if(event.isAltPressed()&&key==KeyEvent.KEYCODE_TAB){eightDesktop();previews.show();return true;}if(event.isCtrlPressed()&&event.isShiftPressed()&&key==KeyEvent.KEYCODE_ESCAPE){open("@taskmanager");return true;}
+            if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_D){eightSettings.setVisibility(View.GONE);showDesktop();return true;}
             if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_E){open("@files");return true;}
             DesktopWindow front=null;for(DesktopWindow window:orderedWindows())if(window.getVisibility()==View.VISIBLE&&!window.minimizing())front=window;
             if(front!=null&&event.isMetaPressed()){

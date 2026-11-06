@@ -32,12 +32,25 @@ public final class EightSmoke extends Instrumentation {
         ui(()->{home.open("@settings");check(find(root,EightPCSettings.class).isShown(),"PC settings works in landscape");});shot("eight-settings-landscape");
         ActivityMonitor monitor=addMonitor(MainActivity.class.getName(),null,false);ui(()->home.recreate());Activity restored=monitor.waitForActivityWithTimeout(15000);removeMonitor(monitor);check(restored instanceof MainActivity,"Activity recreated");home=(MainActivity)restored;root=home.getWindow().getDecorView();waitForIdleSync();
         ui(()->{check(find(root,EightPCSettings.class).isShown(),"Settings surface restored after recreation");home.onNewIntent(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME));check(find(root,EightStartScreen.class).isShown(),"Android Home enters Start");home.open("@desktop");check(((EditText)description(root,"Notepad text")).getText().toString().equals("Eight continuity fixture"),"Window content survives recreation and Home");home.open("@start");});
+        ui(()->{home.open("@desktop");home.dispatchKeyEvent(new KeyEvent(0,0,KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_TAB,0,KeyEvent.META_CTRL_ON));check(!find(root,EightStartScreen.class).isShown(),"Ctrl+Tab in desktop content does not open Apps");home.dispatchKeyEvent(new KeyEvent(0,0,KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_ESCAPE,0,KeyEvent.META_CTRL_ON|KeyEvent.META_SHIFT_ON));check(find(root,TaskManagerPanel.class).isShown(),"Ctrl+Shift+Escape opens Task Manager");home.open("@start");home.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_META_LEFT));home.dispatchKeyEvent(new KeyEvent(0,0,KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_W,0,KeyEvent.META_META_ON));home.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_META_LEFT));EightStartScreen start=find(root,EightStartScreen.class);check(start.isShown()&&start.surface==EightStartScreen.Surface.SEARCH&&start.scope.equals("Settings"),"Windows+W searches Settings without a spurious Start toggle");});
         result.putString("stream","PASS: Eight identity; Start/Desktop continuity; separate 8/8.1 layouts; selection; search; five Charms; contextual Settings; backup isolation; portrait/landscape; recreation and Home\n");finish(Activity.RESULT_OK,result);
     }catch(Throwable failure){try{shot("eight-failure");}catch(Exception ignored){}result.putString("stream","FAIL: "+android.util.Log.getStackTraceString(failure));finish(Activity.RESULT_CANCELED,result);}}
     private void awaitOrientation(int orientation)throws Exception{long until=SystemClock.uptimeMillis()+10000;while(home.getResources().getConfiguration().orientation!=orientation&&SystemClock.uptimeMillis()<until){SystemClock.sleep(100);waitForIdleSync();}check(home.getResources().getConfiguration().orientation==orientation,"Rotation delivered");waitForIdleSync();SystemClock.sleep(300);}
     private void check(boolean value,String message){if(!value)throw new AssertionError(message);}
     private void ui(Runnable action)throws Exception{FutureTask<Void> task=new FutureTask<>(action,null);home.runOnUiThread(task);task.get(15,TimeUnit.SECONDS);waitForIdleSync();}
-    private void shot(String name)throws Exception{waitForIdleSync();SystemClock.sleep(200);Bitmap bitmap=getUiAutomation().takeScreenshot();if(bitmap!=null)try(OutputStream output=new FileOutputStream(new File(getTargetContext().getFilesDir(),name+".png"))){bitmap.compress(Bitmap.CompressFormat.PNG,100,output);}finally{bitmap.recycle();}}
+    private void shot(String name)throws Exception{
+        waitForIdleSync();SystemClock.sleep(200);Bitmap bitmap=getUiAutomation().takeScreenshot();String source="device compositor";
+        if(bitmap==null||blank(bitmap)){
+            if(bitmap!=null)bitmap.recycle();
+            bitmap=Bitmap.createBitmap(Math.max(1,root.getWidth()),Math.max(1,root.getHeight()),Bitmap.Config.ARGB_8888);
+            Bitmap target=bitmap;ui(()->root.draw(new android.graphics.Canvas(target)));source="native View render (compositor capture was blank)";name+="-view";
+        }
+        check(!blank(bitmap),"Native visual evidence contains rendered content");
+        try(OutputStream output=new FileOutputStream(new File(getTargetContext().getFilesDir(),name+".png"))){bitmap.compress(Bitmap.CompressFormat.PNG,100,output);}finally{bitmap.recycle();}
+        try(Writer output=new FileWriter(new File(getTargetContext().getFilesDir(),"eight-capture.txt"),true)){output.write(name+": "+source+"\n");}
+    }
+    private boolean blank(Bitmap image){for(int y=0;y<image.getHeight();y+=24)for(int x=0;x<image.getWidth();x+=24)if((image.getPixel(x,y)&0xffffff)!=0)return false;return true;}
+
     static <T extends View>T find(View view,Class<T> type){if(type.isInstance(view))return type.cast(view);if(view instanceof ViewGroup)for(int i=0;i<((ViewGroup)view).getChildCount();i++){T result=find(((ViewGroup)view).getChildAt(i),type);if(result!=null)return result;}return null;}
     static View description(View view,String value){if(value.contentEquals(view.getContentDescription()==null?"":view.getContentDescription()))return view;if(view instanceof ViewGroup)for(int i=0;i<((ViewGroup)view).getChildCount();i++){View result=description(((ViewGroup)view).getChildAt(i),value);if(result!=null)return result;}return null;}
 }

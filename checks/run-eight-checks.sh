@@ -6,7 +6,7 @@ collect() {
   local suite="$1" name
   mkdir -p "screenshots/$suite"
   for name in $(adb shell run-as "$launcher" ls files 2>/dev/null | tr -d '\r'); do
-    case "$name" in *.png|*tree.txt) adb exec-out run-as "$launcher" cat "files/$name" > "screenshots/$suite/$name" 2>/dev/null || true;; esac
+    case "$name" in *.png|*tree.txt|*capture.txt) adb exec-out run-as "$launcher" cat "files/$name" > "screenshots/$suite/$name" 2>/dev/null || true;; esac
   done
   adb logcat -d -t 400 > "screenshots/$suite/device-log.txt" || true
 }
