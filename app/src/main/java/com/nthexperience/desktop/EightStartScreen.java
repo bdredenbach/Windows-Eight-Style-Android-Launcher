@@ -48,7 +48,7 @@ final class EightStartScreen extends LinearLayout {
         DropPreview(Context c){super(c);setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);}
         protected void onDraw(Canvas c){if(dropGroup==null)return;paint.setColor(Color.WHITE);paint.setStrokeWidth(dp(3));paint.setStyle(Paint.Style.STROKE);c.drawRect(target,paint);paint.setStyle(Paint.Style.FILL);paint.setColor(0xe632165e);c.drawRect(0,getHeight()-dp(34),getWidth(),getHeight(),paint);paint.setColor(Color.WHITE);paint.setTextSize(dp(14));c.drawText(label,dp(16),getHeight()-dp(11),paint);}
     }
-    final Runnable live=new Runnable(){public void run(){if(isShown()){render();handler.postDelayed(this,60000-System.currentTimeMillis()%60000);}}};
+    final Runnable live=new Runnable(){public void run(){if(isShown()){render();surfaceChanged.run();handler.postDelayed(this,60000-System.currentTimeMillis()%60000);}}};
 
     EightStartScreen(Context context,StartMenu.Actions actions,DesktopStore store,AeroWallpaper wallpaper,Runnable surfaceChanged){
         super(context);this.actions=actions;this.store=store;this.surfaceChanged=surfaceChanged;this.wallpaper=wallpaper;
