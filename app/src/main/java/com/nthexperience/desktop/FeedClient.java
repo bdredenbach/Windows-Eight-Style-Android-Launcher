@@ -15,7 +15,7 @@ import java.util.zip.GZIPInputStream;
 /** RSS/Atom connection, streaming parsing and a cache that never hides a failed retry. */
 final class FeedClient {
     static final String BBC="https://feeds.bbci.co.uk/news/rss.xml",TECHRADAR="https://www.techradar.com/feeds.xml";
-    static final String AGENT="NthDesktopTen/"+BuildConfig.VERSION_NAME+" (+https://github.com/bdredenbach/Windows-Ten-Style-Android-Launcher)";
+    static final String AGENT="NthDesktopEight/"+BuildConfig.VERSION_NAME+" (+https://github.com/bdredenbach/Windows-Eight-Style-Android-Launcher)";
     interface Connections {HttpURLConnection open(URL url)throws IOException;}
     private final DesktopStore store;private final Runnable changed;private final Connections connections;private final LongSupplier clock;
     private final Handler main=new Handler(Looper.getMainLooper());private final ExecutorService worker=Executors.newSingleThreadExecutor();

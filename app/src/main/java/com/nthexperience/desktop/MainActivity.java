@@ -1068,7 +1068,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
             java.io.FileOutputStream stream=staged.startWrite();
             try{stream.write(steps.export());staged.finishWrite(stream);}
             catch(java.io.IOException failed){staged.failWrite(stream);throw failed;}
-            pickSupportDocument(Intent.ACTION_CREATE_DOCUMENT,"text/html","Nth-Desktop-Ten-Steps.html",EXPORT_STEPS);
+            pickSupportDocument(Intent.ACTION_CREATE_DOCUMENT,"text/html","Nth-Desktop-Eight-Steps.html",EXPORT_STEPS);
         }catch(Exception unavailable){staged.delete();toast("The report could not be prepared.");}
     }
     private void stepsResult(int result,Intent data){
