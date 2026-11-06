@@ -44,7 +44,7 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
     private final int ink;
     private String page;
     private int tilePage;
-    private boolean seeking, attached, visualize;
+    private android.graphics.drawable.Drawable desktopDeck,desktopPicture;private boolean seeking, attached, visualize,immersive;private final LinearLayout transportDeck;
     private byte[] artwork;
     private final Runnable tick = new Runnable() {
         @Override public void run() {
@@ -139,7 +139,7 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
             }
         });
 
-        LinearLayout deck = Aero.column(context);
+        LinearLayout deck = Aero.column(context);transportDeck=deck;
         deck.setBackground(Aero.gloss(context, center
                 ? new int[]{0xff19395b, 0xff112943, 0xff0b1e37}
                 : new int[]{0xff243950, 0xff101e32, 0xff091321}, 5, 0xff496786));
@@ -207,6 +207,8 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
         }
         navigation.put(name, tab);
     }
+    void immersive(boolean value){if(value&&!immersive){desktopDeck=transportDeck.getBackground();desktopPicture=picture.getBackground();}else if(!value&&immersive){transportDeck.setBackground(desktopDeck);picture.setBackground(desktopPicture);}immersive=value;flatTransport(this,value);appearance();}
+    private void flatTransport(View view,boolean value){if(view instanceof MediaTransportButton)((MediaTransportButton)view).flat(value);if(view instanceof ViewGroup)for(int i=0;i<((ViewGroup)view).getChildCount();i++)flatTransport(((ViewGroup)view).getChildAt(i),value);}
     private void appearance() {
         Context context = getContext();
         boolean playing = page.equals("Now Playing");
@@ -215,6 +217,7 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
                 ? new int[]{0xff06152f, 0xff12396a, 0xff236d9d, 0xff10264e}
                 : playing ? new int[]{0xff060d18, 0xff0e2135, 0xff070d17}
                 : new int[]{0xfff9fdff, 0xffe9f3fb, 0xffdceaf7}, 0, 0));
+        if(immersive){setBackgroundColor(dark?0xff202020:0xfffafafa);transportDeck.setBackgroundColor(0xff252525);picture.setBackgroundColor(0xff141414);}brand.setTextSize(immersive?30:center?22:15);
         brand.setText(center ? MediaLibrary.CENTER_TITLE : playing ? "Now Playing" : "Media Library");
         brand.setTextColor(dark ? 0xffeff9ff : 0xff264768);
         state.setTextColor(dark ? 0xffb7dbf2 : 0xff355874);
@@ -231,6 +234,7 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
     private StateListDrawable navigationSurface(boolean dark, boolean selected) {
         Context context = getContext();
         StateListDrawable surface = new StateListDrawable();
+        if(immersive){surface.addState(new int[]{android.R.attr.state_pressed},new android.graphics.drawable.ColorDrawable(dark?0xff444444:0xffdddddd));surface.addState(new int[]{},new android.graphics.drawable.ColorDrawable(selected?(dark?0xff3c6345:0xffd9e9dd):android.graphics.Color.TRANSPARENT));return surface;}
         int start = dark ? 0xff3877ad : 0xfff7fcff;
         int end = dark ? 0xff193b65 : 0xffb5d8f0;
         int border = dark ? 0xff7cadcd : 0xff8ab5d3;

@@ -89,9 +89,9 @@ final class BrowserPanel extends LinearLayout {
         addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob)->{boolean wide=r-l>=dp(460);toolbar.getChildAt(4).setVisibility(wide?VISIBLE:GONE);toolbar.getChildAt(5).setVisibility(wide?VISIBLE:GONE);});
         restoreTabs();
     }
-    private boolean eightImmersive;
+    private boolean eightImmersive;private EightProfile immersiveProfile;
     void immersive(boolean value,boolean commands,EightProfile profile){
-        if(eightImmersive!=value){eightImmersive=value;View tabs=(View)tabScroll.getParent();removeView(toolbar);removeView(tabs);if(value){addView(tabs,new LayoutParams(-1,dp(38)));addView(toolbar,new LayoutParams(-1,dp(48)));}else{addView(tabs,0,new LayoutParams(-1,dp(38)));addView(toolbar,1,new LayoutParams(-1,dp(48)));}}
+        if(eightImmersive!=value||immersiveProfile!=profile){eightImmersive=value;immersiveProfile=profile;View tabs=(View)tabScroll.getParent();removeView(toolbar);removeView(tabs);if(value){if(profile==EightProfile.EIGHT)addView(tabs,0,new LayoutParams(-1,dp(38)));else addView(tabs,new LayoutParams(-1,dp(38)));addView(toolbar,new LayoutParams(-1,dp(48)));}else{addView(tabs,0,new LayoutParams(-1,dp(38)));addView(toolbar,1,new LayoutParams(-1,dp(48)));}}
         if(!value){toolbar.setVisibility(VISIBLE);((View)tabScroll.getParent()).setVisibility(VISIBLE);status.setVisibility(VISIBLE);}else immersiveCommands(commands,profile);
     }
     void immersiveCommands(boolean commands,EightProfile profile){if(!eightImmersive)return;boolean shown=commands||profile==EightProfile.EIGHT_POINT_ONE&&activity.getSharedPreferences("desktop",0).getBoolean("eight_always_address",false);toolbar.setVisibility(shown?VISIBLE:GONE);((View)tabScroll.getParent()).setVisibility(commands?VISIBLE:GONE);status.setVisibility(GONE);}

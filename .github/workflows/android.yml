@@ -31,6 +31,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Check horizontal packing and shell profiles
         run: |
+          python3 checks/CheckEightSurfaces.py
           mkdir -p build/eight-checks
           javac -d build/eight-checks app/src/main/java/com/nthexperience/desktop/EightProfile.java app/src/main/java/com/nthexperience/desktop/EightTileLayout.java checks/EightTileLayoutCheck.java
           java -cp build/eight-checks com.nthexperience.desktop.EightTileLayoutCheck
@@ -41,7 +42,7 @@ jobs:
         run: python3 checks/CheckEightManifest.py
       - uses: actions/upload-artifact@v4
         with:
-          name: Nth-Desktop-Eight-0.2.0-api-${{ matrix.api }}
+          name: Nth-Desktop-Eight-0.3.0-api-${{ matrix.api }}
           path: app/build/outputs/apk/debug/app-debug.apk
       - name: Enable emulator acceleration
         run: |

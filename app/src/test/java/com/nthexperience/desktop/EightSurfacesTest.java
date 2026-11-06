@@ -1,0 +1,9 @@
+package com.nthexperience.desktop;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import java.util.*;
+public class EightSurfacesTest {
+    @Test public void legacySettingsResolveToSupportedEightDestinations(){Set<String> pages=new HashSet<>();for(EightSettingsCatalog.Page p:EightSettingsCatalog.PAGES){pages.add(p.id);assertEquals(p.id,EightSettingsCatalog.canonical(p.id));}for(TenSettingsCatalog.Page old:TenSettingsCatalog.PAGES){String id=EightSettingsCatalog.canonical(old.id);assertTrue(old.id+" -> "+id,pages.contains(id)||id.startsWith("android:")||Arrays.asList("pc:personalize","pc:notifications","pc:privacy","pc:search").contains(id));}assertEquals("pc:personalize",EightSettingsCatalog.canonical("tablet"));assertEquals("pc:notifications",EightSettingsCatalog.canonical("focus"));}
+    @Test public void notaUsesTheEightSwitcherAndSupportedSettings(){TenNotaActions.Plan plan=TenNotaActions.resolve("Create a new desktop",Collections.emptyList());assertNotNull(plan);assertEquals(1,plan.actions.size());assertEquals(TenNotaActions.Kind.OPEN,plan.actions.get(0).kind);assertEquals("@eight-switcher",plan.actions.get(0).value);for(TenNotaActions.Target target:TenNotaActions.builtins()){assertFalse(target.title,target.title.contains("Task View")||target.title.contains("News and interests")||target.route.equals("@tenactions"));}assertFalse(TenNotaActions.help().message.contains("virtual desktop"));}
+    @Test public void desktopLabelsUsePeriodTerminology(){for(EightSettingsCatalog.Page p:EightSettingsCatalog.PAGES)assertFalse(p.title,p.title.contains("Focus assist")||p.title.contains("Apps & features")||p.title.contains("Shared experiences"));assertEquals("Programs and Features",EightSettingsCatalog.title("installed"));assertEquals("Taskbar and Navigation",EightSettingsCatalog.title("taskbar"));}
+}

@@ -68,7 +68,7 @@ final class DesktopBackup {
     private static List<String> ids(Object raw,int limit)throws JSONException{if(!(raw instanceof JSONArray))throw new JSONException("Expected a shortcut list");JSONArray list=(JSONArray)raw;if(list.length()>limit)throw new JSONException("Shortcut list is too large");List<String> result=new ArrayList<>();for(int i=0;i<list.length();i++){Object value=list.get(i);if(!(value instanceof String)||result.contains(value))throw new JSONException("Invalid or duplicate list item");result.add((String)value);}return result;}
     private static void validate(Map<String,Object> values)throws JSONException {
         TenPreferences.validate(values);
-        if(values.containsKey("eight_apps_sort")&&!Arrays.asList("Name","Category","Recent").contains(values.get("eight_apps_sort")))throw new JSONException("Invalid Apps sort order");
+        if(values.containsKey("eight_apps_sort")&&!Arrays.asList("Name","Category","Recent","Date installed","Most used").contains(values.get("eight_apps_sort")))throw new JSONException("Invalid Apps sort order");
         if(values.containsKey("eight_profile")&&!Arrays.asList("8","81").contains(values.get("eight_profile")))throw new JSONException("Invalid Eight shell profile");
         for(EightProfile profile:EightProfile.values())if(values.containsKey(EightStartData.key(profile)))EightStartData.parse((String)values.get(EightStartData.key(profile)),profile);
         if(values.containsKey(TenStartData.KEY))TenStartData.parse((String)values.get(TenStartData.KEY));

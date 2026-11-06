@@ -59,7 +59,7 @@ final class EightImmersive extends FrameLayout {
     }
     void resumeLast(){if(primary!=null&&sessions.containsKey(primary)){host.front();setVisibility(VISIBLE);render();}else host.desktop();}
     void hideSurface(){captureVisible();setVisibility(GONE);caption.setVisibility(GONE);updateActivity();host.changed();}
-    void commands(boolean visible){appBar=visible;commandScroll.setVisibility(visible?VISIBLE:GONE);for(Session session:sessions.values())if(session.window.body instanceof BrowserPanel)((BrowserPanel)session.window.body).immersiveCommands(visible,profile());layoutPanes();}
+    void commands(boolean visible){appBar=visible;commandScroll.setVisibility(visible?VISIBLE:GONE);for(Session session:sessions.values())if(session.window.body instanceof BrowserPanel)((BrowserPanel)session.window.body).immersiveCommands(visible,profile());for(Session session:sessions.values()){if(session.window.body instanceof WeatherPanel)((WeatherPanel)session.window.body).immersive(true,visible);if(session.window.body instanceof PhotoGallery)((PhotoGallery)session.window.body).immersive(true,visible);}layoutPanes();}
     private void render(){
         commands.removeAllViews();command("Switch apps",host::switcher);command("Open on Desktop",()->{dock(focused==null?primary:focused,true);host.desktop();});
         command("Snap another app",this::chooseSnap);if(secondary!=null){command("Swap sides",()->{String old=primary;primary=secondary;secondary=old;focused=primary;render();});command("One app",()->{secondary=null;render();});}
@@ -103,7 +103,7 @@ final class EightImmersive extends FrameLayout {
     void appearanceChanged(){for(Session session:sessions.values())presentation(session.window.body,true);render();}
     private static void begin(View body){if(body instanceof TenNotaPanel)((TenNotaPanel)body).beginPresentationTransfer();if(body instanceof MediaPanel)((MediaPanel)body).beginPresentationTransfer();}
     private static void end(View body){if(body instanceof TenNotaPanel)((TenNotaPanel)body).endPresentationTransfer();if(body instanceof MediaPanel)((MediaPanel)body).endPresentationTransfer();}
-    private void presentation(View body,boolean immersive){if(body instanceof BrowserPanel)((BrowserPanel)body).immersive(immersive,appBar,profile());}
+    private void presentation(View body,boolean immersive){if(body instanceof WeatherPanel)((WeatherPanel)body).immersive(immersive,appBar);if(body instanceof PhotoGallery)((PhotoGallery)body).immersive(immersive,appBar);if(body instanceof MediaPanel)((MediaPanel)body).immersive(immersive);if(body instanceof EightCalculator)((EightCalculator)body).immersive(immersive);if(body instanceof BrowserPanel)((BrowserPanel)body).immersive(immersive,appBar,profile());}
     void captureVisible(){if(!visible())return;for(Session session:sessions.values())if(session.pane.isShown()){
         if(session.preview!=null){session.preview.recycle();session.preview=null;}View body=session.window.body;
         if(body instanceof BrowserPanel&&((BrowserPanel)body).isPrivate())continue;

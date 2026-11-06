@@ -16,7 +16,8 @@ final class MediaTransportButton extends View {
     private final Path path = new Path();
     private final Shader blue = new LinearGradient(0, 1, 0, 23,
             new int[]{0xffb9ecff, 0xff428ccb, 0xff153c81, 0xff397ed4}, null, Shader.TileMode.CLAMP);
-    private Action action;
+    private Action action;private boolean flat;
+    void flat(boolean value){flat=value;invalidate();}
 
     MediaTransportButton(Context context, Action action, Runnable click) {
         super(context);
@@ -58,7 +59,7 @@ final class MediaTransportButton extends View {
         canvas.translate((getWidth() - size) / 2f, (getHeight() - size) / 2f);
         canvas.scale(size / 24f, size / 24f);
         if (primary) {
-            paint.setShader(blue);
+            paint.setShader(flat?null:blue);if(flat)paint.setColor(0xff333333);
             paint.setAlpha(isEnabled() ? 255 : 125);
             canvas.drawCircle(12, 12, 11, paint);
             paint.setShader(null);

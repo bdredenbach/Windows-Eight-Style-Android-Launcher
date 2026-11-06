@@ -70,12 +70,11 @@ final class AeroWallpaper extends View {
         for(int i=0;i<24;i++) { float x=((i*167+41)%997)/997f*w, y=((i*107+73)%997)/997f*h; c.drawCircle(x,y,1+(i%3),paint); }
     }
     private void drawTen(Canvas c,float w,float h){
-        int[] colors=theme==12?new int[]{0xffdfeefa,0xff76b8e3,0xffeff8ff}:theme==13?new int[]{0xff040b12,0xff11283b,0xff1d4d68}:theme==14?new int[]{0xff0e0631,0xff5b2d84,0xff14548f}:new int[]{0xff001833,0xff004a83,0xff087eb8};paint.setShader(new LinearGradient(0,0,w,h,colors,null,Shader.TileMode.CLAMP));c.drawRect(0,0,w,h,paint);
-        paint.setShader(new RadialGradient(w*.76f,h*.42f,Math.max(w,h)*.62f,new int[]{0x7764d5ff,0x00004178},null,Shader.TileMode.CLAMP));c.drawRect(0,0,w,h,paint);paint.setShader(null);
-        float x=w*.70f,y=h*.34f,r=Math.min(w,h)*.25f;
-        path.reset();path.moveTo(0,h*.1f);path.lineTo(x-r,y);path.lineTo(x-r,y+r);path.lineTo(0,h*.95f);path.close();paint.setColor(0x1454c5ff);c.drawPath(path,paint);
-        paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(Math.max(1,w/400));paint.setColor(0x8879d8ff);
-        for(int n=0;n<3;n++){float left=x-r+n*r*.17f;path.reset();path.moveTo(left,y+n*r*.14f);path.lineTo(x+r,y-r*.13f+n*r*.14f);path.lineTo(x+r,y+r*1.35f-n*r*.1f);path.lineTo(left,y+r-n*r*.1f);path.close();c.drawPath(path,paint);}paint.setStyle(Paint.Style.FILL);
+        // Original Eight-era floral illustration, not the Ten light-beam/window wallpaper.
+        int top=theme==12?0xffefd06b:theme==13?0xff55c2c7:theme==14?0xff7d62aa:0xff71c5ef,bottom=theme==12?0xfff8ecca:theme==13?0xffd0f3e8:theme==14?0xffddd2ec:0xffe2f5ff;
+        paint.setShader(new LinearGradient(0,0,0,h,top,bottom,Shader.TileMode.CLAMP));c.drawRect(0,0,w,h,paint);paint.setShader(null);
+        float cx=w*.64f,cy=h*.43f,r=Math.min(w,h)*.14f;paint.setColor(0xff66964b);paint.setStrokeWidth(Math.max(3,r*.11f));paint.setStyle(Paint.Style.STROKE);path.reset();path.moveTo(cx,cy);path.cubicTo(cx-r,cy+r*2,cx-r*.3f,h*.8f,cx-r*1.6f,h*1.1f);c.drawPath(path,paint);paint.setStyle(Paint.Style.FILL);
+        for(int n=0;n<15;n++){int save=c.save();c.rotate(n*24,cx,cy);paint.setShader(new LinearGradient(cx,cy-r*.2f,cx,cy-r*2.2f,new int[]{0xffe7e9de,Color.WHITE},null,Shader.TileMode.CLAMP));c.drawOval(cx-r*.30f,cy-r*2.2f,cx+r*.30f,cy-r*.12f,paint);paint.setShader(null);c.restoreToCount(save);}paint.setColor(0xffc5aa25);c.drawCircle(cx,cy,r*.68f,paint);paint.setColor(0xffe8ce3b);c.drawCircle(cx-r*.10f,cy-r*.14f,r*.5f,paint);
     }
     void draft(int theme,Bitmap image,int width,int height,String position,int background){this.theme=theme;photo=image;photoWidth=width;photoHeight=height;this.position=position;this.background=background;softened=null;appearanceChanged();}
     void resumeSlides(){resumed=true;reload();}

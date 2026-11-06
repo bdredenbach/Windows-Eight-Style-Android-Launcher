@@ -21,7 +21,7 @@ final class PhotoGallery extends LinearLayout {
     private final Activity activity;private final Host host;
     private final ExecutorService worker=Executors.newSingleThreadExecutor();
     private final Handler main=new Handler(Looper.getMainLooper());
-    private final FrameLayout stage;final PhotoCanvas canvas;
+    private final FrameLayout stage;final PhotoCanvas canvas;private final LinearLayout commandBar,controlBar;private final View controlStrip;private final android.graphics.drawable.Drawable desktopCommands,desktopControls;
     private final TextView status,folderButton;
     private final PhotoGlyph previous,next,play;
     private final ArrayList<Entry> entries=new ArrayList<>();
@@ -33,22 +33,23 @@ final class PhotoGallery extends LinearLayout {
     private DesktopContextMenu menu;
     private final Runnable advance=new Runnable(){public void run(){if(!playing||closed||!foreground||!isShown())return;if(!loading){if(entries.size()<2){stop();return;}step(index+1>=entries.size()?-index:1);}main.postDelayed(this,4000);}};
     PhotoGallery(Activity activity,Host host){super(activity);this.activity=activity;this.host=host;setOrientation(VERTICAL);setFocusableInTouchMode(true);
-        LinearLayout command=new LinearLayout(activity);command.setGravity(Gravity.CENTER_VERTICAL);command.setPadding(dp(5),0,dp(5),0);command.setBackground(Aero.gloss(activity,new int[]{0xfff5faff,0xffe1ecf5,0xffcbdce9,0xffe9f1f8},0,0xffa4b7c7));
+        LinearLayout command=new LinearLayout(activity);commandBar=command;command.setGravity(Gravity.CENTER_VERTICAL);command.setPadding(dp(5),0,dp(5),0);command.setBackground(Aero.gloss(activity,new int[]{0xfff5faff,0xffe1ecf5,0xffcbdce9,0xffe9f1f8},0,0xffa4b7c7));
         TextView file=command("File ▾","Photo File menu",v->fileMenu(v));command.addView(file);TextView view=command("View ▾","Photo View menu",v->viewMenu(v));command.addView(view);folderButton=command("Back to folder","Back to photo folder",v->back());command.addView(folderButton,new LayoutParams(0,dp(38),1));addView(command,new LayoutParams(-1,dp(38)));
         stage=new FrameLayout(activity);canvas=new PhotoCanvas(activity);canvas.changed(this::update);stage.addView(canvas,new FrameLayout.LayoutParams(-1,-1));addView(stage,new LayoutParams(-1,0,1));
-        LinearLayout controls=new LinearLayout(activity);controls.setGravity(Gravity.CENTER);controls.setBackground(Aero.gloss(activity,new int[]{0xfffbfdff,0xffe0e8ef,0xffc7d6e2,0xffeff5fa},0,0xffa2b5c6));
+        LinearLayout controls=new LinearLayout(activity);controlBar=controls;controls.setGravity(Gravity.CENTER);controls.setBackground(Aero.gloss(activity,new int[]{0xfffbfdff,0xffe0e8ef,0xffc7d6e2,0xffeff5fa},0,0xffa2b5c6));
         previous=control(controls,"previous","Previous picture",()->step(-1),42);play=control(controls,"play","Play slideshow",this::toggleSlideshow,48);next=control(controls,"next","Next picture",()->step(1),42);
         control(controls,"rotateLeft","Rotate picture left (view only)",()->{stop();canvas.rotate(-1);},42);control(controls,"rotateRight","Rotate picture right (view only)",()->{stop();canvas.rotate(1);},42);
         control(controls,"zoomOut","Zoom picture out",()->{stop();canvas.zoomBy(.8f);},42);control(controls,"fit","Fit picture to window",()->{stop();canvas.fit();},42);control(controls,"zoomIn","Zoom picture in",()->{stop();canvas.zoomBy(1.25f);},42);
-        HorizontalScrollView scroller=new HorizontalScrollView(activity);scroller.setHorizontalScrollBarEnabled(false);scroller.setFillViewport(true);scroller.addView(controls,new HorizontalScrollView.LayoutParams(-1,-1));addView(scroller,new LayoutParams(-1,dp(46)));
+        HorizontalScrollView scroller=new HorizontalScrollView(activity);scroller.setHorizontalScrollBarEnabled(false);scroller.setFillViewport(true);scroller.addView(controls,new HorizontalScrollView.LayoutParams(-1,-1));controlStrip=scroller;desktopCommands=command.getBackground();desktopControls=controls.getBackground();addView(scroller,new LayoutParams(-1,dp(46)));
         status=Aero.text(activity,"Photo Gallery",11,0xff3d5366);status.setSingleLine();status.setEllipsize(android.text.TextUtils.TruncateAt.END);status.setPadding(dp(8),0,dp(6),0);status.setBackground(Aero.panel(activity,0xfff8fbfe,0xffe1eaf2,0,0xffb8c8d4));addView(status,new LayoutParams(-1,dp(24)));empty();update();
     }
+    void immersive(boolean value,boolean commands){setContentDescription(value?"Eight immersive Photos":"Desktop Photo Viewer");commandBar.setVisibility(!value||commands?VISIBLE:GONE);controlStrip.setVisibility(!value||commands?VISIBLE:GONE);status.setVisibility(value?GONE:VISIBLE);if(value){commandBar.setBackgroundColor(0xff252525);controlBar.setBackgroundColor(0xff252525);}else{commandBar.setBackground(desktopCommands);controlBar.setBackground(desktopControls);}for(int i=0;i<commandBar.getChildCount();i++)if(commandBar.getChildAt(i) instanceof TextView)((TextView)commandBar.getChildAt(i)).setTextColor(value?android.graphics.Color.WHITE:Aero.INK);for(int i=0;i<controlBar.getChildCount();i++)if(controlBar.getChildAt(i) instanceof PhotoGlyph)((PhotoGlyph)controlBar.getChildAt(i)).flat(value);}
     private int dp(int n){return Aero.dp(activity,n);}
     private TextView command(String title,String description,java.util.function.Consumer<View> click){TextView button=Aero.text(activity,title,13,Aero.INK);button.setBackground(Aero.selection(activity));button.setGravity(Gravity.CENTER);button.setPadding(dp(10),0,dp(10),0);button.setContentDescription(description);button.setFocusable(true);button.setOnClickListener(click::accept);button.setLayoutParams(new LayoutParams(-2,dp(38)));return button;}
     private PhotoGlyph control(LinearLayout row,String kind,String label,Runnable action,int width){PhotoGlyph button=new PhotoGlyph(activity,kind,label,action);if(!Arrays.asList("previous","next","play").contains(kind))pictureControls.add(button);row.addView(button,new LayoutParams(dp(width),dp(44)));return button;}
     boolean ready(){return !loading&&canvas.ready();}
     int count(){return entries.size();}int position(){return index;}boolean playing(){return playing;}Uri uri(){return current;}
-    private void empty(){overlay("Windows Photo Gallery","Open a picture from Explorer, or choose one here.",true);}
+    private void empty(){overlay("Nth Photo Viewer","Open a picture from Explorer, or choose one here.",true);}
     void open(Uri uri,String display,String type,JSONObject context,String originWindow){open(uri,display,type,context,originWindow,null);}
     private void open(Uri uri,String display,String type,JSONObject context,String originWindow,JSONObject transform){
         if(closed||uri==null)return;if(!"content".equals(uri.getScheme())){overlay("Cannot open picture","Choose a readable picture in Explorer.",true);return;}

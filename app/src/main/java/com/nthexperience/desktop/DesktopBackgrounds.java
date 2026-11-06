@@ -9,8 +9,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 final class DesktopBackgrounds {
-    static final String[] NAMES={"Aero","Twilight","Meadow","Seven Blue","Harmony","Alpine Morning",
-            "Pacific Dusk","Canyon Light","Glass Pavilion","Midnight Circuit","Paper Skies","Ten Blue","Ten Daylight","Ten Midnight","Ten Spectrum"};
+    static final String[] NAMES={"Aero","Twilight","Meadow","Aero Blue","Harmony","Alpine Morning",
+            "Pacific Dusk","Canyon Light","Glass Pavilion","Midnight Circuit","Paper Skies","Eight Daisy","Eight Sunlight","Eight Sea","Eight Violet"};
     static final String[] GROUPS={"Aero and Abstract","Landscapes","Architecture","Illustrations"};
     static final int[] INTERVALS={10,30,60,180,600,1800,3600,21600,86400};
     static final String[] INTERVAL_LABELS={"10 seconds","30 seconds","1 minute","3 minutes","10 minutes",

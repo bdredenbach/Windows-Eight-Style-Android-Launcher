@@ -1,0 +1,57 @@
+package com.nthexperience.desktop;
+import android.app.Activity;
+import android.content.*;
+import android.graphics.Color;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
+import java.util.*;
+import java.util.function.Consumer;
+
+/** Traditional Eight Control Panel pages, with working controls and no Ten Settings shell. */
+final class EightDesktopOptions extends LinearLayout {
+    final DesktopStore store;final Consumer<String> open;final LinearLayout body,links;final TextView address;final ScrollView scroll;
+    String page="themes";AeroWallpaper preview;
+    EightDesktopOptions(Context c,DesktopStore store,Consumer<String> open){super(c);this.store=store;this.open=open;setOrientation(VERTICAL);setBackgroundColor(Color.WHITE);setContentDescription("Eight desktop Control Panel");TenAppearance.preserve(this);
+        LinearLayout bar=new LinearLayout(c);bar.setGravity(Gravity.CENTER_VERTICAL);bar.setPadding(dp(8),0,dp(8),0);TextView home=buttonText("←",()->open.accept("@legacycontrol"));home.setContentDescription("Control Panel home");bar.addView(home,new LayoutParams(dp(40),dp(40)));address=Aero.text(c,"",12,0xff225588);bar.addView(address,new LayoutParams(0,-2,1));addView(bar,new LayoutParams(-1,dp(44)));
+        HorizontalScrollView related=new HorizontalScrollView(c);related.setHorizontalScrollBarEnabled(false);links=new LinearLayout(c);for(String id:new String[]{"themes","background","colors","sound","taskbar"}){TextView link=buttonText(EightSettingsCatalog.title(id),()->navigate(id));links.addView(link,new LayoutParams(-2,dp(40)));}related.addView(links);addView(related);
+        scroll=new ScrollView(c);scroll.setFillViewport(true);body=Aero.column(c);body.setPadding(dp(18),dp(10),dp(18),dp(20));scroll.addView(body);addView(scroll,new LayoutParams(-1,0,1));navigate("themes");
+    }
+    int dp(int n){return Aero.dp(getContext(),n);}
+    void navigate(String id){String target=EightSettingsCatalog.canonical(id);if(target.startsWith("pc:")){open.accept("eight-setting:"+target.substring(3));return;}if(target.startsWith("android:")){open.accept("setting:"+target);return;}page=target;render();scroll.scrollTo(0,0);}
+    void refreshAppearance(){int y=scroll.getScrollY();render();scroll.post(()->scroll.scrollTo(0,y));}
+    void appearanceChanged(){if(getContext() instanceof MainActivity)((MainActivity)getContext()).applyTenAppearance();else render();}
+    void render(){if(preview!=null){preview.close();preview=null;}body.removeAllViews();address.setText("Control Panel  ›  "+EightSettingsCatalog.title(page));heading(EightSettingsCatalog.title(page));
+        switch(page){
+            case "themes":note("Change the visuals and sounds on your desktop");for(TenThemes.Preset preset:TenThemes.TEN)button(preset.name,()->{preset.apply(store);appearanceChanged();});button("Optional Aero desktop themes",()->{String[] names=TenThemes.AERO.stream().map(p->p.name).toArray(String[]::new);Aero.dialog(getContext()).setTitle("Aero themes").setItems(names,(d,n)->{TenThemes.AERO.get(n).apply(store);appearanceChanged();}).show();});button("Save current theme",()->open.accept("setting:theme-save"));button("Import theme",()->open.accept("setting:theme-import"));button("More personalization options",()->open.accept("setting:page:background"));break;
+            case "background":preview=new AeroWallpaper(getContext(),store.prefs.getInt("wallpaper",11));body.addView(preview,new LayoutParams(-1,dp(150)));for(int i=0;i<DesktopBackgrounds.NAMES.length;i++){final int n=i;button(DesktopBackgrounds.NAMES[i],()->{android.content.SharedPreferences.Editor edit=store.prefs.edit();DesktopBackgrounds.choose(edit,Collections.singletonList(DesktopBackgrounds.stock(n)),n);edit.apply();appearanceChanged();});}button("Browse for a picture",()->open.accept("setting:wallpaper-browse"));button("Choose a slideshow folder",()->open.accept("setting:wallpaper-folder"));break;
+            case "colors":note("Choose the color of your window borders and taskbar.");body.addView(new TenAccentPicker(getContext(),store,this::appearanceChanged),new LayoutParams(-1,-2));CheckBox aero=toggle("Enable optional Aero glass","unused",false);aero.setOnCheckedChangeListener(null);aero.setChecked(TenThemes.aero(store.prefs));aero.setOnCheckedChangeListener((v,checked)->{store.prefs.edit().putString("ten_shell_style",checked?"Aero":"Ten").apply();appearanceChanged();});if(TenThemes.aero(store.prefs))body.addView(new TenAeroColors(getContext(),store,this::appearanceChanged));button("Start screen colors",()->open.accept("eight-setting:personalize"));break;
+            case "taskbar":toggle("Fit all taskbar buttons without scrolling","taskbar_static",false);toggle("Show taskbar labels","taskbar_show_labels",false);toggle("Show thumbnail previews","taskbar_previews",true);choice("Taskbar buttons","taskbar_grouping",new String[]{"Always","When full","Never"},"Always");button("Choose pinned taskbar shortcuts",()->open.accept("@quicklaunch"));CheckBox usage=toggle("Show recently opened Android apps","taskbar_usage",false);usage.setOnCheckedChangeListener(null);usage.setChecked(store.usagePrefs.getBoolean(DesktopStore.TASKBAR_USAGE,false)&&ExternalTasks.permitted(getContext()));usage.setOnCheckedChangeListener((v,on)->open.accept("setting:taskbar-usage-"+(on?"enable":"disable")));if(EightDefaults.profile(store)==EightProfile.EIGHT_POINT_ONE){toggle("Go to Desktop when Eight launches","eight_boot_desktop",false);toggle("Show desktop background on Start","eight_start_wallpaper",false);toggle("8.1 Update mouse controls and taskbar apps","eight_81_update",false);}else toggle("Visible Start button for touch access","eight_visible_start",false);break;
+            case "desktop":body.addView(new DesktopSettings(getContext(),store,this::appearanceChanged));button("Arrange desktop shortcuts",()->open.accept("@organize"));break;
+            case "display":new BrightnessControl((Activity)getContext()).content(body);button("Screen resolution and rotation",()->open.accept("setting:android:display"));button("Desktop icon size",()->navigate("desktop"));break;
+            case "sound":DesktopSounds.settings(getContext(),body);button("Android sound settings",()->open.accept("setting:android:sound"));break;
+            case "fonts":body.addView(new TenFonts(getContext(),store,()->{if(getContext() instanceof MainActivity)((MainActivity)getContext()).applyTenFont();}));break;
+            case "multitasking":toggle("Arrange desktop windows at screen edges","ten_snap",true);note("Immersive apps use the left switcher and Snap another app command. Original Eight keeps a compact companion; 8.1 supports a movable divider.");button("Switch apps",()->open.accept("@eight-switcher"));break;
+            case "storage":try{StatFs stat=new StatFs(Environment.getExternalStorageDirectory().getPath());note(android.text.format.Formatter.formatFileSize(getContext(),stat.getAvailableBytes())+" free of "+android.text.format.Formatter.formatFileSize(getContext(),stat.getTotalBytes()));}catch(RuntimeException ignored){}button("Computer",()->open.accept("@computer"));button("File access setup",()->open.accept("setting:storage-access"));button("Android storage settings",()->open.accept("setting:android:storage"));break;
+            case "installed":button("Manage installed Android programs",()->open.accept("setting:android:apps"));button("All apps",()->open.accept("@allapps"));break;
+            case "defaults":button("Choose default Android programs",()->open.accept("setting:android:defaults"));button("Default Home app",()->open.accept("setting:home"));break;
+            case "profile":openProfile();break;
+            case "motion":toggle("Reduce motion","reduce_motion",false);CheckBox status=toggle("Show Android status bar","show_status_bar",false);status.setOnCheckedChangeListener((v,on)->{store.prefs.edit().putBoolean("show_status_bar",on).apply();open.accept("setting:chrome");});button("Android accessibility",()->open.accept("setting:android:accessibility"));break;
+            case "tools":button("Calculator",()->open.accept("@gadget:calculator"));button("Unit converter",()->open.accept("@gadget:converter"));button("Text counter",()->open.accept("@gadget:textcounter"));break;
+            case "games":button("Tile puzzle",()->open.accept("@gadget:puzzle"));button("Dice roller",()->open.accept("@gadget:dice"));break;
+            case "assistant":note("Nth Nota can open apps, find files, search the web and help with writing. Local commands work on this device; cloud writing assistance is optional.");button("Open Nth Nota",()->open.accept("@nota"));break;
+            case "clipboard":note((ExplorerClipboard.files.size()+ExplorerClipboard.shortcuts.size())+" copied file or shortcut items");button("Clear launcher clipboard",()->{ExplorerClipboard.files.clear();ExplorerClipboard.shortcuts.clear();render();});break;
+            case "about":button("View basic information about your computer",()->open.accept("setting:page:system"));note(getContext().getString(R.string.app_name)+" "+BuildConfig.VERSION_NAME+"\n"+EightDefaults.profile(store).label+" shell\nAndroid "+Build.VERSION.RELEASE+"\n"+Build.MANUFACTURER+" "+Build.MODEL);break;
+            case "backup":button("Backup and restore Eight",()->open.accept("@backup"));break;
+            case "recovery":button("Guided setup",()->open.accept("@welcome"));button("Restart Nth Desktop",()->open.accept("setting:restart-desktop"));break;
+        }
+    }
+    void openProfile(){EditText name=new EditText(getContext());name.setSingleLine();name.setText(store.prefs.getString("desktop_name","Nth Experience"));name.setContentDescription("Desktop profile name");body.addView(name);button("Save name",()->{String value=name.getText().toString().trim();if(value.isEmpty()||value.length()>60){name.setError("Use 1–60 characters");return;}store.prefs.edit().putString("desktop_name",value).apply();appearanceChanged();});button("Choose profile picture",()->open.accept("setting:page:accounts"));}
+    void heading(String s){TextView t=Aero.text(getContext(),s,23,0xff215a8a);t.setPadding(0,dp(8),0,dp(18));body.addView(t);}
+    void note(String s){TextView t=Aero.text(getContext(),s,14,0xff333333);t.setPadding(0,dp(5),0,dp(14));body.addView(t);}
+    TextView buttonText(String s,Runnable action){TextView t=Aero.text(getContext(),s,14,0xff155b91);t.setPadding(dp(9),dp(10),dp(9),dp(10));t.setMinHeight(dp(44));t.setFocusable(true);t.setContentDescription(s);t.setBackground(Aero.selection(getContext()));t.setOnClickListener(v->action.run());return t;}
+    void button(String s,Runnable action){body.addView(buttonText(s,action),new LayoutParams(-1,-2));}
+    CheckBox toggle(String s,String key,boolean fallback){CheckBox t=new CheckBox(getContext());t.setText(s);t.setTextColor(Color.BLACK);t.setContentDescription(s);t.setChecked(store.prefs.getBoolean(key,fallback));t.setMinHeight(dp(48));t.setOnCheckedChangeListener((v,on)->{store.prefs.edit().putBoolean(key,on).apply();appearanceChanged();});body.addView(t,new LayoutParams(-1,-2));return t;}
+    void choice(String label,String key,String[] values,String fallback){button(label+": "+store.prefs.getString(key,fallback),()->Aero.dialog(getContext()).setTitle(label).setItems(values,(d,n)->{store.prefs.edit().putString(key,values[n]).apply();appearanceChanged();}).show());}
+    @Override protected void onDetachedFromWindow(){if(preview!=null)preview.close();super.onDetachedFromWindow();}
+}

@@ -141,7 +141,7 @@ final class DesktopStore {
     }
     SharedPreferences.Editor desktop(SharedPreferences.Editor edit,List<String> ids){return prefs.contains(TenDesktopItems.KEY)?TenDesktopItems.items(this,edit,ids):edit.putString("shortcuts",new JSONArray(LauncherState.normalize(ids)).toString());}
     void desktop(List<String> ids) { desktop(prefs.edit(),ids).apply(); }
-    void launched(String id) { save("recents", LauncherState.recent(recents(), id)); }
+    void launched(String id) { save("recents", LauncherState.recent(recents(), id));String key="eight_launches_"+id;int count=prefs.getInt(key,0);prefs.edit().putInt(key,count==Integer.MAX_VALUE?count:count+1).apply(); }
     private void save(String key, List<String> ids) {
         prefs.edit().putString(key, new JSONArray(LauncherState.normalize(ids)).toString()).apply();
     }
