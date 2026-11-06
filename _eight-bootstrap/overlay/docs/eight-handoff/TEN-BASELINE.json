@@ -1,0 +1,22 @@
+{
+  "product": "Nth Desktop Ten",
+  "release": "0.15.0",
+  "version_code": 15,
+  "repository": "https://github.com/bdredenbach/Windows-Ten-Style-Android-Launcher",
+  "handoff_commit": "89cd0dd3d22205bbb43b450b3b4a27d14a7fdfcf",
+  "tested_implementation_commit": "94959a673ebd26244c20783c493c9379fc418d9e",
+  "application_id": "com.nthexperience.desktop.ten",
+  "java_namespace": "com.nthexperience.desktop",
+  "apk_sha256": "9ba3983329443840b2845d386791f47dc077523788c3d4549aa94ec0101e8860",
+  "toolchain": {
+    "java": 17,
+    "min_sdk": 26,
+    "compile_sdk": 36,
+    "target_sdk": 36,
+    "agp": "8.13.2"
+  },
+  "tests_are_ten_baseline_not_eight_results": true,
+  "eight_implementation_exists": false,
+  "new_repository_url": null,
+  "prepared": "2026-11-06"
+}

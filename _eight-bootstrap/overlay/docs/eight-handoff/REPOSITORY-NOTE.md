@@ -1,0 +1,1 @@
+The text files in this folder are the original research handoff. The complete reference gallery, images, illustrated PDF and original checksums remain together in the handoff ZIP supplied with the project. This folder is a text subset, so references to those visual files refer to the ZIP. Research imagery is not bundled as application artwork.

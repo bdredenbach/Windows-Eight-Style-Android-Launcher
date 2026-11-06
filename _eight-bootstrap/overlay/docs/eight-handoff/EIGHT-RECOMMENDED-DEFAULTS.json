@@ -1,0 +1,27 @@
+{
+  "status": "Recommended design defaults, not implemented runtime configuration",
+  "historical_profile": "Windows 8 original 2012 before Windows 8.1",
+  "proposal_application_id": "com.nthexperience.desktop.eight",
+  "entry_surface": "START",
+  "start_scroll_axis": "horizontal",
+  "tile_formats": [
+    "square",
+    "wide"
+  ],
+  "desktop_start_button": "hidden corner cue; optional visible N8 accessibility control",
+  "virtual_desktop_ui": false,
+  "taskbar_on_start_or_immersive": false,
+  "charms": [
+    "Search",
+    "Share",
+    "Start",
+    "Devices",
+    "Settings"
+  ],
+  "ten_action_center": false,
+  "ten_news_interests": false,
+  "ten_task_view": false,
+  "nota": "prominent Start tile, contextual assistance, optional normal desktop pin",
+  "snap": "owned Nth content only when compact layout is usable; full-screen fallback",
+  "references_are_runtime_asset_license": false
+}
