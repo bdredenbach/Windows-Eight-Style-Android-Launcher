@@ -1,13 +1,15 @@
 # Nth Desktop Eight
 
-A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Current preview: **0.3.0**. Android 8.0+; targets Android 16.
+A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Current preview: **0.4.0**. Android 8.0+; targets Android 16.
 
 Package: `com.nthexperience.desktop.eight`. Installs alongside Nth Desktop Ten, Seven and Vista.
 
-See [the whole-surface audit and period references](docs/EIGHT_0_3_AUDIT.md) for the Ten/Seven cleanup, setup guide correction and Android adaptations.
+See [the 0.4 gesture and app audit](docs/EIGHT_0_4_AUDIT.md) and [device validation](docs/EIGHT_0_4_VALIDATION.md), plus [the earlier whole-surface audit and period references](docs/EIGHT_0_3_AUDIT.md).
 
 ## Eight and EightPoint One
 
+- Hold and move a Start tile to drag it. Both screen edges scroll through columns/groups, with a stable destination marker; cancellation preserves the saved layout. Swipe down from Start or All Apps to return to Desktop.
+- Weather exposes location setup on first open and visible Places, My location and Refresh actions. Real cached/fetched temperature and condition art appear in Weather and the live Start tile.
 - Full-screen horizontal Start, independent saved layouts, All Apps, group overview and a selection command bar. Original Eight supports square/wide tiles; 8.1 adds small/large formats, wallpaper on Start, startup at Desktop and Apps sorting.
 - The owner's 17-icon pack supplies Computer, Desktop folders, Documents, Downloads, Favorites, Music, Pictures, Videos, Network, Contacts, Links, UserFolder, Games, Searches and empty/full Recycle Bin artwork. Exact 256px ICO frames are converted losslessly to PNG. See `docs/EIGHT_ICON_PROVENANCE.json`. Other artwork uses original Nth fallbacks.
 - Supported Nth tools open from Start in a true immersive host: Notepad, Nota, Calculator, Calendar, Weather, News, Browser, Photos and Media Player. Desktop shortcuts keep their desktop presentation. Open on Desktop transfers the same app body/session, without creating a second browser or player or closing the assistant.
