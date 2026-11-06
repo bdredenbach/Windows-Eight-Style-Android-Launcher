@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <instrumentation android:name="com.nthexperience.desktop.EightSmoke" android:targetPackage="${launcherApplicationId}" android:functionalTest="true" />
     <instrumentation android:name="com.nthexperience.desktop.ExplorerSmoke" android:targetPackage="${launcherApplicationId}" android:functionalTest="true" />
     <instrumentation android:name="com.nthexperience.desktop.TenSmoke" android:targetPackage="${launcherApplicationId}" android:functionalTest="true" />
     <instrumentation android:name="com.nthexperience.desktop.TenPolishSmoke" android:targetPackage="${launcherApplicationId}" android:functionalTest="true" />
