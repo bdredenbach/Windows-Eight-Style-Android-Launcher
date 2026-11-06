@@ -38,6 +38,8 @@ The main workflow builds for Android 11 and Android 16, runs the Eight surface/p
 
 The complete visual gallery and illustrated brief are in the owner-supplied handoff ZIP; research text and source attribution are retained here.
 
+See [the passing device validation and delivered package details](docs/EIGHT_0_1_VALIDATION.md).
+
 See [the first-preview implementation notes](docs/EIGHT_0_1.md), [original research handoff](docs/eight-handoff/00-START-HERE.md).
 
 ## Source and notices
