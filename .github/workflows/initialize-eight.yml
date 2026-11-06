@@ -5,7 +5,6 @@ on:
     paths: ['.github/workflows/initialize-eight.yml']
 permissions:
   contents: write
-  actions: write
 jobs:
   import:
     runs-on: ubuntu-latest
@@ -24,10 +23,12 @@ jobs:
           git config user.email "315231832+bdredenbach@users.noreply.github.com"
           stage="$RUNNER_TEMP/eight-source"
           cp -a _eight-bootstrap "$stage"
+          cp -a .github/workflows "$RUNNER_TEMP/eight-workflows"
           git fetch https://github.com/bdredenbach/Windows-Ten-Style-Android-Launcher.git 89cd0dd3d22205bbb43b450b3b4a27d14a7fdfcf
-          git merge --allow-unrelated-histories -s ours --no-commit FETCH_HEAD
           git read-tree --reset -u 89cd0dd3d22205bbb43b450b3b4a27d14a7fdfcf
           cp -a "$stage/overlay/." .
+          rm -rf .github/workflows
+          cp -a "$RUNNER_TEMP/eight-workflows" .github/workflows
           EIGHT_STAGE="$stage" python3 - <<'PY'
           import json, os
           from pathlib import Path
@@ -40,8 +41,3 @@ jobs:
           git add -A
           git commit -m "Import pinned Ten engines and implement Eight 0.1 with 8 and 8.1 shell profiles"
           git push origin HEAD:main
-          for attempt in 1 2 3 4 5 6; do
-            if gh api "repos/$GITHUB_REPOSITORY/actions/workflows/android.yml/dispatches" -f ref=main; then exit 0; fi
-            sleep 5
-          done
-          exit 1
