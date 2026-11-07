@@ -11,7 +11,13 @@ Implements the owner's Windows 8.0 recording review against 0.5.0. No private re
 
 ## Verification
 
-The workflow builds and runs unit checks plus native Eight, Gesture, Audit, Immersive, Research, Fidelity, Browser, Explorer, Photo and Media suites on Android 11 / API 30 and Android 16 / API 36. Fidelity covers profile styling, tabs, Charms, admin toggling, non-destructive tile clear, website backup/session reuse, rotation and rapid navigation. Results are recorded after the run; no completed device run is claimed by this initial commit.
+Both Android 11 / API 30 and Android 16 / API 36 jobs passed for final source head `654822dc2605ed22aaa7c3d70d26e62011830d23` in [workflow run 42403224556](https://github.com/bdredenbach/Windows-Eight-Style-Android-Launcher/actions/runs/42403224556). Both jobs compiled the app, unit checks, instrumentation APK, fixture and install probe. All ten native suites passed on both versions: Fidelity, Eight, Gesture, Audit, Immersive, Research, Browser, Explorer, Photo and Media.
+
+Fidelity exercises profile styling, actual address submission and anchored website pinning, tabs, Charms, admin toggling, non-destructive tile clear, website backup/session reuse, rotation and rapid/reentrant navigation. Host checks covered 77,325 tile placements and 203,980 snap combinations. Native contact sheets were reviewed for portrait/landscape settings, browser chrome, Charms and Tiles. These emulator results do not replace an owner check on the Pixel 10.
+
+### Delivery status
+
+Source version 0.6.0 is merged in [PR #2](https://github.com/bdredenbach/Windows-Eight-Style-Android-Launcher/pull/2). The signed install-over APK is pending: the execution workspace disconnected before the original Eight signing key could be accessed. CI debug artifacts are test builds with an incompatible signing identity and must not be presented as an update to the delivered 0.5.0 APK.
 
 ## Icon sources for the owner
 
