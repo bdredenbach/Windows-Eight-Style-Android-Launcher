@@ -66,5 +66,18 @@ final class EightStartData {
         save();store.prefs.edit().putBoolean("eight_admin_tools",show).putString(key,new JSONArray(inserted).toString()).apply();
     }
     void move(String id,Group target,int position){Item item=item(id);if(item==null)return;for(Group group:groups)group.items.remove(item);target.items.add(Math.max(0,Math.min(position,target.items.size())),item);save();}
+    boolean moveToNewGroup(String id,int position){if(!insertNewGroup(groups,id,position))return false;save();return true;}
+    /** Commit only on drop. The source tile object, size and unrelated group order are retained. */
+    static boolean insertNewGroup(List<Group> groups,String id,int position){
+        if(position<0||position>groups.size())return false;
+        Group source=null;Item tile=null;
+        for(Group group:groups)for(Item item:group.items)if(item.id.equals(id)){source=group;tile=item;}
+        if(tile==null||groups.size()>=MAX_GROUPS&&source.items.size()>1)return false;
+        String name="";for(int n=1;n<=MAX_GROUPS+1;n++){String candidate="Group "+n;boolean exists=false;for(Group group:groups)if(group.name.equalsIgnoreCase(candidate)){exists=true;break;}if(!exists){name=candidate;break;}}
+        if(name.isEmpty())return false;
+        Group added=new Group(name);added.items.add(tile);groups.add(position,added);source.items.remove(tile);
+        if(source.items.isEmpty())groups.remove(source);
+        return true;
+    }
     boolean name(Group group,String value){String name=value.trim();if(name.isEmpty()||name.length()>40||groups.stream().anyMatch(g->g!=group&&g.name.equalsIgnoreCase(name)))return false;if(group==null){if(groups.size()>=MAX_GROUPS)return false;groups.add(new Group(name));}else group.name=name;save();return true;}
 }
