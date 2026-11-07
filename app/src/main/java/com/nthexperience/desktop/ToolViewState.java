@@ -13,8 +13,10 @@ final class ToolViewState {
         if(view instanceof TaskManagerPanel){GadgetLayout.put(item,"taskmanager",((TaskManagerPanel)view).state());GadgetLayout.put(result,path,item);return;}
         if(view instanceof PhotoGallery){GadgetLayout.put(item,"photo",((PhotoGallery)view).state());GadgetLayout.put(result,path,item);return;}
         if(view instanceof VistaShell){GadgetLayout.put(item,"shell",((VistaShell)view).state());GadgetLayout.put(result,path,item);return;}
+        if(view instanceof EightAlarms)GadgetLayout.put(item,"eight_alarm_tab",((EightAlarms)view).tab);
+        if(view instanceof EightReadingList)GadgetLayout.put(item,"eight_reading_unread",((EightReadingList)view).unread);
         if(view instanceof EditText){EditText text=(EditText)view;String description=String.valueOf(text.getContentDescription());
-            if(!description.equals("Notepad text")&&!description.equals("Sticky note text"))GadgetLayout.put(item,"text",text.getText().toString().substring(0,Math.min(2000,text.length())));
+            if(!description.equals("Notepad text")&&!description.equals("Sticky note text")&&!description.equals("WordPad document"))GadgetLayout.put(item,"text",text.getText().toString().substring(0,Math.min(2000,text.length())));
             GadgetLayout.put(item,"start",text.getSelectionStart());GadgetLayout.put(item,"end",text.getSelectionEnd());GadgetLayout.put(item,"focus",text.hasFocus());
         }
         if(view instanceof MonthCalendarView){MonthCalendarView calendar=(MonthCalendarView)view;GadgetLayout.put(item,"month",calendar.monthTime());GadgetLayout.put(item,"selected",calendar.selected().getTime());}
@@ -27,6 +29,8 @@ final class ToolViewState {
         if(view instanceof BrowserPanel)return;
         JSONObject item=state.optJSONObject(path);
         if(item!=null){
+            if(view instanceof EightAlarms){EightAlarms alarms=(EightAlarms)view;String tab=item.optString("eight_alarm_tab","Alarm");alarms.tab=java.util.Arrays.asList("Alarm","Timer","Stopwatch").contains(tab)?tab:"Alarm";alarms.render();}
+            if(view instanceof EightReadingList){EightReadingList reading=(EightReadingList)view;reading.unread=item.optBoolean("eight_reading_unread");reading.render();}
             if(view instanceof TaskManagerPanel){((TaskManagerPanel)view).restore(item.optJSONObject("taskmanager"));return;}
             if(view instanceof PhotoGallery){((PhotoGallery)view).restore(item.optJSONObject("photo"));return;}
             if(view instanceof VistaShell){((VistaShell)view).restore(item.optJSONObject("shell"));return;}

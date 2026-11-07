@@ -12,7 +12,7 @@ assert 'Nth Desktop Eight' in subprocess.check_output([str(aapt),'dump','badging
 assert 'com.nthexperience.desktop.eight.storage' in main
 assert 'com.nthexperience.desktop.ten' not in main
 assert 'com.nthexperience.desktop.eight.test' in tests
-for runner in ('EightSmoke','EightGestureSmoke','EightAuditSmoke','EightImmersiveSmoke','BrowserSmoke','ExplorerSmoke','PhotoSmoke','MediaSmoke'):
+for runner in ('EightSmoke','EightGestureSmoke','EightAuditSmoke','EightImmersiveSmoke','EightResearchSmoke','BrowserSmoke','ExplorerSmoke','PhotoSmoke','MediaSmoke'):
     assert 'com.nthexperience.desktop.'+runner in tests,runner+' registration missing'
 assert 'android.intent.category.HOME' in main
-print('PASS: Eight app identity, isolated providers, Home intent and eight native runners')
+print('PASS: Eight app identity, isolated providers, Home intent and nine native runners')

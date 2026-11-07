@@ -1,0 +1,28 @@
+package com.nthexperience.desktop;
+
+import android.app.*;
+import android.content.*;
+import android.graphics.Color;
+import android.media.AudioManager;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
+import java.util.function.Consumer;
+
+/** Uses the same Android volume and persisted brightness controls as the tray. */
+final class EightMobilityCenter extends ScrollView {
+    final Activity activity;final DesktopStore store;final Consumer<String> open;final LinearLayout body;final Handler main=new Handler(Looper.getMainLooper());
+    boolean closed;int columns;final Runnable tick=new Runnable(){public void run(){if(!closed&&isShown()){render();}}};
+    EightMobilityCenter(Activity a,DesktopStore store,Consumer<String> open){super(a);activity=a;this.store=store;this.open=open;TenAppearance.preserve(this);setFillViewport(true);setBackgroundColor(0xfff0f0f0);setContentDescription("Windows Mobility Center");body=Aero.column(a);body.setPadding(dp(12),dp(12),dp(12),dp(12));addView(body);addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob)->{int n=r-l>=dp(560)?2:1;if(columns!=n){columns=n;render();}});render();}
+    int dp(int n){return Aero.dp(getContext(),n);}
+    LinearLayout card(String title){LinearLayout card=Aero.column(activity);card.setPadding(dp(12),dp(12),dp(12),dp(12));card.setBackground(Aero.panel(activity,Color.WHITE,Color.WHITE,0,0xffbbbbbb));TextView name=Aero.text(activity,title,17,0xff215a8a);name.setPadding(0,0,0,dp(8));card.addView(name);return card;}
+    void render(){if(closed)return;body.removeAllViews();java.util.List<LinearLayout> cards=new java.util.ArrayList<>();LinearLayout bright=card("Display brightness");BrightnessControl controller=new BrightnessControl(activity);TextView levelLabel=Aero.text(activity,"",13,0xff333333);Runnable update=()->levelLabel.setText((controller.system()?"Phone":"Nth Desktop")+": "+(controller.level()<0?"Follow phone":controller.level()+"%"));update.run();bright.addView(levelLabel);SeekBar slider=new SeekBar(activity);slider.setMax(98);slider.setProgress(Math.max(0,(controller.level()<0?50:controller.level())-2));slider.setContentDescription("Mobility Center brightness");slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){public void onStartTrackingTouch(SeekBar b){}public void onStopTrackingTouch(SeekBar b){}public void onProgressChanged(SeekBar b,int value,boolean user){if(user){controller.set(value+2);update.run();}}});bright.addView(slider,new LayoutParams(-1,dp(48)));bright.addView(Aero.button(activity,"Brightness options",()->open.accept("eight-desktop:display")));cards.add(bright);
+        AudioManager audio=activity.getSystemService(AudioManager.class);LinearLayout sound=card("Volume");SeekBar volume=new SeekBar(activity);volume.setContentDescription("Mobility Center media volume");volume.setMax(audio==null?0:audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC));volume.setProgress(audio==null?0:audio.getStreamVolume(AudioManager.STREAM_MUSIC));volume.setEnabled(audio!=null&&!audio.isVolumeFixed());volume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){public void onStartTrackingTouch(SeekBar b){main.removeCallbacks(tick);}public void onStopTrackingTouch(SeekBar b){}public void onProgressChanged(SeekBar b,int value,boolean user){if(user&&audio!=null)try{audio.setStreamVolume(AudioManager.STREAM_MUSIC,value,0);}catch(SecurityException ignored){}}});sound.addView(volume,new LayoutParams(-1,dp(48)));sound.addView(Aero.button(activity,"Sound settings",()->open.accept("setting:android:sound")));cards.add(sound);
+        LinearLayout battery=card("Battery status");Intent value=activity.registerReceiver(null,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));int scale=value==null?0:value.getIntExtra(BatteryManager.EXTRA_SCALE,0),level=value==null?0:value.getIntExtra(BatteryManager.EXTRA_LEVEL,0);battery.addView(Aero.text(activity,scale<=0?"Battery information unavailable":Math.round(level*100f/scale)+"% remaining",22,0xff333333));battery.addView(Aero.button(activity,"Power settings",()->open.accept("setting:android:battery")));cards.add(battery);
+        LinearLayout rotation=card("Screen orientation");rotation.addView(Aero.button(activity,"Change orientation",()->Aero.dialog(activity).setTitle("Screen orientation").setItems(new String[]{"Portrait","Landscape","Follow device"},(d,n)->activity.setRequestedOrientation(new int[]{android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED}[n])).show()));cards.add(rotation);
+        LinearLayout connections=card("Wireless connections");connections.addView(Aero.button(activity,"Wi-Fi",()->open.accept("setting:android:wifi")));connections.addView(Aero.button(activity,"Bluetooth",()->open.accept("setting:android:bluetooth")));connections.addView(Aero.button(activity,"Connect a display",()->open.accept("setting:android:cast")));cards.add(connections);
+        LinearLayout row=null;for(int i=0;i<cards.size();i++){if(i%Math.max(1,columns)==0){row=new LinearLayout(activity);body.addView(row,new LinearLayout.LayoutParams(-1,-2));}LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,-2,1);p.setMargins(dp(4),dp(4),dp(4),dp(4));row.addView(cards.get(i),p);}}
+    @Override public void onVisibilityAggregated(boolean visible){super.onVisibilityAggregated(visible);main.removeCallbacks(tick);if(visible&&!closed&&body!=null)main.post(tick);}
+    @Override public void onWindowFocusChanged(boolean focus){super.onWindowFocusChanged(focus);if(focus&&!closed&&body!=null&&isShown())main.post(tick);}
+    void close(){closed=true;main.removeCallbacksAndMessages(null);}
+}

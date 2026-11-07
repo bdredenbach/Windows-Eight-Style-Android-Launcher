@@ -25,6 +25,7 @@ final class FileLaunch {
     static void open(Activity activity,Uri uri,String name,String provided,boolean chooser){
         String type=mime(name,provided);
         if(!chooser&&activity instanceof MainActivity&&type.startsWith("image/")){((MainActivity)activity).openPhoto(uri,name,type,null,"@files");return;}
+        if(!chooser&&activity instanceof MainActivity&&type.equals("application/pdf")){((MainActivity)activity).openPdf(uri);return;}
         MediaLibrary.Entry media=chooser?null:MediaLibrary.entry(uri,name,provided);
         if(media!=null&&activity instanceof MainActivity){((MainActivity)activity).openMedia(media);return;}
         try{Intent intent=intent(uri,name,provided);activity.startActivity(chooser?Intent.createChooser(intent,"Open with"):intent);}

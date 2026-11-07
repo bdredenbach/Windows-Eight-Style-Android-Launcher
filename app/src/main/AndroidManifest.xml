@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN" />
@@ -33,6 +34,7 @@
         android:theme="@style/AppTheme"
         android:supportsRtl="true">
         <activity android:name=".NotaTextActivity" android:label="Ask Nth Nota" android:exported="true" android:noHistory="true"><intent-filter><action android:name="android.intent.action.SEND"/><action android:name="android.intent.action.PROCESS_TEXT"/><category android:name="android.intent.category.DEFAULT"/><data android:mimeType="text/plain"/></intent-filter></activity>
+        <provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.eight-files" android:exported="false" android:grantUriPermissions="true"><meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/eight_file_paths" /></provider>
         <provider android:name=".ThemePictures" android:authorities="${applicationId}.theme-pictures" android:exported="false" />
         <service android:name=".TenNotifications" android:label="Nth Desktop Eight notifications" android:exported="true" android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"><intent-filter><action android:name="android.service.notification.NotificationListenerService" /></intent-filter></service>
         <provider android:name=".DeviceDocumentsProvider" android:authorities="${applicationId}.storage" android:exported="true" android:grantUriPermissions="true" android:permission="android.permission.MANAGE_DOCUMENTS" />

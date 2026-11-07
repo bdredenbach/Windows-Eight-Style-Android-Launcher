@@ -6,6 +6,11 @@ final class EightAppSpec {
     final String id,title,icon;final int minimum;final boolean compact;
     EightAppSpec(String id,String title,String icon,int minimum,boolean compact){this.id=id;this.title=title;this.icon=icon;this.minimum=minimum;this.compact=compact;}
     static final List<EightAppSpec> ALL=Collections.unmodifiableList(Arrays.asList(
+        new EightAppSpec("@help","Help+Tips","information",280,true),
+        new EightAppSpec("@readinglist","Reading List","document",280,true),
+        new EightAppSpec("@reader","Reader","documentfile",280,true),
+        new EightAppSpec("@alarms","Alarms","clock",260,true),
+        new EightAppSpec("@soundrecorder","Sound Recorder","music",260,true),
         new EightAppSpec("@news","News","news",320,true),
         new EightAppSpec("@notes","Notepad","notes",240,true),
         new EightAppSpec("@nota","Nth Nota","notes",280,true),

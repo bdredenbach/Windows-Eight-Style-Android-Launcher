@@ -7,7 +7,7 @@ final class ControlPanelCatalog {
     static final String[][] CATEGORIES={
         {"system","System and Security","security"},
         {"network","Network and Internet","network"},{"hardware","Hardware and Sound","hardware"},
-        {"programs","Programs","programs"},{"accounts","User Accounts","accounts"},
+        {"programs","Programs","programs"},{"accounts","User Accounts and Family Safety","accounts"},
         {"appearance","Appearance and Personalization","appearance"},{"clock","Clock, Language, and Region","clock"},
         {"accessibility","Ease of Access","accessibility"}};
     static final class Task {
@@ -40,7 +40,7 @@ final class ControlPanelCatalog {
         new Panel("programs","programs","Programs and Features","programs","Manage installed Android apps","android:apps","installed applications"),
         new Panel("defaults","programs","Default Programs","programs","Choose default Android apps","android:defaults","default applications"),
         new Panel("managers","programs","File Managers","folderapps","Organize your file manager shortcuts","open:@filemanagers","file manager apps"),
-        new Panel("accounts","accounts","User Accounts","accounts","Change your desktop name and profile picture","page:accounts","Change your desktop name;Change your profile picture",t("Device accounts","Manage accounts on your device · Android","android:accounts")),
+        new Panel("accounts","accounts","User Accounts and Family Safety","accounts","Change your desktop name and profile picture","page:accounts","Change your desktop name;Change your profile picture",t("Device accounts","Manage accounts on your device · Android","android:accounts")),
         new Panel("personalization","appearance","Personalization","appearance","Change the appearance and sounds of your desktop","page:personalization","",t("Window Color","Window color and appearance, including glass intensity, transparency and opacity","page:colors"),t("Desktop Background","Choose a stock or personal wallpaper","page:background"),t("Startup and Sounds","Startup intro, reboot, chime and reduced motion","page:startup")),
         new Panel("icons","appearance","Desktop Settings","computer","Desktop icons, grid, spacing, labels and snapping","page:icons","Desktop Icon Settings;desktop layout",t("Manage desktop shortcuts","Desktop Organization: folders, shortcut names and ordering","open:@organize")),
         new Panel("taskbar","appearance","Taskbar and Navigation","control","Status bar, Android app buttons and default home","page:taskbar","taskbar properties",t("Quick Launch","Choose and order taskbar shortcuts","open:@quicklaunch"),t("Taskbar grouping","Group similar folder windows when space runs out","page:grouping")),
