@@ -2,6 +2,8 @@
 
 Baseline: Nth Desktop Eight 0.4.0. Historical evidence and proposed changes are separated below. This document is a design audit, not a report that these changes have shipped.
 
+See [the detailed settings atlas](SETTINGS_ATLAS.md) and [file-management workflows](FILE_MANAGEMENT_DETAIL.md) for the expanded review.
+
 ## Interaction model across the whole shell
 
 Eight has two complementary environments: a desktop with overlapping windows and a content-led, full-screen app environment. The key controls are Start, the left app switcher, the right Charms strip, app command bars and the desktop taskbar. Search, Share, Start, Devices and Settings are the five Charms. Settings should reflect the foreground app before offering PC settings. [S06][S07]
@@ -63,7 +65,7 @@ The period 8.1 hierarchy has nine top-level categories: PC and devices; Accounts
 | Ease of Access | Text scale, contrast, reduced motion, larger targets and gesture alternatives |
 | Update and recovery | Nth backup/restore and build information; distinctly named Android update destination |
 
-Original Eight keeps its existing 12-category model rather than receiving the 8.1 list. Build detail pages and back navigation before adding more top-level links. The table above is an Nth proposal; it is not a claim that historical Windows used those replacement labels.
+Original Eight should preserve its own organization rather than receiving the 8.1 list. The completion review corrects an earlier assumption: current code has 12 entries, but the historical list has 13 including HomeGroup. Record the omission; do not add an inert network placeholder. [E01] Build detail pages and back navigation before adding more top-level links. The table above is an Nth proposal; it is not a claim that historical Windows used those replacement labels.
 
 ### Traditional Control Panel
 
@@ -166,3 +168,5 @@ Run each main workflow with touch, pointer and keyboard where available: launch,
 [S27]: https://devblogs.microsoft.com/oldnewthing/20170411-00/?p=95945%2F
 [V01]: https://jensenharris.com/videos/surface-ui
 [V02]: https://jensenharris.com/videos/ux-week-2012-story-of-windows-8
+
+[E01]: https://www.sony.com.ph/electronics/support/articles/S500024748

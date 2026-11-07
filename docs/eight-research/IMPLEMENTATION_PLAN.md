@@ -2,12 +2,14 @@
 
 Status: research handoff only, based on 0.4.0 at `e04e1dec8c39ad9744175fe70f7ff2f414918815`. No runtime code or APK changes accompany this pack.
 
+See [completion review](COMPLETENESS_REVIEW.md), [settings atlas](SETTINGS_ATLAS.md) and [file-management detail](FILE_MANAGEMENT_DETAIL.md) for the expanded scope and historical corrections.
+
 ## Ordered work
 
 | Stage | Scope | Why this order |
 |---|---|---|
 | 1 | Stable live-tile model, real providers, centered desktop captions | Most visible Eight identity; makes existing apps more useful |
-| 2 | PC settings detail navigation, Taskbar/Navigation property sheet, Explorer contexts and Recycle details | Corrects remaining structural desktop/settings mismatches |
+| 2 | PC settings detail navigation and Help+Tips, Taskbar/Navigation property sheet, Explorer contexts and Recycle details | Corrects remaining structural desktop/settings mismatches |
 | 3 | Reading List and PDF Reader; Browser/News Share | Adds a coherent end-to-end workflow with manageable dependencies |
 | 4 | Alarms and Sound Recorder | Useful 8.1 utilities after choosing reliable Android lifecycle backends |
 | 5 | Photos/Camera editing, Music/Video collections, Paint/WordPad, optional People | Larger app experiences; avoid diluting shell quality |
@@ -89,3 +91,12 @@ The remaining choices are ordinary implementation decisions, not reasons to bloc
 Network-heavy apps need a separate content/provider choice. Do not resurrect defunct Microsoft services through placeholder data or implied account integration.
 
 <!-- reference links -->
+
+## Completion-review acceptance additions
+
+- Original Eight and 8.1 retain their distinct category/subpage organization; omitted historical capabilities have explicit, useful adaptations or remain documented gaps.
+- Update-era Disk space, naming and mouse behavior are not silently presented as original 2013 8.1.
+- Help+Tips is discoverable from the app catalog and contextual Help, with per-area dismissal and replay.
+- Settings retain origin/category/subpage and scroll/input state when returning from Android pages.
+- Apply/OK/Cancel have consistent pending-edit semantics and do not pretend to roll back external system changes.
+- Steps Recorder is reused and its export naming reviewed rather than duplicated.

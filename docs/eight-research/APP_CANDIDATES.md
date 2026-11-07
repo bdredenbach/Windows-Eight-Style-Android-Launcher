@@ -2,6 +2,8 @@
 
 These are proposed additions. No app in this document is claimed to have been implemented by this investigation. Priority reflects useful Android behavior and fit with the existing launcher.
 
+See [additional apps and design](ADDITIONAL_APPS_AND_DESIGN.md) for Help+Tips, desktop accessories and the already implemented Steps Recorder. These extend the catalog without duplicating working engines.
+
 ## Historical catalog
 
 Microsoft's 8.1 package inventory includes Alarms, Calculator, Camera, Photos, Reader, Reading List, Sound Recorder, Scan and the Bing app family, among others. A package name alone is not evidence that every SKU, region or clean installation exposed every app identically. [S17]

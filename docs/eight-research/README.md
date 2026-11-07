@@ -2,6 +2,8 @@
 
 Research date: 6 November 2026. Inspected application baseline: **0.4.0**, commit `e04e1dec8c39ad9744175fe70f7ff2f414918815`.
 
+**Expanded completion review:** 6 November 2026. This edition contains 62 references, a page/workflow atlas and corrected historical category coverage. Start with [the completion review](COMPLETENESS_REVIEW.md). No runtime code or new APK accompanies it.
+
 **Recommendation:** Keep one Eight app with the existing 8 and 8.1 shell options. Build a proper live-tile system next, finish the desktop/settings details that still distinguish Eight from Ten, and then add a small set of useful period apps. There is enough here for several meaningful releases without adding empty demonstrations.
 
 This is research and a proposed implementation specification. It does not change the runtime application or issue a new APK.
@@ -10,12 +12,16 @@ This is research and a proposed implementation specification. It does not change
 
 | Document | Purpose |
 |---|---|
+| [Completion review](COMPLETENESS_REVIEW.md) | Coverage against the original prompt, corrections and evidence limits |
+| [Detailed settings atlas](SETTINGS_ATLAS.md) | PC settings categories/subpages, Control Panel destinations and property-sheet behavior |
+| [File-management detail](FILE_MANAGEMENT_DETAIL.md) | Window, Explorer, dialogs and Recycle Bin workflows |
+| [Additional apps and design](ADDITIONAL_APPS_AND_DESIGN.md) | Help+Tips, accessories, existing Steps Recorder and shared design language |
 | [Live tiles](LIVE_TILES.md) | Historical behavior, real providers we can implement, rendering and lifecycle design |
 | [UI and settings audit](UI_AUDIT.md) | Release boundaries, desktop windows, Control Panel, PC settings, Explorer, Recycle Bin and app presentations |
 | [App candidates](APP_CANDIDATES.md) | What belonged to which release, useful new apps, Android backends and limitations |
 | [Video observations](VIDEO_OBSERVATIONS.md) | Exactly what footage was reviewed, timestamps, and unavailable sources |
 | [Implementation and acceptance plan](IMPLEMENTATION_PLAN.md) | Ordered work, affected code, acceptance scenarios and release gates |
-| [Source ledger](SOURCES.md) | 48 references with scope, publisher, evidence type and access notes; also JSON and CSV |
+| [Source ledger](SOURCES.md) | 62 references with scope, publisher, evidence type and access notes; also JSON and CSV |
 
 ## What the deeper review found
 
@@ -33,7 +39,7 @@ This is research and a proposed implementation specification. It does not change
 
 The investigation uses Microsoft period announcements, archived developer guidance, Microsoft Press sections, actual release-era figures, contemporary reviews and the current source code. Modern Learn navigation and generic product headers are not treated as historical UI evidence. Preview footage is labeled; 8.1 Update controls are kept separate from 2013 8.1.
 
-Two original/designer-hosted recordings were visually reviewed through playback and frame sampling. Selected sections of the longer recording were reviewed, not its full 66 minutes. The original 8.1 Preview upload is now private, and the public mirror and Microsoft Learn interview did not produce playable media here. Their metadata, posters or descriptions are not counted as watched footage. The 8.1 usage analysis therefore relies on accessible Microsoft documentation, period captures and the official demonstration transcript. See the video ledger for precise scope.
+The original review visually sampled two designer-hosted Windows 8-era recordings. The completion review adds further selected designer-talk playback and four successfully decoded official Microsoft Windows 8.1 Desktop Essentials demos, sampled across each clip. The complete 66-minute talk and the entire Microsoft training course were not watched. Exact selections, timestamps and failed alternatives are recorded in the video ledger. The inaccessible original 8.1 Preview video is still not counted as watched footage. Documentation, period captures and the official demonstration transcript continue to establish release boundaries; the newly decoded course files' exact OS build is not independently known.
 
 No Windows 8 VM was operated in this investigation. This is a source-and-footage investigation plus a source-code audit, not a claim of hands-on testing of every Windows applet. The inspected PDF samples are selected chapters/pages, not entire books. Complete publisher books, video files and article copies are not bundled or used as app assets.
 
@@ -72,6 +78,8 @@ This is a compact synthesis of [S06][S07][S08][S09][S15]. Android sizing is a se
 **Fourth release:** Alarms and Sound Recorder with real persistence and Android lifecycle handling. The first working alarm backend must be chosen before promising reliable background ringing.
 
 **Later:** Camera/Photos editing, distinct Music/Video collections, desktop Paint/WordPad, and People. Maps, Food & Drink and other network-heavy apps need a separate data/content decision.
+
+Add Help+Tips to the settings/discoverability work, consider a Mobility Center window that reuses device controls, and reuse the Steps Recorder already in Action Center. The completion review also identifies original Eight's omitted HomeGroup category and Update-specific Disk space coverage.
 
 The detailed plan includes implementation scope and acceptance checks. These are proposed releases, not commitments to ship every candidate or fabricated completion dates.
 

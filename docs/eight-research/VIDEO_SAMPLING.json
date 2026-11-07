@@ -1,0 +1,88 @@
+{
+  "source_id": "V08",
+  "official_page": "https://www.microsoft.com/en-us/download/details.aspx?id=57337",
+  "package": "Microsoft Windows 8.1 Desktop Essentials.zip",
+  "review_date": "2026-11-06",
+  "method": "Decoded local video files; visually inspected timestamped frame contact sheets across each clip. Not continuous real-time/audio review or hands-on OS testing.",
+  "notes": "Container creation time does not establish filming date or exact Windows build. Screenshots and complete recordings are not distributed with this report.",
+  "clips": [
+    {
+      "entry": "Microsoft Windows 8.1 Desktop Essentials/3 - Working with charms demo.mp4",
+      "duration_seconds": 122.345941,
+      "container_creation_time": "2015-06-16T09:10:56Z",
+      "sample_times_seconds": [
+        0,
+        20,
+        40,
+        60,
+        80,
+        100,
+        120
+      ]
+    },
+    {
+      "entry": "Microsoft Windows 8.1 Desktop Essentials/4 - Control Panel and Devices demo.mp4",
+      "duration_seconds": 174.799819,
+      "container_creation_time": "2015-06-16T09:11:02Z",
+      "sample_times_seconds": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90,
+        100,
+        110,
+        120,
+        130,
+        140,
+        150,
+        160,
+        170
+      ]
+    },
+    {
+      "entry": "Microsoft Windows 8.1 Desktop Essentials/7 - Managing your desktop demo.mp4",
+      "duration_seconds": 211.766667,
+      "container_creation_time": "2015-06-16T09:11:21Z",
+      "sample_times_seconds": [
+        0,
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160,
+        180,
+        200
+      ]
+    },
+    {
+      "entry": "Microsoft Windows 8.1 Desktop Essentials/8 - Managing applications and files demo.mp4",
+      "duration_seconds": 267.377778,
+      "container_creation_time": "2015-06-16T09:11:24Z",
+      "sample_times_seconds": [
+        0,
+        20,
+        40,
+        60,
+        80,
+        100,
+        120,
+        140,
+        160,
+        180,
+        200,
+        220,
+        240,
+        260
+      ]
+    }
+  ]
+}

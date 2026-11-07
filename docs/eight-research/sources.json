@@ -481,6 +481,149 @@
       "evidence_type": "android_primary",
       "review_note": "Real camera preview/capture backend candidate.",
       "accessed": "2026-11-06"
+    },
+    {
+      "id": "E01",
+      "title": "Original Windows 8 PC settings options",
+      "publisher": "Sony Support",
+      "scope": "Original Windows 8; OEM instructions, later article wrapper",
+      "url": "https://www.sony.com.ph/electronics/support/articles/S500024748",
+      "evidence_type": "primary OEM instructions",
+      "review_note": "Read category list and usage steps. Confirms HomeGroup and 13 historical categories.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "E02",
+      "title": "Accessing Settings in Windows 8.1",
+      "publisher": "TeachUcomp / Keeley Byrnes",
+      "scope": "26 December 2013; original training article and linked lesson",
+      "url": "https://www.teachucomp.com/accessing-settings-in-windows-8-1/",
+      "evidence_type": "primary tutorial",
+      "review_note": "Read contextual Settings-pane and nine-category descriptions. Embedded/direct YouTube lesson ptduUSOW0Yw remained at 0:00 with no decoded footage; not counted as watched.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "E03",
+      "title": "Getting help and support with Windows 8.1",
+      "publisher": "Microsoft Windows Blog",
+      "scope": "21 November 2013",
+      "url": "https://blogs.windows.com/windowsexperience/2013/11/21/getting-help-and-support-with-windows-8-1/",
+      "evidence_type": "primary",
+      "review_note": "Read included Help+Tips app, contextual stickers and help beside the originating app.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "E04",
+      "title": "Microsoft OneDrive launches worldwide",
+      "publisher": "Microsoft News",
+      "scope": "19 February 2014 naming milestone",
+      "url": "https://news.microsoft.com/source/2014/02/19/microsoft-onedrive-launches-worldwide-free-cloud-storage-service-provides-one-place-for-everything-in-your-life/",
+      "evidence_type": "primary",
+      "review_note": "Confirms SkyDrive-to-OneDrive chronology; old storage allowances are not current product claims.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "E05",
+      "title": "Windows 8.1 on Demand sample: file management",
+      "publisher": "Que / Steve Johnson",
+      "scope": "2013; public publisher sample, selected file-management pages",
+      "url": "https://ptgmedia.pearsoncmg.com/images/9780789752284/samplepages/078975228X.pdf",
+      "evidence_type": "primary publisher guide",
+      "review_note": "Read selected Explorer, Folder Options and Recycle Bin sections. Visually reviewed This PC figure, printed p.52. Not the complete book.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "E06",
+      "title": "Laying out an app page",
+      "publisher": "Microsoft Learn archive",
+      "scope": "Explicit Windows 8.x; includes 8.1 Update occlusion note",
+      "url": "https://learn.microsoft.com/en-us/previous-versions/windows/apps/hh872191(v=win.10)",
+      "evidence_type": "primary",
+      "review_note": "Read shared silhouette/grid, margins and input-specific caption/taskbar note. Windows pixel values are reference geometry, not Android dp.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "E07",
+      "title": "UB-15MS10 / UB-15MS10SA tablet user guide",
+      "publisher": "Best Buy / Unbranded",
+      "scope": "Windows 8.1 OEM tablet; selected pages",
+      "url": "https://storage.bestbuy.com/pacsales/resources/exclusive_brands/unbranded/PDF/UB-15MS10_UB-15MS10SA_14-0962_Tablet%20User%20Guide_V1.pdf",
+      "evidence_type": "primary OEM guide",
+      "review_note": "Read navigation, settings and privacy/account instructions. Privacy menu captured in guide; selected sample, not every page.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "E08",
+      "title": "Windows 8.1: The Missing Manual public contents/excerpts",
+      "publisher": "OReilly / David Pogue",
+      "scope": "Windows 8.1; publisher-hosted public catalog, not full-book review",
+      "url": "https://www.oreilly.com/library/view/windows-8-1-the/9781449371777/ch10.html",
+      "evidence_type": "primary publisher excerpt",
+      "review_note": "Inspected public contents for settings subpages, desktop accessories and property sheets. Some catalog entries span earlier/optional software; Microsoft period sources take precedence for release availability.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "E09",
+      "title": "OneDrive settings excerpt",
+      "publisher": "OReilly / David Pogue",
+      "scope": "Later 8.1 naming; public excerpt/search record",
+      "url": "https://www.oreilly.com/library/view/windows-8-1-the/9781449371777/ch05s05.html",
+      "evidence_type": "primary publisher excerpt",
+      "review_note": "Read available File Storage, Camera Roll and Sync settings excerpt. Later OneDrive naming is distinguished from 2013 SkyDrive.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "E10",
+      "title": "Animations: Control Panel and PC settings",
+      "publisher": "EightForums / Shawn Brink",
+      "scope": "Tutorial created January 2014; subsequently edited",
+      "url": "https://www.eightforums.com/threads/animations-turn-on-or-off-in-windows-8.39731/",
+      "evidence_type": "primary authored tutorial",
+      "review_note": "Read original instructions. Confirms 8.1 Ease of Access > Other options relationship; not a new full screenshot audit.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "E11",
+      "title": "Add a VPN connection in Windows 8.1",
+      "publisher": "EightForums / Shawn Brink",
+      "scope": "Tutorial created May 2014",
+      "url": "https://www.eightforums.com/threads/virtual-private-network-connection-add-in-windows-8-1.47160/",
+      "evidence_type": "primary authored tutorial",
+      "review_note": "Read Network > Connections steps and source captions. Attachment image fetch returned 403; screenshot pixels not independently reviewed.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "E12",
+      "title": "OneDrive usage over metered connections",
+      "publisher": "EightForums / Shawn Brink",
+      "scope": "Tutorial created September 2013; title updated for OneDrive",
+      "url": "https://www.eightforums.com/threads/metered-connections-for-onedrive-turn-on-or-off.31765/",
+      "evidence_type": "primary authored tutorial",
+      "review_note": "Read metered-connections path and instructions. Attachment image fetch returned 403; no claim of new pixel-level review.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "E13",
+      "title": "Media projection",
+      "publisher": "Android Developers",
+      "scope": "Current implementation reference, checked for proposed Nth capture scope",
+      "url": "https://developer.android.com/media/grow/media-projection",
+      "evidence_type": "primary technical documentation",
+      "review_note": "Read session/capture model, app-screen sharing and consent/lifecycle requirements. Not a Windows historical source.",
+      "accessed": "2026-11-06"
+    },
+    {
+      "id": "V08",
+      "title": "Microsoft Windows 8.1 Desktop Essentials - four demonstration clips",
+      "publisher": "Microsoft Download Center / Online Learning - Windows",
+      "scope": "Course labeled Windows 8.1; file-container metadata June 2015; current download wrapper July 2024. Exact OS build not independently identified.",
+      "url": "https://www.microsoft.com/en-us/download/details.aspx?id=57337",
+      "evidence_type": "primary decoded video samples",
+      "review_note": "Decoded and visually reviewed timestamped samples from Working with charms, Control Panel and Devices, Managing your desktop, and Managing applications and files. See VIDEO_SAMPLING.json for exact entries, durations and sample times. Not the full course; no media redistributed.",
+      "accessed": "2026-11-06"
     }
-  ]
+  ],
+  "expanded_review_date": "2026-11-06",
+  "research_commit_reviewed": "42b573417e21b4041089d2384e1386a9d6e5cf3a",
+  "source_review_policy": "48 carried-forward references plus 14 additional records (E01-E13 and V08); notes distinguish reviewed content from failed attempts."
 }
