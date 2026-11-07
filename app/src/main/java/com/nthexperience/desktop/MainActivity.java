@@ -1741,6 +1741,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
             if(front!=null&&event.isAltPressed()&&key==KeyEvent.KEYCODE_F4){front.closeWindow();return true;}
             if(front!=null&&event.isAltPressed()&&key==KeyEvent.KEYCODE_SPACE){DesktopWindow target=front;ContextMenus.centered(front,(x,y)->target.showSystemMenu(target,x,y));return true;}
         }
+        if(startMenu!=null&&startMenu.isShown()&&startMenu.searchKey(event))return true;
         return super.dispatchKeyEvent(event);
     }
     @Override public void onBackPressed(){handleBack();}

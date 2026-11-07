@@ -235,12 +235,16 @@ final class EightStartScreen extends LinearLayout {
     boolean back(){if(selected!=null){selected=null;render();return true;}if(surface!=Surface.START){surface=Surface.START;search.setText("");render();return true;}return false;}
     JSONObject state(){JSONObject result=new JSONObject();GadgetLayout.put(result,"visible",getVisibility()==VISIBLE);GadgetLayout.put(result,"surface",surface.name());GadgetLayout.put(result,"scope",scope);GadgetLayout.put(result,"query",search.getText().toString());GadgetLayout.put(result,"scroll",horizontal==null?0:horizontal.getScrollX());return result;}
     void restore(JSONObject state){if(state==null||!state.optBoolean("visible")){hide();return;}show(false);try{surface=Surface.valueOf(state.optString("surface","START"));}catch(IllegalArgumentException ignored){surface=Surface.START;}scope=state.optString("scope","Apps");search.setText(state.optString("query"));render();post(()->{if(horizontal!=null)horizontal.scrollTo(state.optInt("scroll"),0);});}
-    @Override public boolean dispatchKeyEvent(KeyEvent event){
-        if(event.getAction()==KeyEvent.ACTION_DOWN&&(surface==Surface.START||surface==Surface.ALL_APPS)&&dragging==null&&!event.isCtrlPressed()&&!event.isAltPressed()&&!event.isMetaPressed()){
+    // Route native typing before focus transfer completes on older Android versions.
+    boolean searchKey(KeyEvent event){
+        if(event.getAction()==KeyEvent.ACTION_DOWN&&dragging==null&&!event.isCtrlPressed()&&!event.isAltPressed()&&!event.isMetaPressed()){
             int character=event.getUnicodeChar();
-            if(event.isPrintingKey()&&character!=0&&(character&KeyCharacterMap.COMBINING_ACCENT)==0){showSearch(profile==EightProfile.EIGHT?"Apps":"Everywhere");search.setText(new String(Character.toChars(character)));search.setSelection(search.length());return true;}
+            if(event.isPrintingKey()&&character!=0&&(character&KeyCharacterMap.COMBINING_ACCENT)==0){
+                if(surface==Surface.START||surface==Surface.ALL_APPS){showSearch(profile==EightProfile.EIGHT?"Apps":"Everywhere");search.setText(new String(Character.toChars(character)));search.setSelection(search.length());return true;}
+                if(surface==Surface.SEARCH)return search.dispatchKeyEvent(event);
+            }
         }
-        return super.dispatchKeyEvent(event);
+        return false;
     }
     @Override public boolean dispatchTouchEvent(MotionEvent event){
         int action=event.getActionMasked();if(action==MotionEvent.ACTION_DOWN){downX=event.getX();downY=event.getY();swipeCandidate=dragging==null&&(surface==Surface.START||surface==Surface.ALL_APPS)&&downY<getHeight()-dp(56);swiping=false;swipeToApps=false;}
