@@ -1,6 +1,6 @@
 # Nth Desktop Eight
 
-A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Current preview: **0.4.0**. Android 8.0+; targets Android 16.
+A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Current preview: **0.5.0**. Android 8.0+; targets Android 16.
 
 Package: `com.nthexperience.desktop.eight`. Installs alongside Nth Desktop Ten, Seven and Vista.
 
@@ -29,6 +29,10 @@ Choose the shell in **Charms → Settings → Change PC settings → Personalize
 Snap applies to supported launcher-owned app views and requires usable widths. The Windows 8 companion uses density-independent sizing appropriate for Android. Arbitrary Android apps are launched normally and are not embedded into Nth panes. The 8.1 Everywhere view combines real local providers rather than simulating Bing Smart Search. Cloud login/sync, Windows services and Internet Explorer's engine are not implemented; the browser retains the installed Android WebView and its existing privacy/security behavior.
 
 The supplied icons remain attributed to their rights holders. The archive's filenames and artwork are preserved; its file timestamps are not evidence of a particular Windows release. Research screenshots are references rather than application artwork.
+
+## Research release 0.5.0
+
+The [research implementation notes](docs/EIGHT_0_5.md) describe the retained live tiles, nested PC settings, desktop property sheets, Explorer/Recycle refinements and working new utilities. The notes distinguish local functionality, Android Clock/device handoffs and the remaining roadmap.
 
 ## Build and validation
 

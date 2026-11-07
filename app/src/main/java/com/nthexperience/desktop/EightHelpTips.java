@@ -1,0 +1,29 @@
+package com.nthexperience.desktop;
+
+import android.content.*;
+import android.graphics.Color;
+import android.text.*;
+import android.view.*;
+import android.widget.*;
+import java.util.function.Consumer;
+
+/** Short, searchable, replayable guidance for the controls Nth actually provides. */
+final class EightHelpTips extends LinearLayout {
+    static final String[][] TOPICS={
+        {"start","Start and live tiles","Hold a tile to select it. Drag toward either side to pan through groups. Resize and Turn live tile on/off are in the selection bar. Photos only shows pictures you choose. Swipe down on Start or Apps to return to Desktop.","@start"},
+        {"windows","Move and resize windows","Drag the title to move a desktop window. Drag any corner to resize it. Double-tap the title to maximize or restore. Hold the title or tap its icon for the window menu.","@desktop"},
+        {"settings","PC settings and Control Panel","PC settings has a dark category list and detailed pages. The arrow returns to the category before leaving settings. Desktop appearance and Taskbar properties live in Control Panel. Android device controls open Android settings; Back returns here.","@settings"},
+        {"files","Files and Recycle Bin","Use Back, Forward, Up and breadcrumbs to browse. Hold a file for copy, move, rename, delete or properties. Computer/This PC has its own ribbon. A supported deletion goes to Recycle Bin; Restore keeps both names if a file already exists.","@files"},
+        {"snap","Switch and snap apps","Open the left app switcher or App commands, then choose Snap another app. Original Eight uses a compact companion; 8.1 lets you drag the divider when there is enough room. Android apps open in their own tasks.","@eight-switcher"},
+        {"reading","Reading List and Reader","Save a page from Browser or hold a News story to add it to Reading List. Saved web links load in Browser. Reader opens local PDFs, remembers the last page, and provides page jump and zoom. Choose Open PDF again if file access was removed.","@readinglist"},
+        {"recording","Record sound","Press Record, allow the microphone, then Stop and save. Recording stops and saves when you leave the app, switch away or close its window. Tap a recording to play it. Use its commands to rename, share or delete it.","@soundrecorder"},
+        {"alarms","Alarms, timers and stopwatch","Alarms and timers are handed to your Android Clock app for reliable ringing. Complete any confirmation there. The device's next scheduled alarm is displayed when Android makes it available. The local stopwatch remembers its state until a device restart.","@alarms"},
+        {"access","Permissions and setup","Use Guided setup for Home and file access. Android owns each permission. If usage access needs restricted-settings approval, return to the on-screen instructions and follow the next step. Enable only the features you want.","@welcome"}
+    };
+    final DesktopStore store;final Consumer<String> open;final LinearLayout list;String area="";
+    EightHelpTips(Context c,DesktopStore store,Consumer<String> open){super(c);this.store=store;this.open=open;setOrientation(VERTICAL);setBackgroundColor(0xfff7faf9);TenAppearance.preserve(this);setContentDescription("Eight Help and Tips");TextView title=Aero.text(c,"Help+Tips",34,0xff222222);title.setPadding(dp(24),dp(18),dp(24),dp(14));addView(title);EditText search=new EditText(c);search.setSingleLine();search.setHint("Search tips");search.setContentDescription("Search Help and Tips");addView(search,new LayoutParams(-1,dp(48)));ScrollView scroll=new ScrollView(c);list=Aero.column(c);list.setPadding(dp(24),dp(12),dp(24),dp(24));scroll.addView(list);addView(scroll,new LayoutParams(-1,0,1));search.addTextChangedListener(new TextWatcher(){public void beforeTextChanged(CharSequence s,int a,int b,int d){}public void afterTextChanged(Editable e){}public void onTextChanged(CharSequence s,int a,int b,int d){area="";render(s.toString());}});render("");}
+    int dp(int n){return Aero.dp(getContext(),n);}
+    void topic(String id){area=id;render("");}
+    void render(String query){list.removeAllViews();String q=query.toLowerCase(java.util.Locale.ROOT);for(String[] topic:TOPICS)if((area.isEmpty()||topic[0].equals(area))&&(topic[1]+" "+topic[2]).toLowerCase(java.util.Locale.ROOT).contains(q)){TextView title=Aero.text(getContext(),topic[1],22,0xff006b61);title.setPadding(0,dp(16),0,dp(8));list.addView(title);TextView text=Aero.text(getContext(),topic[2],16,0xff333333);text.setTextIsSelectable(true);list.addView(text);TextView go=Aero.text(getContext(),"Open "+topic[1]+"  ›",15,0xff006b61);go.setMinHeight(dp(48));go.setGravity(Gravity.CENTER_VERTICAL);go.setContentDescription("Help topic "+topic[0]);go.setFocusable(true);go.setOnClickListener(v->open.accept(topic[3]));list.addView(go);}}
+    static View inline(Context c,DesktopStore store,String area,Consumer<String> open){if(store.prefs.getBoolean("eight_tip_seen_"+area,false))return new View(c);String[] found=null;for(String[] t:TOPICS)if(t[0].equals(area))found=t;if(found==null)return new View(c);final String[] topic=found;LinearLayout card=Aero.column(c);card.setPadding(Aero.dp(c,12),Aero.dp(c,10),Aero.dp(c,12),Aero.dp(c,8));card.setBackgroundColor(0xffe8f3f1);TextView message=Aero.text(c,topic[1]+"\n"+topic[2],13,0xff254b45);message.setMaxLines(4);card.addView(message);LinearLayout controls=new LinearLayout(c);TextView help=Aero.text(c,"Read tip",14,0xff006b61),dismiss=Aero.text(c,"Dismiss",14,0xff006b61);for(TextView b:new TextView[]{help,dismiss}){b.setGravity(Gravity.CENTER);b.setMinHeight(Aero.dp(c,44));b.setFocusable(true);controls.addView(b,new LayoutParams(0,-2,1));}help.setOnClickListener(v->open.accept("eight-help:"+area));dismiss.setOnClickListener(v->{store.prefs.edit().putBoolean("eight_tip_seen_"+area,true).apply();card.setVisibility(GONE);});card.addView(controls);return card;}
+}

@@ -11,9 +11,9 @@ import java.util.concurrent.*;
 /** Virtual recovery folder over the verified bin, not a raw directory of internal payloads. */
 final class RecyclePanel extends VistaShell {
     private final ExecutorService worker=Executors.newSingleThreadExecutor();private final Handler main=new Handler(Looper.getMainLooper());private final Runnable changed;private final DocumentOps.Cancel cancel=new DocumentOps.Cancel();
-    private static final String[] COLUMNS={"Name","Original location","Date deleted","Size"};
+    private static final String[] COLUMNS={"Name","Original location","Date deleted","Size","Item type"};
     private static final String[] VIEWS={"Large icons","Medium icons","Small icons","List","Details","Tiles"};
-    private static final float[] WEIGHTS={.35f,.27f,.24f,.14f};
+    private static final float[] WEIGHTS={.28f,.25f,.22f,.11f,.14f};
     private List<JSONObject> items=new ArrayList<>();
     private String selected="",sort="Date deleted",view="Details";
     private boolean closed,busy,loaded,refreshPending,descending=true;
@@ -102,8 +102,8 @@ final class RecyclePanel extends VistaShell {
         shown.sort((a,b)->{
             int result=sort.equals("Size")?Long.compare(a.optLong("size"),b.optLong("size"))
                     :sort.equals("Date deleted")?Long.compare(a.optLong("date"),b.optLong("date"))
-                    :(sort.equals("Original location")?a.optString("location"):a.optString("name"))
-                    .compareToIgnoreCase(sort.equals("Original location")?b.optString("location"):b.optString("name"));
+                    :(sort.equals("Item type")?itemType(a):sort.equals("Original location")?a.optString("location"):a.optString("name"))
+                    .compareToIgnoreCase(sort.equals("Item type")?itemType(b):sort.equals("Original location")?b.optString("location"):b.optString("name"));
             return descending?-result:result;
         });
         if(view.equals("Details")){
@@ -136,7 +136,7 @@ final class RecyclePanel extends VistaShell {
             column.addView(message);
         }
         status.setText(items.size()+" item"+(items.size()==1?"":"s")+" • "+android.text.format.Formatter.formatShortFileSize(getContext(),items.stream().mapToLong(i->i.optLong("size")).sum())+" / "+store.prefs.getInt("recycle_capacity_mb",250)+" MB"+(busy?" • Working…":""));
-        body(scrolling(column));
+        if(view.equals("Details")){HorizontalScrollView horizontal=new HorizontalScrollView(getContext());horizontal.addView(column,new HorizontalScrollView.LayoutParams(Math.max(dp(720),content.getWidth()),-2));ScrollView vertical=new ScrollView(getContext());vertical.addView(horizontal,new ScrollView.LayoutParams(-1,-2));body(vertical);}else body(scrolling(column));
     }
     private View itemRow(JSONObject item,boolean details){
         boolean gallery=!details&&view.endsWith("icons");
@@ -164,7 +164,7 @@ final class RecyclePanel extends VistaShell {
         if(details){
             String[] values={item.optString("location","Original folder"),
                     java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT,java.text.DateFormat.SHORT).format(new Date(item.optLong("date"))),
-                    isFolder(item)||item.has("shortcut")?"":android.text.format.Formatter.formatShortFileSize(getContext(),item.optLong("size"))};
+                    isFolder(item)||item.has("shortcut")?"":android.text.format.Formatter.formatShortFileSize(getContext(),item.optLong("size")),itemType(item)};
             for(int i=0;i<values.length;i++)row.addView(cell(values[i]),new LayoutParams(0,-2,WEIGHTS[i+1]));
         }
         row.setOnClickListener(v->selectItem(item));
@@ -178,6 +178,7 @@ final class RecyclePanel extends VistaShell {
         });
         return row;
     }
+    private String itemType(JSONObject item){if(isFolder(item))return "File folder";if(item.has("shortcut"))return "Shortcut";String name=item.optString("name");int at=name.lastIndexOf('.');return at>=0&&at<name.length()-1?name.substring(at+1).toUpperCase(java.util.Locale.ROOT)+" file":"File";}
     private boolean isFolder(JSONObject item){
         return android.provider.DocumentsContract.Document.MIME_TYPE_DIR.equals(item.optString("mime"))||
                 item.optString("shortcut").startsWith("folder:")||FolderLinks.id(item.optString("shortcut"));
@@ -224,7 +225,7 @@ final class RecyclePanel extends VistaShell {
                 .setMessage("Permanently remove all recovery copies? This cannot be undone.")
                 .setPositiveButton("Empty",(d,w)->empty.run()).setNegativeButton("Cancel",null).show();
     }
-    private void itemProperties(JSONObject item){Aero.dialog(getContext()).setTitle(item.optString("name")).setMessage("Original location: "+item.optString("location","Original folder")+"\nDeleted: "+java.text.DateFormat.getDateTimeInstance().format(new Date(item.optLong("date")))+"\nSize: "+android.text.format.Formatter.formatFileSize(getContext(),item.optLong("size"))+"\n"+(item.optBoolean("deleted")?"Original deletion confirmed":"Recovery copy; original deletion unconfirmed")+"\nRestore keeps both names if the destination already exists.").setPositiveButton("OK",null).show();}
+    private void itemProperties(JSONObject item){Aero.dialog(getContext()).setTitle(item.optString("name")).setMessage("Item type: "+itemType(item)+"\nOriginal location: "+item.optString("location","Original folder")+"\nDeleted: "+java.text.DateFormat.getDateTimeInstance().format(new Date(item.optLong("date")))+"\nSize: "+android.text.format.Formatter.formatFileSize(getContext(),item.optLong("size"))+"\n"+(item.optBoolean("deleted")?"Original deletion confirmed":"Recovery copy; original deletion unconfirmed")+"\nRestore keeps both names if the destination already exists.").setPositiveButton("OK",null).show();}
     void properties(){LinearLayout body=column();body.addView(Aero.text(getContext(),"Maximum bin size (new deletions)",14,Aero.INK));Spinner capacity=new Spinner(getContext());String[] choices={"100 MB","250 MB","500 MB","1 GB","2 GB"};int[] values={100,250,500,1024,2048};capacity.setAdapter(new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_dropdown_item,choices));int current=store.prefs.getInt("recycle_capacity_mb",250);for(int i=0;i<values.length;i++)if(values[i]==current)capacity.setSelection(i);capacity.setContentDescription("Recycle Bin maximum size");body.addView(capacity);CheckBox icon=Aero.check(getContext(),"Show Recycle Bin on desktop",store.pinned("@recycle"));body.addView(icon);body.addView(Aero.text(getContext(),"Up to 100 MB per file or folder and 200 recovery items. Existing copies are kept when the limit is lowered. Items from locations without recovery support stay in place unless you explicitly choose permanent deletion.",12,Aero.INK));Aero.dialog(getContext()).setTitle("Recycle Bin Properties").setView(body).setPositiveButton("Apply",(d,w)->{store.prefs.edit().putInt("recycle_capacity_mb",values[capacity.getSelectedItemPosition()]).apply();if(icon.isChecked()!=store.pinned("@recycle"))store.toggle("@recycle");changed.run();render();}).setNegativeButton("Cancel",null).show();}
     private void show(DesktopContextMenu menu){View anchor=tenRibbon==null?commands:tenRibbon;ContextMenus.centered(anchor,(x,y)->ContextMenus.show(menu,anchor,x,y));}
     private void organize(){

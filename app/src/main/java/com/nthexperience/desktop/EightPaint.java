@@ -1,0 +1,40 @@
+package com.nthexperience.desktop;
+
+import android.app.Activity;
+import android.content.*;
+import android.graphics.*;
+import android.net.Uri;
+import android.view.*;
+import android.widget.*;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
+
+/** A small real bitmap editor with strokes, undo/redo, local recovery and PNG sharing. */
+final class EightPaint extends LinearLayout {
+    final Activity activity;final Drawing drawing;final File folder;final TextView status;final ExecutorService worker=Executors.newSingleThreadExecutor();boolean closed;final android.os.Handler main=new android.os.Handler(android.os.Looper.getMainLooper());final Runnable recovery=this::recoverNow;
+    EightPaint(Activity a){super(a);activity=a;folder=new File(a.getFilesDir(),"eight/drawings");folder.mkdirs();setOrientation(VERTICAL);setBackgroundColor(0xffeeeeee);setContentDescription("Eight Paint");TenAppearance.preserve(this);
+        HorizontalScrollView scroll=new HorizontalScrollView(a);LinearLayout commands=new LinearLayout(a);for(String name:new String[]{"New","Open","Save PNG","Color","Brush size","Eraser","Undo","Redo","Share"}){TextView b=Aero.text(a,name,13,0xff174d77);b.setPadding(dp(12),dp(12),dp(12),dp(12));b.setMinHeight(dp(48));b.setContentDescription("Paint "+name);b.setFocusable(true);b.setOnClickListener(v->command(name));commands.addView(b);}scroll.addView(commands);addView(scroll);
+        drawing=new Drawing(a);addView(drawing,new LayoutParams(-1,0,1));status=Aero.text(a,"Draw with your finger or mouse. Save PNG keeps a picture; Share can export it.",12,0xff333333);status.setPadding(dp(12),dp(8),dp(12),dp(8));addView(status);File draft=new File(folder,"draft.png");if(draft.isFile())worker.execute(()->{Bitmap image=BitmapFactory.decodeFile(draft.getPath());post(()->{if(closed){if(image!=null)image.recycle();return;}if(image!=null){drawing.base=image;drawing.invalidate();}});});}
+    int dp(int n){return Aero.dp(getContext(),n);}
+    void command(String name){switch(name){case "New":Aero.dialog(activity).setTitle("New picture?").setMessage("Save PNG first to keep a separate copy of this drawing.").setPositiveButton("New",(d,w)->{drawing.clear();recover();}).setNegativeButton("Cancel",null).show();break;case "Open":open();break;case "Save PNG":save(false);break;case "Share":save(true);break;case "Color":Aero.dialog(activity).setTitle("Brush color").setItems(new String[]{"Black","White","Red","Orange","Yellow","Green","Blue","Purple"},(d,n)->{drawing.color=new int[]{Color.BLACK,Color.WHITE,0xffc62828,0xffef6c00,0xffffd600,0xff2e7d32,0xff1565c0,0xff7b1fa2}[n];status.setText("Brush color changed");}).show();break;case "Brush size":Aero.dialog(activity).setTitle("Brush size").setItems(new String[]{"Fine","Medium","Thick","Very thick"},(d,n)->drawing.width=new float[]{3,7,16,32}[n]).show();break;case "Eraser":drawing.color=Color.WHITE;drawing.width=32;status.setText("Eraser selected. Choose Color to return to a brush.");break;case "Undo":if(!drawing.strokes.isEmpty()){drawing.redo.add(drawing.strokes.remove(drawing.strokes.size()-1));drawing.invalidate();recover();}break;case "Redo":if(!drawing.redo.isEmpty()){drawing.strokes.add(drawing.redo.remove(drawing.redo.size()-1));drawing.invalidate();recover();}break;}}
+    void recoverNow(){if(!closed)write(new File(folder,"draft.png"),false,false);}
+    void recover(){if(closed)return;main.removeCallbacks(recovery);main.postDelayed(recovery,700);}
+    void save(boolean share){write(new File(folder,"Drawing-"+System.currentTimeMillis()+".png"),share,true);}
+    void write(File file,boolean share,boolean feedback){Bitmap image=drawing.picture();worker.execute(()->{boolean saved=false;File partial=new File(file.getPath()+".part");try(OutputStream out=new FileOutputStream(partial)){saved=image.compress(Bitmap.CompressFormat.PNG,100,out);}catch(Exception ignored){}finally{image.recycle();}saved=saved&&partial.renameTo(file);if(!saved)partial.delete();boolean success=saved;post(()->{if(closed)return;if(feedback)status.setText(success?"Saved "+file.getName():"Could not save this picture");if(success&&share)share(file);});});}
+    void share(File file){try{Uri uri=androidx.core.content.FileProvider.getUriForFile(activity,activity.getPackageName()+".eight-files",file);Intent intent=new Intent(Intent.ACTION_SEND).setType("image/png").putExtra(Intent.EXTRA_STREAM,uri).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);intent.setClipData(ClipData.newRawUri("Drawing",uri));activity.startActivity(Intent.createChooser(intent,"Share or save picture"));}catch(ActivityNotFoundException|IllegalArgumentException ex){status.setText("No app is available to receive this picture.");}}
+    void open(){File[] files=folder.listFiles((dir,name)->name.endsWith(".png")&&!name.equals("draft.png"));if(files==null||files.length==0){status.setText("Save a PNG first; saved pictures will appear here.");return;}Arrays.sort(files,Comparator.comparingLong(File::lastModified).reversed());String[] names=Arrays.stream(files).map(File::getName).toArray(String[]::new);Aero.dialog(activity).setTitle("Open saved picture").setItems(names,(d,n)->{worker.execute(()->{Bitmap next=BitmapFactory.decodeFile(files[n].getPath());post(()->{if(closed){if(next!=null)next.recycle();return;}if(next==null){status.setText("This picture could not be opened.");return;}drawing.clear();drawing.base=next;drawing.invalidate();status.setText(files[n].getName());recover();});});}).show();}
+    void close(){if(closed)return;main.removeCallbacksAndMessages(null);write(new File(folder,"draft.png"),false,false);closed=true;worker.shutdown();if(drawing.base!=null){drawing.base.recycle();drawing.base=null;}}
+    final class Stroke{final Path path=new Path();final int color;final float width;Stroke(int c,float w){color=c;width=w;}}
+    final class Drawing extends View {
+        final Paint brush=new Paint(3);final ArrayList<Stroke> strokes=new ArrayList<>(),redo=new ArrayList<>();Stroke current;Bitmap base;int color=Color.BLACK;float width=7;
+        Drawing(android.content.Context c){super(c);setContentDescription("Paint drawing canvas");setFocusable(true);brush.setStrokeCap(Paint.Cap.ROUND);brush.setStrokeJoin(Paint.Join.ROUND);}
+        void drawPicture(Canvas c){c.drawColor(Color.WHITE);if(base!=null)c.drawBitmap(base,null,new RectF(0,0,1024,768),brush);brush.setStyle(Paint.Style.STROKE);for(Stroke s:strokes){brush.setColor(s.color);brush.setStrokeWidth(s.width);c.drawPath(s.path,brush);}brush.setStyle(Paint.Style.FILL);}
+        Bitmap picture(){Bitmap bitmap=Bitmap.createBitmap(1024,768,Bitmap.Config.ARGB_8888);drawPicture(new Canvas(bitmap));return bitmap;}
+        void clear(){strokes.clear();redo.clear();current=null;if(base!=null){base.recycle();base=null;}invalidate();}
+        float scale(){return Math.max(.01f,Math.min(getWidth()/1024f,getHeight()/768f));}
+        @Override protected void onDraw(Canvas c){c.drawColor(0xffbdbdbd);float scale=scale();c.save();c.translate((getWidth()-1024*scale)/2,(getHeight()-768*scale)/2);c.scale(scale,scale);c.clipRect(0,0,1024,768);drawPicture(c);c.restore();}
+        @Override public boolean onTouchEvent(MotionEvent e){if(closed)return false;float scale=scale(),x=(e.getX()-(getWidth()-1024*scale)/2)/scale,y=(e.getY()-(getHeight()-768*scale)/2)/scale;if(e.getActionMasked()==MotionEvent.ACTION_DOWN){if(x<0||x>1024||y<0||y>768)return false;if(strokes.size()>=1000){status.setText("Save and reopen this picture to continue drawing.");return true;}getParent().requestDisallowInterceptTouchEvent(true);current=new Stroke(color,width);current.path.moveTo(x,y);current.path.lineTo(x+.1f,y+.1f);strokes.add(current);redo.clear();}else if(e.getActionMasked()==MotionEvent.ACTION_MOVE&&current!=null){current.path.lineTo(x,y);}else if(e.getActionMasked()==MotionEvent.ACTION_UP||e.getActionMasked()==MotionEvent.ACTION_CANCEL){current=null;recover();performClick();}invalidate();return true;}
+        @Override public boolean performClick(){super.performClick();return true;}
+    }
+}

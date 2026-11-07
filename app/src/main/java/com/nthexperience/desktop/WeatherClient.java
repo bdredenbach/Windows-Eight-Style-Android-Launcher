@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 
 /** Locationforecast is cached and fetched only while this launcher is visible. */
 final class WeatherClient {
-    static final String AGENT="NthDesktopEight/0.4.0 (https://github.com/bdredenbach/Windows-Eight-Style-Android-Launcher)";
+    static final String AGENT="NthDesktopEight/"+BuildConfig.VERSION_NAME+" (https://github.com/bdredenbach/Windows-Eight-Style-Android-Launcher)";
     static final class Snapshot {
         final double celsius; final String symbol; final long forecastTime;
         Snapshot(double celsius,String symbol,long time){this.celsius=celsius;this.symbol=symbol;forecastTime=time;}
