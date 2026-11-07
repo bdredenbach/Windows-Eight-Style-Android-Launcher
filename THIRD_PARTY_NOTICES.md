@@ -4,7 +4,7 @@ The Gradle wrapper scripts and `gradle/wrapper/gradle-wrapper.jar` come from the
 
 Android SDK/build tools and the Android Gradle Plugin are downloaded as development dependencies under their respective licenses; they are not source assets from the inspiration project. The Internet browser uses AndroidX WebKit 1.13.0 and its transitive AndroidX support/annotation dependencies, distributed under the Apache License, Version 2.0. The license is included in `third_party/androidx/LICENSE.txt`. Source: https://android.googlesource.com/platform/frameworks/support/ . WebKit supplies compatibility APIs; the installed Android WebView provider supplies its own Chromium engine under its provider licenses.
 
-The Nth Desktop code, wallpaper and vector/primitives icon artwork were created for this project. No Microsoft assets or jovanovski/windowslauncher code are included. Android app icons and labels shown at runtime come from apps installed on the user's device.
+The Nth Desktop code, wallpaper and vector/primitives icon artwork were created for this project. Selected owner-supplied Microsoft icon resources are documented separately below. No jovanovski/windowslauncher code is included. Android app icons and labels shown at runtime come from apps installed on the user's device.
 
 ## Selawik typeface
 
@@ -31,3 +31,7 @@ Ten 0.2 uses Google ML Kit GenAI Prompt API 1.0.0-beta4 and Android AICore on su
 ## Owner-supplied Windows 10 icon artwork
 
 Ten 0.14.0 uses thirty original Microsoft Windows icon resources from the owner's supplied `10125_icons.zip` (Windows 10 build 10125 icon collection). The selected ICO frames were converted losslessly to transparent PNG without editing the artwork. Windows and these icon designs belong to Microsoft. These assets are separate from the original Nth artwork and are not relicensed under the source code license. Exact resource filenames, kind mappings and source/output SHA-256 values are recorded in `docs/TEN_0_14_ICON_ASSETS.json`. Collection link supplied by the owner: https://winaero.com/download-icons-from-windows-10-build-10125/ .
+
+## Owner-supplied Windows 8 icon artwork
+
+The existing seventeen Windows 8 desktop icons came from the owner’s `win8icons.zip`; provenance and hashes are recorded in `docs/EIGHT_ICON_PROVENANCE.json`. Version 0.6.1 adds twenty selected icons from the owner-uploaded Cozzmy13 collection, [Windows 8 Original Icons](https://www.deviantart.com/cozzmy13/art/Windows-8-Original-Icons-Largest-Icon-Pack-407985804). Only native 256×256 frames were decoded to lossless transparent PNG, with no enlargement or sharpening. Source/output hashes and the selection policy are in `docs/EIGHT_0_6_1_ICON_PROVENANCE.json`. The browser’s monochrome Start glyph uses the supplied icon alpha with a runtime white tint. Microsoft and the respective rights holders retain ownership of the supplied artwork; it is not relicensed as original Nth artwork. The collection title alone does not verify a specific Windows release build.
