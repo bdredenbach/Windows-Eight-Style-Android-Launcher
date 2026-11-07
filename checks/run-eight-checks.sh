@@ -5,15 +5,18 @@ failed=0
 collect() {
   local suite="$1" name
   mkdir -p "screenshots/$suite"
-  for name in $(adb shell run-as "$launcher" ls files 2>/dev/null | tr -d '\r'); do
-    case "$name" in *.png|*tree.txt|*capture.txt) adb exec-out run-as "$launcher" cat "files/$name" > "screenshots/$suite/$name" 2>/dev/null || true;; esac
+  for name in $(adb shell ls "/data/user/0/$launcher/files" 2>/dev/null | tr -d '\r'); do
+    case "$name" in *.png|*tree.txt|*capture.txt) adb exec-out cat "/data/user/0/$launcher/files/$name" > "screenshots/$suite/$name" 2>/dev/null || true;; esac
   done
   adb logcat -d -t 400 > "screenshots/$suite/device-log.txt" || true
 }
 adb install -r fixture/build/outputs/apk/debug/fixture-debug.apk
-adb install -r app/build/outputs/apk/debug/app-debug.apk
+# Root is used only to collect private screenshot evidence on these AOSP emulators.
+adb root
+adb wait-for-device
+adb install -r app/build/outputs/apk/release/app-release.apk
 adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
-for suite in EightFidelitySmoke EightSmoke EightGestureSmoke EightAuditSmoke EightImmersiveSmoke EightResearchSmoke BrowserSmoke ExplorerSmoke PhotoSmoke MediaSmoke; do
+for suite in EightReleaseSmoke EightFidelitySmoke EightSmoke EightGestureSmoke EightAuditSmoke EightImmersiveSmoke EightResearchSmoke BrowserSmoke ExplorerSmoke PhotoSmoke MediaSmoke; do
   adb shell wm size reset
   adb shell wm density reset
   adb shell am force-stop "$launcher"

@@ -1,4 +1,4 @@
-name: Nth Desktop Eight preview and regression
+name: Nth Desktop Eight release and regression
 on:
   push:
     branches: [main]
@@ -37,13 +37,13 @@ jobs:
           java -cp build/eight-checks com.nthexperience.desktop.EightTileLayoutCheck
           javac -d build/eight-checks app/src/main/java/com/nthexperience/desktop/EightProfile.java app/src/main/java/com/nthexperience/desktop/EightAppSpec.java app/src/main/java/com/nthexperience/desktop/EightSnapPolicy.java checks/EightSnapCheck.java
           java -cp build/eight-checks com.nthexperience.desktop.EightSnapCheck
-      - run: ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest :fixture:assembleDebug :installprobe:assembleDebug --no-daemon
+      - run: ./gradlew :app:testReleaseUnitTest :app:assembleDebug :app:assembleRelease :app:assembleDebugAndroidTest :fixture:assembleDebug :installprobe:assembleDebug --no-daemon
       - name: Check packaged runners and notification permission
         run: python3 checks/CheckEightManifest.py
       - uses: actions/upload-artifact@v4
         with:
-          name: Nth-Desktop-Eight-0.6.2-api-${{ matrix.api }}
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: Nth-Desktop-Eight-0.6.3-api-${{ matrix.api }}
+          path: app/build/outputs/apk/release/app-release.apk
       - name: Enable emulator acceleration
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -72,5 +72,5 @@ jobs:
           name: Eight-evidence-api-${{ matrix.api }}
           path: |
             eight-*.txt
-            app/build/test-results/testDebugUnitTest/
+            app/build/test-results/testReleaseUnitTest/
             screenshots/
