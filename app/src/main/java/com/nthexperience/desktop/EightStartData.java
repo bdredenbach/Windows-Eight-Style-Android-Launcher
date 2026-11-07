@@ -49,7 +49,7 @@ final class EightStartData {
         }
         return groups;
     }
-    static boolean validId(String id){return id.equals("@desktop")||DesktopBackup.shortcut(id,new JSONObject(),false);}
+    static boolean validId(String id){return id.equals("@desktop")||EightWebTiles.validId(id)||DesktopBackup.shortcut(id,new JSONObject(),false);}
     void save(){
         try{JSONArray array=new JSONArray();for(Group group:groups){JSONArray items=new JSONArray();for(Item item:group.items)items.put(new JSONObject().put("id",item.id).put("size",item.size));array.put(new JSONObject().put("name",group.name).put("items",items));}
             store.prefs.edit().putString(key(profile),new JSONObject().put("version",1).put("groups",array).toString()).apply();
@@ -59,6 +59,12 @@ final class EightStartData {
     boolean pin(String id){if(item(id)!=null||!validId(id)||count()>=MAX_TILES)return false;groups.get(0).items.add(new Item(id,"Medium"));save();return true;}
     int count(){int count=0;for(Group group:groups)count+=group.items.size();return count;}
     void unpin(String id){for(Group group:groups)group.items.removeIf(i->i.id.equals(id));save();}
+    void administrative(boolean show){
+        String key="eight_admin_added_"+profile.id;List<String> inserted=new ArrayList<>();try{JSONArray rows=new JSONArray(store.prefs.getString(key,"[]"));for(int i=0;i<rows.length();i++)inserted.add(rows.getString(i));}catch(JSONException ignored){}
+        if(show){Group group=null;for(Group candidate:groups)if(candidate.name.equals("Administrative tools"))group=candidate;if(group==null&&groups.size()<MAX_GROUPS){group=new Group("Administrative tools");groups.add(group);}if(group!=null)for(String id:new String[]{"@taskmanager","@management","@events","@devices"})if(item(id)==null&&count()<MAX_TILES){group.items.add(new Item(id,"Medium"));inserted.add(id);}}
+        else{for(Group group:groups)group.items.removeIf(item->inserted.contains(item.id));groups.removeIf(group->groups.size()>1&&group.name.equals("Administrative tools")&&group.items.isEmpty());inserted.clear();}
+        save();store.prefs.edit().putBoolean("eight_admin_tools",show).putString(key,new JSONArray(inserted).toString()).apply();
+    }
     void move(String id,Group target,int position){Item item=item(id);if(item==null)return;for(Group group:groups)group.items.remove(item);target.items.add(Math.max(0,Math.min(position,target.items.size())),item);save();}
     boolean name(Group group,String value){String name=value.trim();if(name.isEmpty()||name.length()>40||groups.stream().anyMatch(g->g!=group&&g.name.equalsIgnoreCase(name)))return false;if(group==null){if(groups.size()>=MAX_GROUPS)return false;groups.add(new Group(name));}else group.name=name;save();return true;}
 }

@@ -16,6 +16,11 @@ final class EightLiveTiles {
     void toggle(String id){store.prefs.edit().putBoolean(key(id),!store.prefs.getBoolean(key(id),true)).apply();}
     private WeatherClient.Snapshot weather(){String json=store.prefs.getString("weather_json","");if(!json.equals(weatherJson)){weatherJson=json;weather=null;try{weather=WeatherClient.Snapshot.parse(json);}catch(Exception ignored){}}return weather;}
     EightTileSnapshot snapshot(String id,long now){
+        EightTileSnapshot snapshot=rawSnapshot(id,now);if(snapshot==null)return null;try{String cleared=new JSONObject(store.prefs.getString("eight_tile_cleared_"+EightDefaults.profile(store).id,"{}")).optString(id);return fingerprint(snapshot).equals(cleared)?null:snapshot;}catch(JSONException e){return snapshot;}
+    }
+    private static String fingerprint(EightTileSnapshot snapshot){StringBuilder key=new StringBuilder();for(EightTileSnapshot.Item item:snapshot.items)key.append(item.key()).append("\n");key.append(snapshot.badge);return EightWebTiles.id(key.toString());}
+    void clear(){JSONObject cleared=new JSONObject();long now=System.currentTimeMillis();for(String id:Arrays.asList("@weather","@calendar","@news","@photos",MediaLibrary.PLAYER,"@readinglist","@alarms")){EightTileSnapshot snapshot=rawSnapshot(id,now);if(snapshot!=null)try{cleared.put(id,fingerprint(snapshot));}catch(JSONException ignored){}}store.prefs.edit().putString("eight_tile_cleared_"+EightDefaults.profile(store).id,cleared.toString()).apply();}
+    EightTileSnapshot rawSnapshot(String id,long now){
         if(!enabled(id))return null;
         List<EightTileSnapshot.Item> items=new ArrayList<>();long expiry=0;int badge=0;
         if(id.equals("@calendar")){
