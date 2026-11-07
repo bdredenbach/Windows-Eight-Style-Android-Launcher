@@ -45,7 +45,7 @@ final class EightStartScreen extends LinearLayout {
     private TileDrag dragging;private View dragSource;private DropPreview dropPreview;
     private EightStartData.Group dropGroup;private int dropIndex,edgeSpeed,newGroupIndex=-1;private View dragSpace;
     private float dragX,dragY,downX,downY;private boolean pendingRender,swipeCandidate,swiping;
-    private final Runnable edgeScroll=new Runnable(){public void run(){if(dragging==null||horizontal==null)return;int before=horizontal.getScrollX();horizontal.scrollBy(edgeSpeed,0);updateDrop(dragX,dragY);if(edgeSpeed!=0&&horizontal.getScrollX()!=before)handler.postDelayed(this,16);}};
+    private final Runnable edgeScroll=new Runnable(){public void run(){if(dragging==null||horizontal==null)return;horizontal.scrollBy(edgeSpeed,0);updateDrop(dragX,dragY);if(edgeSpeed!=0)handler.postDelayed(this,16);}};
     private static final class TileGroup{final EightStartData.Group group;final View grid;final List<EightTileLayout.Cell> cells;final int unit;TileGroup(EightStartData.Group g,View v,List<EightTileLayout.Cell> c,int u){group=g;grid=v;cells=c;unit=u;}}
     private final class DropPreview extends View{
         final Paint paint=new Paint(3);final RectF target=new RectF();String label="";
@@ -160,7 +160,7 @@ final class EightStartScreen extends LinearLayout {
             case DragEvent.ACTION_DRAG_STARTED:pauseLiveTiles();dragging=(TileDrag)event.getLocalState();dragSource=tileViews.get(dragging.id);if(dragSource!=null)dragSource.setAlpha(.35f);newGroupIndex=-1;if(horizontal!=null&&horizontal.getChildCount()>0){dragSpace=new View(getContext());dragSpace.setContentDescription("New column drop space");((LinearLayout)horizontal.getChildAt(0)).addView(dragSpace,new LayoutParams(Math.max(dp(180),viewport.getWidth()/2),-1));}dropPreview=new DropPreview(getContext());viewport.addView(dropPreview,new FrameLayout.LayoutParams(-1,-1));swipeCandidate=false;return true;
             case DragEvent.ACTION_DRAG_LOCATION:dragX=event.getX();dragY=event.getY();edgeSpeed=dragX<dp(56)?-Math.max(dp(2),(int)((dp(56)-dragX)/5)):dragX>viewport.getWidth()-dp(56)?Math.max(dp(2),(int)((dragX-viewport.getWidth()+dp(56))/5)):0;edgeSpeed=Math.max(-dp(14),Math.min(dp(14),edgeSpeed));handler.removeCallbacks(edgeScroll);updateDrop(dragX,dragY);if(edgeSpeed!=0)handler.post(edgeScroll);return true;
             case DragEvent.ACTION_DRAG_EXITED:edgeSpeed=0;handler.removeCallbacks(edgeScroll);dropGroup=null;newGroupIndex=-1;if(dropPreview!=null)dropPreview.invalidate();return true;
-            case DragEvent.ACTION_DROP:updateDrop(event.getX(),event.getY());if(newGroupIndex>=0){if(!data.moveToNewGroup(dragging.id,newGroupIndex)){Toast.makeText(getContext(),"Start can contain up to 16 groups.",Toast.LENGTH_SHORT).show();return false;}pendingRender=true;selected=null;return true;}if(dropGroup!=null){data.move(dragging.id,dropGroup,dropIndex);pendingRender=true;selected=null;return true;}return false;
+            case DragEvent.ACTION_DROP:edgeSpeed=0;handler.removeCallbacks(edgeScroll);updateDrop(event.getX(),event.getY());if(newGroupIndex>=0){if(!data.moveToNewGroup(dragging.id,newGroupIndex)){Toast.makeText(getContext(),"Start can contain up to 16 groups.",Toast.LENGTH_SHORT).show();return false;}pendingRender=true;selected=null;return true;}if(dropGroup!=null){data.move(dragging.id,dropGroup,dropIndex);pendingRender=true;selected=null;return true;}return false;
             case DragEvent.ACTION_DRAG_ENDED:finishDrag();return true;
             default:return true;
         }
