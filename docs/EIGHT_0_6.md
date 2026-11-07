@@ -26,4 +26,4 @@ Source version 0.6.0 is merged in [PR #2](https://github.com/bdredenbach/Windows
 - [Windows Icon Archive](https://limehawk.github.io/windows-icon-archive/): browsable version/source-DLL views, including 8.1.
 - [Microsoft Segoe UI Symbol](https://learn.microsoft.com/en-us/typography/font-list/segoe-ui-symbol): period symbol font information. The current code uses original Nth vector drawings while owner-provided assets are pending.
 
-The inherited 17-icon owner pack remains intact. Additional icons will be matched to 8.0/8.1 references after the owner provides them.
+The inherited 17-icon owner pack remains intact. Version 0.6.1 adds 20 selected native 256px icons from the owner-uploaded Cozzmy13 pack. Smaller-only, dithered, legacy and unrelated icons were excluded. The complete selection and source/output hashes are in `EIGHT_0_6_1_ICON_PROVENANCE.json`; the collection title does not establish a particular Windows build. Desktop and Start browser controls now use the supplied Internet Explorer silhouette; Paint and WordPad use their colored desktop artwork. Other monochrome controls retain the scalable Nth drawings.

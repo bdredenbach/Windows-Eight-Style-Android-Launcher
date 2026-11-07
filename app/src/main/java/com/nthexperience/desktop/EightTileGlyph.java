@@ -6,8 +6,13 @@ import android.view.View;
 /** Original monochrome tile marks for owned immersive apps, separate from desktop folder artwork. */
 final class EightTileGlyph extends View {
     final String id;final Paint paint=new Paint(3);final Path path=new Path();
-    EightTileGlyph(Context context,String id){super(context);this.id=id;setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);}
+    final android.graphics.drawable.Drawable supplied;
+    EightTileGlyph(Context context,String id){super(context);this.id=id;
+        supplied=id.equals("@browser")?EightIconAssets.drawable(context,"browser"):null;
+        if(supplied!=null){supplied.mutate();supplied.setBounds(0,0,64,64);supplied.setColorFilter(Color.WHITE,PorterDuff.Mode.SRC_IN);}
+        setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);}
     @Override protected void onDraw(Canvas canvas){super.onDraw(canvas);canvas.save();float scale=Math.min(getWidth(),getHeight())/64f;canvas.translate((getWidth()-64*scale)/2,(getHeight()-64*scale)/2);canvas.scale(scale,scale);paint.setColor(Color.WHITE);paint.setStrokeWidth(3);paint.setStyle(Paint.Style.STROKE);
+        if(supplied!=null){supplied.draw(canvas);canvas.restore();return;}
         switch(id){
             case "@paint":canvas.drawOval(7,11,57,53,paint);canvas.drawCircle(20,25,4,paint);canvas.drawCircle(34,20,4,paint);canvas.drawCircle(47,29,4,paint);canvas.drawLine(17,52,48,12,paint);break;
             case "@wordpad":canvas.drawRect(10,6,54,58,paint);paint.setStyle(Paint.Style.FILL);paint.setTypeface(Typeface.create("serif",Typeface.BOLD));paint.setTextSize(33);paint.setTextAlign(Paint.Align.CENTER);canvas.drawText("W",32,45,paint);break;

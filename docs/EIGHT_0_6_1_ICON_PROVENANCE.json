@@ -1,0 +1,171 @@
+{
+  "source": "Owner-supplied windows_8_original_icons_largest_icon_pack_by_cozzmy13_d6qwjv0.zip",
+  "collection_url": "https://www.deviantart.com/cozzmy13/art/Windows-8-Original-Icons-Largest-Icon-Pack-407985804",
+  "archive_sha256": "f60be01c2f3a615421d9c545370b66482eee9b16e6eb7ec15f9d416c3155d607",
+  "archive_icon_count": 816,
+  "conversion": "Native 256x256 ICO frames decoded to lossless RGBA PNG. No enlargement, sharpening, recoloring or generated replacement artwork. The browser Start glyph applies a white alpha tint at render time.",
+  "quality_policy": "All selected frames are native 256x256 and were visually reviewed. Exclude smaller-only, dithered, legacy and unrelated resources. Keep the existing 17-icon pack and Nth vector fallbacks. The collection title does not verify a specific Windows 8.0 build.",
+  "copyright": "Original artwork remains attributed to Microsoft and its respective rights holders; not relicensed as original Nth artwork.",
+  "icons": [
+    {
+      "source": "Icon_1035.ico",
+      "source_sha256": "7ae3435c2b8a8ca79e03045352de96028c21b9a363759ab723481bfb141d397d",
+      "resource": "win8_browser",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "ac3f89ec0da07e639d585fe76896ad35be53c3e0624ef36369971e549ead7f42"
+    },
+    {
+      "source": "Icon_538.ico",
+      "source_sha256": "911b1dee433aa7171c9fb8834ed652fcde4fdbe517ab9272c78f0ea1af2ec200",
+      "resource": "win8_control_panel",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "37583e0fdbe3421328ebb78772d702c03dee30a84db29fa846e3109f2e1864ac"
+    },
+    {
+      "source": "Icon_543.ico",
+      "source_sha256": "9fc9cc4b4568b8add06cdb4e7441fa1244d2e390f15e231cd17222b832d792b8",
+      "resource": "win8_drive",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "7ad072f4af419aaf71268ec1a78873d4c89772e8097f6ea9ce67fb01c23914cc"
+    },
+    {
+      "source": "Icon_589.ico",
+      "source_sha256": "ec157fc54638de8168db4f3932b21beb63787261e09853badfd34f9ade87317d",
+      "resource": "win8_security",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "a1b10396ea1d2b1faf36062a81ca256e46599573281997032a230f1089c8d242"
+    },
+    {
+      "source": "Icon_598.ico",
+      "source_sha256": "3b9a561f274787ced14b8d3e415cf34fc9c5afaa69a4dcb06ce8b46ecc900dc7",
+      "resource": "win8_programs",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "1d08e2af5de368ca80386b2371aadfe7e66a9fc997969d332b9e2f56b92493b5"
+    },
+    {
+      "source": "Icon_527.ico",
+      "source_sha256": "f728de10e12ae83a813914279ce4bd7a21c922f618dd307f755643726cb01d81",
+      "resource": "win8_application",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "e7f23d16c66e49042732251d8cb84b288272954e1bff483ab2ce52d802e35c85"
+    },
+    {
+      "source": "Icon_518.ico",
+      "source_sha256": "e9176539e9a1436caa8299ddce499cde138a791a3fbeb448abb4446db6e3e9c8",
+      "resource": "win8_document_file",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "eebf4cd4613962ffbc68195f498e57ab2ba6faedc3c2a24873ffbdc6d9c19804"
+    },
+    {
+      "source": "Icon_642.ico",
+      "source_sha256": "1d3e9aa43ea4d652d9ed14d095ccf5ce942b3b1e21c719122e7dee213f545878",
+      "resource": "win8_picture_file",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "3aeec8dfbdfc50f8d6873f28d4d18d035317d1aa3107a19cbf9ad11c3d0a5baf"
+    },
+    {
+      "source": "Icon_341.ico",
+      "source_sha256": "d4e1aedf8460462ec5a2005f0aacda289f773aeb5d1afe1a8e36e86c91831381",
+      "resource": "win8_music_file",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "4025a8c1ae2a91871e12589b311a228050cfd9aa65365f242c28870402bbcef9"
+    },
+    {
+      "source": "Icon_643.ico",
+      "source_sha256": "c327c68b9cf20d682456147f1653b0c03f494cfff2c52fa09dccd43529a4e69d",
+      "resource": "win8_video_file",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "9a1226d565b671f6cbea712f7e25773a215d500ce252adc1dcd02447c49e10bf"
+    },
+    {
+      "source": "Icon_681.ico",
+      "source_sha256": "14ba2a29b56c0c31a2ba27b20512f7f526bb1cfa5e496ba9f542ed4edaf1810f",
+      "resource": "win8_archive",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "5daf3cf9d46bfcf3a19cfd056ac981a745cb474a5e55e797dbe1fbbf2ca5b513"
+    },
+    {
+      "source": "Icon_702.ico",
+      "source_sha256": "916eb9565ec0353887977307a196a99f0e55a0b4fc9baaceb04e75c7f47689e6",
+      "resource": "win8_appearance",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "3c5f24ff56bece4515d3b5fce775210b9eba5ec9a4b4abfe22de66accde3a3dd"
+    },
+    {
+      "source": "Icon_901.ico",
+      "source_sha256": "32ca434a6447a9140f03b52fc4efe782c0d765bc3fd329f35dded6b1c20315ca",
+      "resource": "win8_sound",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "9a2a6184650057c8625d3e2d34fe8c47005c84c7d122565a75ae4c9f576ce438"
+    },
+    {
+      "source": "Icon_588.ico",
+      "source_sha256": "762476a9c29ee5ee4189e16f9018eb56c76fa6248c5b1c40534dd56fb4c2ebf4",
+      "resource": "win8_fonts",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "18833f5fe4c3e9585f0c9bb841507ba8549802bd398edc2acdfde4b2dea95b2e"
+    },
+    {
+      "source": "Icon_660.ico",
+      "source_sha256": "14030d23ed597222d20c5e9fcbfa76dac92362aebefe1f8d4ad2072b906d514c",
+      "resource": "win8_taskmanager",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "3b78db57ce435fa69c3d236c089266a338279a111b8757bc087a0ae491b762a3"
+    },
+    {
+      "source": "Icon_581.ico",
+      "source_sha256": "d81a849e8a1fc7263ab01ad0d80c699a51a2a44e27ac86b1c507143051a879e8",
+      "resource": "win8_paint",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "48d5999f73650c41b1c928e91385481e6ba4e3f96e64fe20ee08e6f90f10dd15"
+    },
+    {
+      "source": "Icon_601.ico",
+      "source_sha256": "6a55a5f6c4102c3d32eafacfe22743288dca13c7728f67d790f4ae14d9af7fba",
+      "resource": "win8_wordpad",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "7316d0332425951e49adf5f648da48d8725fb9cb4069e8fc1069e1a027151dd6"
+    },
+    {
+      "source": "Icon_920.ico",
+      "source_sha256": "37b53c405d7cf8ff33eff87d11af1d10fa1f3d553bf81acce204ec9fe66882bc",
+      "resource": "win8_power",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "affe4bf78dca697a5b8cf98f03d338a63145c9b7982c8a44632110435c8ab388"
+    },
+    {
+      "source": "Icon_597.ico",
+      "source_sha256": "4987b1611f01991ba6c1498732fb69b87234bd0a8137adea7d761626dcecb319",
+      "resource": "win8_accessibility",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "aaa4be10e94c8785f73277463560896b824ab2e7c5b10d579553053517b4f28e"
+    },
+    {
+      "source": "Icon_444.ico",
+      "source_sha256": "a0fdfdecaab793768bfc8c47da11c5be2af45e6d8af420a63c919fc16f4e65cf",
+      "resource": "win8_delete",
+      "width": 256,
+      "height": 256,
+      "png_sha256": "2900fada158e5e87d71e129ceb28c01f152304bc80e18fffc857569921ff072a"
+    }
+  ]
+}
