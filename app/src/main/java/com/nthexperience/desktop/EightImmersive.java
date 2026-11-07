@@ -12,7 +12,7 @@ import org.json.*;
 /** Hosts the same owned app bodies as Desktop. A presentation transfer is never an app close. */
 @androidx.media3.common.util.UnstableApi
 final class EightImmersive extends FrameLayout {
-    interface Host {DesktopWindow prepare(String id);void front();void desktop();void switcher();void changed();void share();}
+    interface Host {DesktopWindow prepare(String id);void front();void desktop();void switcher();void changed();void share();default void reveal(Runnable action){action.run();}}
     static final class Session {
         final EightAppSpec spec;final DesktopWindow window;final ViewGroup desktopParent;final ViewGroup.LayoutParams desktopParams;
         final FrameLayout pane;Bitmap preview;boolean transferring;
@@ -52,12 +52,14 @@ final class EightImmersive extends FrameLayout {
         Session session=new Session(spec,window,pane);sessions.put(id,session);begin(window.body);session.transferring=true;
         session.desktopParent.removeView(window.body);window.setVisibility(GONE);pane.addView(window.body,new FrameLayout.LayoutParams(-1,-1));presentation(window.body,true);return session;
     }
-    void show(String id){
+    void show(String id){host.reveal(()->showNow(id));}
+    private void showNow(String id){
         captureVisible();host.front();setVisibility(VISIBLE);Session session=obtain(id);if(session==null){hideSurface();return;}
         if(id.equals(secondary)){String old=primary;primary=id;secondary=old;}else if(!id.equals(primary)){primary=id;secondary=null;}
         touch(id);commands(false);render();
     }
-    void resumeLast(){if(primary!=null&&sessions.containsKey(primary)){host.front();setVisibility(VISIBLE);render();}else host.desktop();}
+    void resumeLast(){host.reveal(this::resumeNow);}
+    private void resumeNow(){if(primary!=null&&sessions.containsKey(primary)){host.front();setVisibility(VISIBLE);render();}else host.desktop();}
     void hideSurface(){captureVisible();setVisibility(GONE);caption.setVisibility(GONE);updateActivity();host.changed();}
     void commands(boolean visible){appBar=visible;commandHandle.setVisibility(visible?GONE:VISIBLE);commandScroll.setVisibility(visible?VISIBLE:GONE);for(Session session:sessions.values())if(session.window.body instanceof BrowserPanel)((BrowserPanel)session.window.body).immersiveCommands(visible,profile());for(Session session:sessions.values()){if(session.window.body instanceof WeatherPanel)((WeatherPanel)session.window.body).immersive(true,visible);if(session.window.body instanceof PhotoGallery)((PhotoGallery)session.window.body).immersive(true,visible);}layoutPanes();}
     private void render(){
