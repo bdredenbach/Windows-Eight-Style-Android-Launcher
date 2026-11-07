@@ -58,7 +58,7 @@ final class EightStartData {
     Item item(String id){for(Group group:groups)for(Item item:group.items)if(item.id.equals(id))return item;return null;}
     boolean pin(String id){if(item(id)!=null||!validId(id)||count()>=MAX_TILES)return false;groups.get(0).items.add(new Item(id,"Medium"));save();return true;}
     int count(){int count=0;for(Group group:groups)count+=group.items.size();return count;}
-    void unpin(String id){for(Group group:groups)group.items.removeIf(i->i.id.equals(id));save();}
+    void unpin(String id){for(Group group:groups)group.items.removeIf(i->i.id.equals(id));save();if(EightWebTiles.validId(id))EightWebTiles.removeIfUnpinned(store,id);}
     void administrative(boolean show){
         String key="eight_admin_added_"+profile.id;List<String> inserted=new ArrayList<>();try{JSONArray rows=new JSONArray(store.prefs.getString(key,"[]"));for(int i=0;i<rows.length();i++)inserted.add(rows.getString(i));}catch(JSONException ignored){}
         if(show){Group group=null;for(Group candidate:groups)if(candidate.name.equals("Administrative tools"))group=candidate;if(group==null&&groups.size()<MAX_GROUPS){group=new Group("Administrative tools");groups.add(group);}if(group!=null)for(String id:new String[]{"@taskmanager","@management","@events","@devices"})if(item(id)==null&&count()<MAX_TILES){group.items.add(new Item(id,"Medium"));inserted.add(id);}}
