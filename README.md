@@ -1,5 +1,7 @@
 # Nth Desktop Eight
 
+Release review **0.6.3** fixes Start typing/submit, Ctrl+Tab, the 8.1 Apps gesture, Win+D, settings return paths and Charms symbols. The non-debuggable release passed 24 unit tests and eleven native suites on Android 11 and Android 16. See [coverage and remaining features](docs/EIGHT_0_6_3_REVIEW.md) and [validated delivery](docs/EIGHT_0_6_3_DELIVERY.md).
+
 A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Current preview: **0.6.2**. Android 8.0+; targets Android 16.
 
 Package: `com.nthexperience.desktop.eight`. Installs alongside Nth Desktop Ten, Seven and Vista.
