@@ -9,13 +9,13 @@ final class EightGlyph extends View {
     void kind(String value){kind=value;invalidate();}
     @Override protected void onDraw(Canvas c){
         super.onDraw(c);c.save();c.translate(getWidth()/2f,getHeight()/2f);float unit=Math.min(getWidth(),getHeight())/40f;c.scale(unit,unit);
-        p.setColor(ink);p.setAlpha(isEnabled()?255:90);p.setStrokeWidth(2.5f);p.setStrokeCap(Paint.Cap.SQUARE);p.setStrokeJoin(Paint.Join.MITER);p.setStyle(Paint.Style.STROKE);
+        p.setColor(ink);p.setAlpha(isEnabled()?255:90);p.setStrokeWidth(circle?1.25f:2.5f);p.setStrokeCap(Paint.Cap.SQUARE);p.setStrokeJoin(Paint.Join.MITER);p.setStyle(Paint.Style.STROKE);
         if(circle)c.drawCircle(0,0,17,p);
         if(kind.equals("search")){c.drawCircle(3,-3,8,p);p.setStrokeWidth(4);c.drawLine(-3,3,-12,12,p);}
         else if(kind.equals("back")||kind.equals("forward")){c.save();if(kind.equals("forward"))c.rotate(180);c.drawLine(-8,0,9,0,p);c.drawLine(-8,0,-1,-7,p);c.drawLine(-8,0,-1,7,p);c.restore();}
         else if(kind.equals("reload")){c.drawArc(-8,-8,8,8,-55,285,false,p);c.drawLine(5,-9,7,-2,p);c.drawLine(7,-2,0,-3,p);}
         else if(kind.equals("stop")){c.drawLine(-6,-6,6,6,p);c.drawLine(-6,6,6,-6,p);}
-        else if(kind.equals("pin")){Path path=new Path();path.moveTo(-6,-10);path.lineTo(6,-10);path.lineTo(4,-6);path.lineTo(4,0);path.lineTo(8,4);path.lineTo(-8,4);path.lineTo(-4,0);path.lineTo(-4,-6);path.close();p.setStyle(Paint.Style.FILL);c.drawPath(path,p);p.setStyle(Paint.Style.STROKE);c.drawLine(0,3,0,13,p);}
+        else if(kind.equals("pin")){Path path=new Path();path.moveTo(-5,-9);path.lineTo(5,-9);path.lineTo(3,-5);path.lineTo(3,0);path.lineTo(6,3);path.lineTo(-6,3);path.lineTo(-3,0);path.lineTo(-3,-5);path.close();c.drawPath(path,p);c.drawLine(0,3,0,11,p);}
         else if(kind.equals("tools")){c.save();c.rotate(40);c.drawLine(0,-1,0,11,p);p.setStyle(Paint.Style.FILL);c.drawCircle(0,10,2,p);p.setStyle(Paint.Style.STROKE);c.drawArc(-6,-12,6,0,-25,230,false,p);c.drawLine(-5,-8,-1,-4,p);c.drawLine(5,-8,1,-4,p);c.restore();}
         else if(kind.equals("start")){p.setStyle(Paint.Style.FILL);for(int x=0;x<2;x++)for(int y=0;y<2;y++){Path pane=new Path();float l=-15+x*16,rr=l+14,t=-12+y*14,b=t+12;pane.moveTo(l,t-(x==1?2:0));pane.lineTo(rr,t-(x==1?4:1));pane.lineTo(rr,b+(x==1?4:1));pane.lineTo(l,b+(x==1?2:0));pane.close();c.drawPath(pane,p);}}
         else if(kind.equals("share")){c.drawCircle(0,0,13,p);p.setStyle(Paint.Style.FILL);for(int i=0;i<5;i++){double a=(i*72-90)*Math.PI/180;c.drawCircle((float)Math.cos(a)*13,(float)Math.sin(a)*13,4.6f,p);}c.drawCircle(0,0,3,p);}
