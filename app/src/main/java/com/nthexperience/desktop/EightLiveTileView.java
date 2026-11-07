@@ -21,7 +21,7 @@ final class EightLiveTileView extends FrameLayout {
         LinearLayout text=Aero.column(c);text.setGravity(Gravity.CENTER_VERTICAL);text.setPadding(dp(12),dp(8),dp(12),dp(32));
         heading=Aero.text(c,"",size.equals("Wide")?20:24,Color.WHITE);heading.setMaxLines(large?5:3);heading.setEllipsize(TextUtils.TruncateAt.END);text.addView(heading);
         detail=Aero.text(c,"",12,Color.WHITE);detail.setMaxLines(large?4:2);detail.setEllipsize(TextUtils.TruncateAt.END);detail.setPadding(0,dp(5),0,0);text.addView(detail);addView(text,new FrameLayout.LayoutParams(-1,-1));
-        TextView name=Aero.text(c,title,12,Color.WHITE);name.setSingleLine();name.setEllipsize(TextUtils.TruncateAt.END);name.setPadding(dp(9),dp(5),dp(34),dp(6));name.setBackgroundColor(0x30000000);addView(name,new FrameLayout.LayoutParams(-1,dp(28),Gravity.BOTTOM));
+        TextView name=Aero.text(c,title,12,Color.WHITE);name.setSingleLine();name.setEllipsize(TextUtils.TruncateAt.END);name.setPadding(dp(9),dp(5),dp(34),dp(6));name.setBackgroundColor(0xaa000000);addView(name,new FrameLayout.LayoutParams(-1,dp(28),Gravity.BOTTOM));
         badge=Aero.text(c,"",13,Color.WHITE);badge.setGravity(Gravity.CENTER);badge.setBackgroundColor(0x99000000);FrameLayout.LayoutParams bp=new FrameLayout.LayoutParams(dp(32),dp(26),Gravity.BOTTOM|Gravity.END);addView(badge,bp);badge.setVisibility(GONE);
     }
     private int dp(int n){return Aero.dp(getContext(),n);}
