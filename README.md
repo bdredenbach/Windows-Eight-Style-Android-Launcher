@@ -32,7 +32,7 @@ The supplied icons remain attributed to their rights holders. The archive's file
 
 ## Windows 8.0 fidelity 0.6.0
 
-See [the recording-driven fidelity changes and validation scope](docs/EIGHT_0_6.md) for the light original-Eight settings layout, Charms, immersive IE controls, website tiles and motion.
+See [the recording-driven fidelity changes and validation scope](docs/EIGHT_0_6.md) for the light original-Eight settings layout, Charms, immersive IE controls, website tiles and motion. The [0.6.1 package record](docs/EIGHT_0_6_1_DELIVERY.md) documents the delivered fresh-install APK, signing change and required backup before replacing 0.5.0.
 
 ## Research release 0.5.0
 

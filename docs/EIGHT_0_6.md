@@ -17,7 +17,7 @@ Fidelity exercises profile styling, actual address submission and anchored websi
 
 ### Delivery status
 
-Source version 0.6.0 is merged in [PR #2](https://github.com/bdredenbach/Windows-Eight-Style-Android-Launcher/pull/2). The signed install-over APK is pending: the execution workspace disconnected before the original Eight signing key could be accessed. CI debug artifacts are test builds with an incompatible signing identity and must not be presented as an update to the delivered 0.5.0 APK.
+Source version 0.6.0 is merged in [PR #2](https://github.com/bdredenbach/Windows-Eight-Style-Android-Launcher/pull/2); the icon follow-up is merged in PR #3. The owner-requested 0.6.1 APK is now delivered as a fresh-install package with a new, privately backed-up signing identity. It cannot update the original 0.5.0 installation. See [the package hashes, installation limits and future signing record](EIGHT_0_6_1_DELIVERY.md).
 
 ## Icon sources for the owner
 
