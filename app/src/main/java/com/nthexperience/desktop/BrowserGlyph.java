@@ -6,11 +6,12 @@ import android.view.View;
 
 /** Original artwork drawn for the familiar glass-era browser controls. */
 final class BrowserGlyph extends View {
-    private String kind;
+    private String kind;private int ink=0xff436173;
     private final Paint paint=new Paint(3);
     BrowserGlyph(Context context,String kind,String description,Runnable action){super(context);this.kind=kind;setContentDescription(description);setFocusable(true);setClickable(true);setOnClickListener(v->action.run());setBackground(Aero.selection(context));}
+    void ink(int value){ink=value;invalidate();}
     void kind(String value){if(!kind.equals(value)){kind=value;invalidate();}}
-    protected void onDraw(Canvas canvas){super.onDraw(canvas);int save=canvas.save();canvas.translate(getWidth()/2f,getHeight()/2f);float scale=Math.min(getWidth(),getHeight())/40f;canvas.scale(scale,scale);paint.setAlpha(isEnabled()?255:80);paint.setStrokeWidth(2);paint.setStrokeCap(Paint.Cap.ROUND);paint.setStrokeJoin(Paint.Join.ROUND);paint.setStyle(Paint.Style.STROKE);paint.setColor(0xff436173);paint.setAlpha(isEnabled()?255:80);
+    protected void onDraw(Canvas canvas){super.onDraw(canvas);int save=canvas.save();canvas.translate(getWidth()/2f,getHeight()/2f);float scale=Math.min(getWidth(),getHeight())/40f;canvas.scale(scale,scale);paint.setAlpha(isEnabled()?255:80);paint.setStrokeWidth(2);paint.setStrokeCap(Paint.Cap.ROUND);paint.setStrokeJoin(Paint.Join.ROUND);paint.setStyle(Paint.Style.STROKE);paint.setColor(ink);paint.setAlpha(isEnabled()?255:80);
         if(kind.equals("back")){canvas.drawLine(9,0,-9,0,paint);canvas.drawLine(-9,0,-2,-7,paint);canvas.drawLine(-9,0,-2,7,paint);
         }else if(kind.equals("forward")){canvas.drawLine(-9,0,9,0,paint);canvas.drawLine(9,0,2,-7,paint);canvas.drawLine(9,0,2,7,paint);
         }else if(kind.equals("reload")){canvas.drawArc(-8,-8,8,8,35,290,false,paint);canvas.drawLine(7,-7,8,0,paint);canvas.drawLine(8,0,2,-2,paint);
