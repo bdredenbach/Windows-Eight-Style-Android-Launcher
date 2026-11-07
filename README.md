@@ -42,11 +42,11 @@ Use Java 17 and Android SDK 36:
 ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest :fixture:assembleDebug
 ```
 
-The main workflow builds for Android 11 and Android 16, runs the Eight surface/profile scenario plus the immersive session/snap scenario the whole-surface audit, and shared Browser, Explorer, Photo and Media scenarios, and uploads APKs and native screenshots. `checks/EightTileLayoutCheck.java` checks 77,325 placements for bounds, overlap, determinism and profile-specific formats. `checks/EightSnapCheck.java` checks 76,944 supported combinations for classic/flexible sizing, per-app minimum widths and narrow fallback. The 13 unit tests retain the shared calculator, AI lifecycle and accent checks. Historical Ten suites are preserved as source reference and are not asserted to pass against Eight's replacement shell.
+The main workflow builds for Android 11 and Android 16, runs the Eight surface/profile scenario plus the immersive session/snap scenario the whole-surface audit, and shared Browser, Explorer, Photo and Media scenarios, and uploads APKs and native screenshots. `checks/EightTileLayoutCheck.java` checks 77,325 placements for bounds, overlap, determinism and profile-specific formats. `checks/EightSnapCheck.java` checks 203,980 supported combinations for classic/flexible sizing, per-app minimum widths and narrow fallback. The 16 unit tests cover tile queue/expiry/badge and settings-route invariants alongside the shared calculator, AI lifecycle and accent checks. Historical Ten suites are preserved as source reference and are not asserted to pass against Eight's replacement shell.
 
 The complete visual gallery and illustrated brief are in the owner-supplied handoff ZIP; research text and source attribution are retained here.
 
-See [the passing device validation and delivered package details](docs/EIGHT_0_3_VALIDATION.md).
+See [the passing 0.5.0 device validation and delivered package details](docs/EIGHT_0_5.md#validation).
 
 See [the expanded Windows 8 / 8.1 investigation and proposed live-tile plan](docs/eight-research/README.md) (62 references, settings and file-management atlases, and sampled official Microsoft 8.1 footage), [the completion review and evidence limits](docs/eight-research/COMPLETENESS_REVIEW.md), [the immersive and icon implementation notes](docs/EIGHT_0_2.md), [first-preview notes](docs/EIGHT_0_1.md), [original research handoff](docs/eight-handoff/00-START-HERE.md).
 
