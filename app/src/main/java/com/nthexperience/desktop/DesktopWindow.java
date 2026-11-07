@@ -81,7 +81,7 @@ final class DesktopWindow extends LinearLayout {
         close.setTextColor(Aero.INK);closeOriginal=close.getBackground();android.graphics.drawable.StateListDrawable eightClose=new android.graphics.drawable.StateListDrawable();eightClose.addState(new int[]{android.R.attr.state_pressed},new android.graphics.drawable.ColorDrawable(0xffe04343));eightClose.addState(new int[]{android.R.attr.state_hovered},new android.graphics.drawable.ColorDrawable(0xffe04343));eightClose.addState(new int[]{},new android.graphics.drawable.ColorDrawable(0xffc75050));eightClosePaint=eightClose;
         bar.addView(minimize); bar.addView(maximizeButton); bar.addView(close);
         addView(bar,new LayoutParams(-1,Aero.dp(context,44)));
-        body.setBackgroundColor(0xfff7f8f9); addView(body,new LayoutParams(-1,0,1));TenAppearance.bind(body);
+        if(body.getBackground()==null)body.setBackgroundColor(0xfff7f8f9); addView(body,new LayoutParams(-1,0,1));TenAppearance.bind(body);
         bindCaptionIcon(bar.getChildAt(0));
         bar.addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob)->{
             boolean narrow=r-l<Aero.dp(context,225);

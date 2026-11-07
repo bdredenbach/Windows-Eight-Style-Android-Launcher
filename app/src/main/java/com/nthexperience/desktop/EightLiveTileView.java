@@ -16,7 +16,7 @@ final class EightLiveTileView extends FrameLayout {
     private String current="",requested="";private Bitmap bitmap;private int generation;
     private final boolean large;
     EightLiveTileView(Context c,String title,String size){
-        super(c);large=size.equals("Large");setClipChildren(true);setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+        super(c);large=size.equals("Large");setVisibility(GONE);setClipChildren(true);setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         image=new ImageView(c);image.setScaleType(ImageView.ScaleType.CENTER_CROP);addView(image,new FrameLayout.LayoutParams(-1,-1));
         LinearLayout text=Aero.column(c);text.setGravity(Gravity.CENTER_VERTICAL);text.setPadding(dp(12),dp(8),dp(12),dp(32));
         heading=Aero.text(c,"",size.equals("Wide")?20:24,Color.WHITE);heading.setMaxLines(large?5:3);heading.setEllipsize(TextUtils.TruncateAt.END);text.addView(heading);
@@ -28,8 +28,8 @@ final class EightLiveTileView extends FrameLayout {
     void pause(){animate().cancel();setTranslationY(0);setAlpha(1);}
     void show(EightTileSnapshot snapshot,int index,boolean motion){
         if(snapshot==null||snapshot.items.isEmpty())return;EightTileSnapshot.Item item=snapshot.items.get(Math.floorMod(index,snapshot.items.size()));badge.setText(snapshot.badgeText());badge.setVisibility(snapshot.badge==0?GONE:VISIBLE);
+        android.graphics.Rect visible=new android.graphics.Rect();if(!item.image.equals(requested)&&(item.image.isEmpty()||getGlobalVisibleRect(visible))){requested=item.image;loadImage(item.image);}
         if(item.key().equals(current))return;boolean slide=motion&&!current.isEmpty()&&isShown();pause();current=item.key();heading.setText(item.title);heading.setTextSize(item.tag.equals("date")||item.tag.equals("current")?large?54:38:large?24:20);detail.setText(item.detail);
-        if(!item.image.equals(requested)){requested=item.image;loadImage(item.image);}
         if(slide){setTranslationY(dp(18));setAlpha(.5f);animate().translationY(0).alpha(1).setDuration(300).start();}
     }
     private void clearBitmap(){image.setImageDrawable(null);if(bitmap!=null){bitmap.recycle();bitmap=null;}}
