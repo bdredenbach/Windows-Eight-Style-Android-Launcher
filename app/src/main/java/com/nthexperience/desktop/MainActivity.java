@@ -880,7 +880,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
     }
     private void desktopTools(float x,float y){
         desktopMenu=new DesktopContextMenu(this,"Desktop tools");
-        desktopMenu.item("All apps","programs",()->showStart(false));
+        desktopMenu.item("All apps","programs",()->open("@allapps"));
         desktopMenu.item("Computer","computer",this::computer);
         desktopMenu.item("Settings","control",()->open("@settings"));
         desktopMenu.item("Recycle Bin","delete",()->open("@recycle"));
@@ -1675,7 +1675,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
         if(startup!=null&&startup.skip())return;
         if(tray!=null&&tray.dismiss())return;
         if(desktopMenu!=null&&desktopMenu.showing()){desktopMenu.dismiss();return;}
-        if(eightSettings.getVisibility()==View.VISIBLE){eightSettings.goBack();return;}if(startMenu.getVisibility()==View.VISIBLE){if(!startMenu.back()){if(eightReturn.equals("immersive"))eightImmersive.resumeLast();else eightDesktop();}return;}if(eightImmersive!=null&&eightImmersive.back())return;
+        if(eightSettings.getVisibility()==View.VISIBLE){eightSettings.goBack();return;}if(startMenu.getVisibility()==View.VISIBLE){if(!startMenu.back())toggleEightStart();return;}if(eightImmersive!=null&&eightImmersive.back())return;
         for(int i=workspace.getChildCount()-1;i>=0;i--){View v=workspace.getChildAt(i);if(v instanceof DesktopWindow&&v.getVisibility()==View.VISIBLE){DesktopWindow tool=(DesktopWindow)v;if(tool.body instanceof PhotoGallery&&((PhotoGallery)tool.body).back())return;if(tool.body instanceof BrowserPanel&&((BrowserPanel)tool.body).goBack())return;if(tool.body instanceof VistaShell&&((VistaShell)tool.body).goBack())return;tool.minimize();((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(),0);renderTaskbar();return;}}
     }
     private void peekEightTaskbar(boolean show){
@@ -1709,7 +1709,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
         if(event.getAction()==KeyEvent.ACTION_DOWN&&event.getRepeatCount()==0&&videoOverlay==null&&!restoringBackup){
             int eightKey=event.getKeyCode();if(eightImmersive!=null&&eightImmersive.visible()&&event.isAltPressed()&&eightKey==KeyEvent.KEYCODE_F4){eightImmersive.close(eightImmersive.focused==null?eightImmersive.primary:eightImmersive.focused);return true;}
             if(eightKey==KeyEvent.KEYCODE_ESCAPE){if(event.isCtrlPressed()&&event.isShiftPressed())open("@taskmanager");else handleBack();return true;}
-            if(event.isCtrlPressed()&&eightKey==KeyEvent.KEYCODE_TAB&&startMenu.getVisibility()==View.VISIBLE){showStart(false);startMenu.surface=EightStartScreen.Surface.ALL_APPS;startMenu.appearanceChanged();return true;}
+            if(event.isCtrlPressed()&&eightKey==KeyEvent.KEYCODE_TAB&&startMenu.getVisibility()==View.VISIBLE){startMenu.toggleApps();return true;}
             if(event.isMetaPressed()){
                 if(event.isCtrlPressed()){if(eightKey==KeyEvent.KEYCODE_D||eightKey==KeyEvent.KEYCODE_DPAD_LEFT||eightKey==KeyEvent.KEYCODE_DPAD_RIGHT)return true;}
                 switch(eightKey){
@@ -1726,7 +1726,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
                 }
             }
             int key=event.getKeyCode();if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_R){open("@run");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_X){ContextMenus.centered(tenStartButton,(x,y)->startOrbMenu(tenStartButton,x,y));return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_N){open("@nota");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_W){showStart(true);startMenu.showSearch("Settings");return true;}if(key==KeyEvent.KEYCODE_ESCAPE&&tenNews!=null&&tenNews.dismiss())return true;if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_A){eightCharms.show("settings");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_I){open("@settings");return true;}if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_TAB){showEightSwitcher();return true;}if(event.isAltPressed()&&key==KeyEvent.KEYCODE_TAB){if(!eightImmersive.sessions.isEmpty())showEightSwitcher();else{eightDesktop();previews.show();}return true;}if(event.isCtrlPressed()&&event.isShiftPressed()&&key==KeyEvent.KEYCODE_ESCAPE){open("@taskmanager");return true;}
-            if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_D){eightSettings.setVisibility(View.GONE);showDesktop();return true;}
+            if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_D){eightDesktopNow();showDesktop();return true;}
             if(event.isMetaPressed()&&key==KeyEvent.KEYCODE_E){open("@files");return true;}
             DesktopWindow front=null;for(DesktopWindow window:orderedWindows())if(window.getVisibility()==View.VISIBLE&&!window.minimizing())front=window;
             if(front!=null&&event.isMetaPressed()){
@@ -1741,6 +1741,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
             if(front!=null&&event.isAltPressed()&&key==KeyEvent.KEYCODE_F4){front.closeWindow();return true;}
             if(front!=null&&event.isAltPressed()&&key==KeyEvent.KEYCODE_SPACE){DesktopWindow target=front;ContextMenus.centered(front,(x,y)->target.showSystemMenu(target,x,y));return true;}
         }
+        if(startMenu!=null&&startMenu.isShown()&&startMenu.searchKey(event))return true;
         return super.dispatchKeyEvent(event);
     }
     @Override public void onBackPressed(){handleBack();}

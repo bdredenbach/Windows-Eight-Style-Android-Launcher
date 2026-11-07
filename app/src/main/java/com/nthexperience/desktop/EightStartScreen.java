@@ -32,6 +32,7 @@ final class EightStartScreen extends LinearLayout {
     EightProfile profile;
     Surface surface=Surface.START;
     String selected,scope="Apps";
+    private String firstSearchResult;
     int lastWidth,lastHeight;
     HorizontalScrollView horizontal;
     final ScaleGestureDetector zoom;
@@ -44,7 +45,7 @@ final class EightStartScreen extends LinearLayout {
     private String armedTile,weatherKey="";private float pressX,pressY;
     private TileDrag dragging;private View dragSource;private DropPreview dropPreview;
     private EightStartData.Group dropGroup;private int dropIndex,edgeSpeed,newGroupIndex=-1;private View dragSpace;
-    private float dragX,dragY,downX,downY;private boolean pendingRender,swipeCandidate,swiping;
+    private float dragX,dragY,downX,downY;private boolean pendingRender,swipeCandidate,swiping,swipeToApps;
     private final Runnable edgeScroll=new Runnable(){public void run(){if(dragging==null||horizontal==null)return;horizontal.scrollBy(edgeSpeed,0);updateDrop(dragX,dragY);if(edgeSpeed!=0)handler.postDelayed(this,16);}};
     private static final class TileGroup{final EightStartData.Group group;final View grid;final List<EightTileLayout.Cell> cells;final int unit;TileGroup(EightStartData.Group g,View v,List<EightTileLayout.Cell> c,int u){group=g;grid=v;cells=c;unit=u;}}
     private final class DropPreview extends View{
@@ -66,6 +67,12 @@ final class EightStartScreen extends LinearLayout {
         updateSearch=new TenStyle.Glyph(context,"search",Color.WHITE);updateSearch.setContentDescription("Start search control");updateSearch.setFocusable(true);updateSearch.setOnClickListener(v->showSearch("Everywhere"));header.addView(updateSearch,new LayoutParams(dp(38),dp(38)));
         addView(header,new LayoutParams(-1,dp(86)));
         search=new EditText(context);search.setSingleLine();search.setTextSize(17);search.setTextColor(Color.WHITE);search.setHintTextColor(0xffc7bfde);search.setBackgroundColor(0x30333333);search.setPadding(dp(20),0,dp(20),0);search.setHint("Search apps");search.setContentDescription("Eight search query");search.setVisibility(GONE);addView(search,new LayoutParams(-1,dp(48)));
+        search.setImeOptions(android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH);
+        search.setOnEditorActionListener((v,action,event)->{
+            boolean enter=event!=null&&(event.getKeyCode()==KeyEvent.KEYCODE_ENTER||event.getKeyCode()==KeyEvent.KEYCODE_NUMPAD_ENTER);
+            if(enter&&event.getAction()!=KeyEvent.ACTION_DOWN)return true;
+            if(enter||action==android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH||action==android.view.inputmethod.EditorInfo.IME_ACTION_GO){if(firstSearchResult!=null)actions.open(firstSearchResult);return true;}return false;
+        });
         search.addTextChangedListener(new TextWatcher(){public void beforeTextChanged(CharSequence s,int a,int c,int n){}public void afterTextChanged(Editable e){}public void onTextChanged(CharSequence s,int a,int b,int c){if(surface==Surface.SEARCH)renderContent();}});
         bodyRow=new LinearLayout(context);viewport=new FrameLayout(context);bodyRow.addView(viewport,new LayoutParams(0,-1,1));searchSide=Aero.column(context);searchSide.setPadding(dp(16),dp(14),dp(16),dp(14));searchSide.setContentDescription("Eight Search charm pane");searchSide.setBackgroundColor(0xff352467);TextView searchTitle=label("Search",28);searchSide.addView(searchTitle,new LayoutParams(-1,dp(58)));scopeChoices=new LinearLayout(context);searchSideScroll=new ScrollView(context);searchSideScroll.setFillViewport(true);searchSideScroll.addView(searchSide,new ScrollView.LayoutParams(-1,-2));bodyRow.addView(searchSideScroll,new LayoutParams(dp(280),-1));searchSideScroll.setVisibility(GONE);searchSide.setVisibility(GONE);addView(bodyRow,new LayoutParams(-1,0,1));
         HorizontalScrollView commandScroll=new HorizontalScrollView(context);commandScroll.setHorizontalScrollBarEnabled(false);commandScroll.setFillViewport(true);commandScroll.setBackgroundColor(0xff32165e);
@@ -93,6 +100,7 @@ final class EightStartScreen extends LinearLayout {
         search.setVisibility(surface==Surface.SEARCH?VISIBLE:GONE);renderContent();renderCommands();
     }
     void showApps(){surface=Surface.ALL_APPS;selected=null;render();}
+    void toggleApps(){surface=surface==Surface.ALL_APPS?Surface.START:Surface.ALL_APPS;selected=null;render();}
     private void renderCommands(){
         commands.removeAllViews();((View)commands.getParent()).setBackgroundColor(selected==null?Color.TRANSPARENT:0xff32165e);
         if(selected!=null){
@@ -198,10 +206,11 @@ final class EightStartScreen extends LinearLayout {
         for(int i=0;i<values.size();i++){if(i%rows==0){column=Aero.column(getContext());LayoutParams lp=new LayoutParams(dp(230),-1);lp.rightMargin=dp(20);parent.addView(column,lp);}column.addView(appRow(values.get(i)),new LayoutParams(-1,dp(60)));}
     }
     private View appRow(StartSearch.Result item){LinearLayout row=new LinearLayout(getContext());row.setGravity(Gravity.CENTER_VERTICAL);row.setPadding(dp(6),0,dp(8),0);row.addView(icon(item,Color.WHITE),new LayoutParams(dp(32),dp(32)));TextView text=label(item.title,14);text.setMaxLines(2);text.setPadding(dp(10),0,0,0);row.addView(text,new LayoutParams(0,-2,1));row.setContentDescription("Open "+item.title);row.setFocusable(true);row.setBackground(selection(Color.TRANSPARENT));row.setOnClickListener(v->actions.open(item.id));if(item.shortcut)row.setOnLongClickListener(v->{selected=item.id;renderCommands();return true;});return row;}
-    void showSearch(String scope){this.scope=scope;surface=Surface.SEARCH;selected=null;if(getVisibility()!=VISIBLE)show(true);else render();search.setHint("Search "+scope.toLowerCase(Locale.ROOT));search.requestFocus();}
+    void showSearch(String scope){if(getVisibility()!=VISIBLE)show(true);this.scope=scope;surface=Surface.SEARCH;selected=null;render();search.setHint("Search "+scope.toLowerCase(Locale.ROOT));search.requestFocus();}
     private void dockSearch(){boolean right=surface==Surface.SEARCH&&getWidth()>=dp(600);ViewGroup parent=(ViewGroup)search.getParent();boolean move=right?parent!=searchSide:parent!=this,focused=search.hasFocus();int caret=search.getSelectionStart();if(move){parent.removeView(search);if(right)searchSide.addView(search,1,new LayoutParams(-1,dp(48)));else addView(search,1,new LayoutParams(-1,dp(48)));}searchSide.setVisibility(right?VISIBLE:GONE);searchSideScroll.setVisibility(right?VISIBLE:GONE);search.setVisibility(surface==Surface.SEARCH?VISIBLE:GONE);if(move&&focused){search.requestFocus();search.setSelection(Math.max(0,Math.min(caret,search.length())));post(()->{if(surface==Surface.SEARCH)search.requestFocus();});}}
 
     private void renderSearch(){
+        firstSearchResult=null;
         LinearLayout content=Aero.column(getContext());content.setPadding(dp(24),dp(8),dp(20),0);viewport.addView(content,new FrameLayout.LayoutParams(-1,-1));
         boolean right=searchSide.getVisibility()==VISIBLE;LinearLayout filters=scopeChoices;if(filters.getParent() instanceof ViewGroup)((ViewGroup)filters.getParent()).removeView(filters);filters.removeAllViews();filters.setOrientation(right?VERTICAL:HORIZONTAL);if(right)searchSide.addView(filters,new LayoutParams(-1,-2));else{HorizontalScrollView scrollFilters=new HorizontalScrollView(getContext());scrollFilters.addView(filters);content.addView(scrollFilters,new LayoutParams(-1,dp(48)));}
         String[] scopes=profile==EightProfile.EIGHT?new String[]{"Apps","Settings","Files"}:new String[]{"Everywhere","Apps","Settings","Files"};
@@ -212,7 +221,7 @@ final class EightStartScreen extends LinearLayout {
         if(scope.equals("Settings")||scope.equals("Everywhere"))for(String[] entry:EightPCSettings.categories(store))if(q.isEmpty()||entry[1].toLowerCase(Locale.ROOT).contains(q))results.add(new StartSearch.Result("eight-setting:"+entry[0],entry[1],"PC settings","settings",null,false));
         if(scope.equals("Settings")||scope.equals("Everywhere"))for(EightSettingsCatalog.Page entry:EightSettingsCatalog.PAGES)if(q.isEmpty()||entry.title.toLowerCase(Locale.ROOT).contains(q))results.add(new StartSearch.Result("eight-desktop:"+entry.id,entry.title,"Control Panel","settings",null,false));
         if(scope.equals("Files")||scope.equals("Everywhere")){for(StartSearch.Result item:StartSearch.find(store,all,query))if(item.id.startsWith("search-file:")||item.id.startsWith("recent-file:")||item.group.equals("Folders"))results.add(item);if(query.isEmpty()){JSONArray files=LinkedFiles.list(store);for(int i=0;i<files.length();i++){JSONObject file=files.optJSONObject(i);if(file!=null)results.add(new StartSearch.Result("search-file:"+file.optString("uri"),file.optString("name"),"Linked files","documentfile",null,false));}}}
-        Set<String> seen=new HashSet<>();for(StartSearch.Result item:results)if(seen.add(item.id))list.addView(appRow(item),new LayoutParams(-1,dp(56)));
+        Set<String> seen=new HashSet<>();for(StartSearch.Result item:results)if(seen.add(item.id)){if(firstSearchResult==null)firstSearchResult=item.id;list.addView(appRow(item),new LayoutParams(-1,dp(56)));}
         if(seen.isEmpty()){TextView empty=label(scope.equals("Files")?"No matching linked files. Link files in File Explorer to search them here.":"No matching results.",15);empty.setPadding(0,dp(20),0,0);list.addView(empty);}
     }
     private void renderSearchContent(){renderContent();}
@@ -226,11 +235,22 @@ final class EightStartScreen extends LinearLayout {
     boolean back(){if(selected!=null){selected=null;render();return true;}if(surface!=Surface.START){surface=Surface.START;search.setText("");render();return true;}return false;}
     JSONObject state(){JSONObject result=new JSONObject();GadgetLayout.put(result,"visible",getVisibility()==VISIBLE);GadgetLayout.put(result,"surface",surface.name());GadgetLayout.put(result,"scope",scope);GadgetLayout.put(result,"query",search.getText().toString());GadgetLayout.put(result,"scroll",horizontal==null?0:horizontal.getScrollX());return result;}
     void restore(JSONObject state){if(state==null||!state.optBoolean("visible")){hide();return;}show(false);try{surface=Surface.valueOf(state.optString("surface","START"));}catch(IllegalArgumentException ignored){surface=Surface.START;}scope=state.optString("scope","Apps");search.setText(state.optString("query"));render();post(()->{if(horizontal!=null)horizontal.scrollTo(state.optInt("scroll"),0);});}
+    // Route native typing before focus transfer completes on older Android versions.
+    boolean searchKey(KeyEvent event){
+        if(event.getAction()==KeyEvent.ACTION_DOWN&&dragging==null&&!event.isCtrlPressed()&&!event.isAltPressed()&&!event.isMetaPressed()){
+            int character=event.getUnicodeChar();
+            if(event.isPrintingKey()&&character!=0&&(character&KeyCharacterMap.COMBINING_ACCENT)==0){
+                if(surface==Surface.START||surface==Surface.ALL_APPS){showSearch(profile==EightProfile.EIGHT?"Apps":"Everywhere");search.setText(new String(Character.toChars(character)));search.setSelection(search.length());return true;}
+                if(surface==Surface.SEARCH)return search.dispatchKeyEvent(event);
+            }
+        }
+        return false;
+    }
     @Override public boolean dispatchTouchEvent(MotionEvent event){
-        int action=event.getActionMasked();if(action==MotionEvent.ACTION_DOWN){downX=event.getX();downY=event.getY();swipeCandidate=dragging==null&&(surface==Surface.START||surface==Surface.ALL_APPS)&&downY<getHeight()-dp(56);swiping=false;}
+        int action=event.getActionMasked();if(action==MotionEvent.ACTION_DOWN){downX=event.getX();downY=event.getY();swipeCandidate=dragging==null&&(surface==Surface.START||surface==Surface.ALL_APPS)&&downY<getHeight()-dp(56);swiping=false;swipeToApps=false;}
         if(event.getPointerCount()>1)swipeCandidate=false;
-        if(action==MotionEvent.ACTION_MOVE&&swipeCandidate&&dragging==null){float dx=event.getX()-downX,dy=event.getY()-downY;if(Math.abs(dx)>dp(28)&&Math.abs(dx)>Math.abs(dy))swipeCandidate=false;else if(dy>dp(48)&&dy>Math.abs(dx)*1.5f){MotionEvent cancel=MotionEvent.obtain(event);cancel.setAction(MotionEvent.ACTION_CANCEL);super.dispatchTouchEvent(cancel);cancel.recycle();swiping=true;swipeCandidate=false;}}
-        if(swiping){if(action==MotionEvent.ACTION_UP){swiping=false;actions.open("@desktop");}else if(action==MotionEvent.ACTION_CANCEL)swiping=false;return true;}
+        if(action==MotionEvent.ACTION_MOVE&&swipeCandidate&&dragging==null){float dx=event.getX()-downX,dy=event.getY()-downY;if(Math.abs(dx)>dp(28)&&Math.abs(dx)>Math.abs(dy))swipeCandidate=false;else if((dy>dp(48)||profile==EightProfile.EIGHT_POINT_ONE&&surface==Surface.START&&dy<-dp(48))&&Math.abs(dy)>Math.abs(dx)*1.5f){swipeToApps=dy<0;MotionEvent cancel=MotionEvent.obtain(event);cancel.setAction(MotionEvent.ACTION_CANCEL);super.dispatchTouchEvent(cancel);cancel.recycle();swiping=true;swipeCandidate=false;}}
+        if(swiping){if(action==MotionEvent.ACTION_UP){swiping=false;if(swipeToApps)showApps();else actions.open("@desktop");}else if(action==MotionEvent.ACTION_CANCEL)swiping=false;return true;}
         zoom.onTouchEvent(event);return super.dispatchTouchEvent(event);
     }
     void foreground(boolean value){foreground=value;handler.removeCallbacks(live);if(value&&isShown())handler.post(live);else pauseLiveTiles();}
