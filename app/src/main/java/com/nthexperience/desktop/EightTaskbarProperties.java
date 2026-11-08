@@ -12,7 +12,7 @@ final class EightTaskbarProperties extends LinearLayout {
     final DesktopStore store;final Consumer<String> open;final Runnable changed;final LinearLayout body;final Map<String,Object> draft=new LinkedHashMap<>();
     String tab="Taskbar";final TextView apply;
     EightTaskbarProperties(android.content.Context c,DesktopStore store,Consumer<String> open,Runnable changed){
-        super(c);this.store=store;this.open=open;this.changed=changed;setOrientation(VERTICAL);setBackgroundColor(0xfff0f0f0);setContentDescription("Taskbar and Navigation properties");
+        super(c);this.store=store;this.open=open;this.changed=changed;setOrientation(VERTICAL);setBackgroundColor(Color.WHITE);setContentDescription("Taskbar and Navigation properties");
         HorizontalScrollView strip=new HorizontalScrollView(c);LinearLayout tabs=new LinearLayout(c);for(String name:new String[]{"Taskbar","Navigation","Jump Lists","Toolbars"}){TextView button=command(name,()->{tab=name;render();});tabs.addView(button,new LayoutParams(-2,dp(44)));}strip.addView(tabs);addView(strip);
         body=Aero.column(c);body.setPadding(dp(12),dp(14),dp(12),dp(18));addView(body,new LayoutParams(-1,-2));
         LinearLayout footer=new LinearLayout(c);footer.setGravity(Gravity.END);footer.addView(command("OK",()->finish(true)));footer.addView(command("Cancel",()->finish(false)));apply=command("Apply",this::commit);footer.addView(apply);addView(footer);render();

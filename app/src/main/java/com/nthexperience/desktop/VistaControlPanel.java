@@ -17,7 +17,7 @@ final class VistaControlPanel extends VistaShell {
     VistaControlPanel(Context c,DesktopStore store,AeroWallpaper wallpaper,Actions actions,String initial){
         super(c,store,actions,"Search Control Panel");this.wallpaper=wallpaper;classic=store.prefs.getBoolean("control_panel_classic",false);smallIcons=store.prefs.getBoolean("control_panel_small_icons",false);
         folders.setText("Control Panel ▾");folders.setContentDescription("Control Panel navigation");commands.removeAllViews();removeView(status);
-        ViewGroup pane=(ViewGroup)side.getParent();pane.setBackground(Aero.panel(c,0xffffffff,0xffffffff,0,0xffe5e5e5));pane.getLayoutParams().width=dp(160);side.setBackground(null);side.setPadding(dp(12),dp(14),dp(10),dp(12));
+        ViewGroup pane=(ViewGroup)side.getParent();pane.setBackground(Aero.panel(c,0xfff0f0f0,0xfff0f0f0,0,0xfff0f0f0));pane.getLayoutParams().width=dp(160);side.setBackground(null);side.setPadding(dp(12),dp(14),dp(10),dp(12));
         LinearLayout location=(LinearLayout)address.getParent();int index=location.indexOfChild(address);location.removeView(address);crumbs=new LinearLayout(c);crumbs.setGravity(Gravity.CENTER_VERTICAL);crumbs.setBackground(Aero.panel(c,0xffffffff,0xffffffff,0,0xffb8b8b8));crumbs.setContentDescription("Address bar");location.addView(crumbs,index,new LayoutParams(0,dp(32),1));
         LinearLayout toolbar=(LinearLayout)search.getParent();ViewGroup.LayoutParams compactQuery=search.getLayoutParams();
         for(TextView button:new TextView[]{back,forward})button.setBackground(Aero.panel(c,0xfff5f6f7,0xfff5f6f7,0,0xfff5f6f7));
