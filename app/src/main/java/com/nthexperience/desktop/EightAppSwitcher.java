@@ -6,11 +6,14 @@ import android.widget.*;
 
 /** Desktop is one surface. Only actual owned immersive sessions appear as app cards. */
 final class EightAppSwitcher extends FrameLayout {
-    final EightImmersive apps;final Runnable desktop,changed;final LinearLayout list;View previousFocus;
+    final EightImmersive apps;final Runnable desktop,changed;final LinearLayout list;final ScrollView scroll;View previousFocus;private int safeLeft;
     EightAppSwitcher(Context context,EightImmersive apps,Runnable desktop,Runnable changed){
         super(context);this.apps=apps;this.desktop=desktop;this.changed=changed;setElevation(Aero.dp(context,42));setBackgroundColor(0x55000000);setContentDescription("Eight left app switcher");setVisibility(GONE);setOnClickListener(v->dismiss());TenAppearance.preserve(this);
-        ScrollView scroll=new ScrollView(context);scroll.setBackgroundColor(0xff252525);scroll.setOnClickListener(v->{});list=Aero.column(context);list.setPadding(Aero.dp(context,10),Aero.dp(context,16),Aero.dp(context,10),Aero.dp(context,16));scroll.addView(list);addView(scroll,new FrameLayout.LayoutParams(Aero.dp(context,210),-1,Gravity.START));
+        scroll=new ScrollView(context);scroll.setBackgroundColor(0xff252525);scroll.setOnClickListener(v->{});list=Aero.column(context);list.setPadding(Aero.dp(context,10),Aero.dp(context,16),Aero.dp(context,10),Aero.dp(context,16));scroll.addView(list);addView(scroll,new FrameLayout.LayoutParams(Aero.dp(context,210),-1,Gravity.START));
     }
+    void safeInsets(int left,int top,int right){safeLeft=Math.max(0,left);scroll.setPadding(safeLeft,Math.max(0,top),0,0);panelWidth();}
+    private void panelWidth(){FrameLayout.LayoutParams bounds=(FrameLayout.LayoutParams)scroll.getLayoutParams();int width=Aero.dp(getContext(),210)+safeLeft;if(getWidth()>0)width=Math.min(width,getWidth());if(bounds.width!=width){bounds.width=width;scroll.setLayoutParams(bounds);}}
+    @Override protected void onSizeChanged(int w,int h,int ow,int oh){super.onSizeChanged(w,h,ow,oh);panelWidth();}
     void toggle(){if(!dismiss())show();}
     boolean dismiss(){if(getVisibility()!=VISIBLE)return false;setVisibility(GONE);if(previousFocus!=null&&previousFocus.isShown())previousFocus.requestFocus();previousFocus=null;changed.run();return true;}
     void show(){apps.captureVisible();previousFocus=getRootView().findFocus();list.removeAllViews();
