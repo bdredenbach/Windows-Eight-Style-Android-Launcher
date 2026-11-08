@@ -10,6 +10,7 @@ import android.widget.*;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
+import org.json.JSONObject;
 
 /** All Eight entry routes, actual native content, branding and profile-specific surfaces. */
 public final class EightAuditSmoke extends Instrumentation {
