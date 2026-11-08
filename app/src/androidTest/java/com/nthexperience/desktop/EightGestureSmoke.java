@@ -12,6 +12,7 @@ import org.json.*;
 
 /** Real pointer gestures, retained drag views, persisted placement, and actionable Weather states. */
 public final class EightGestureSmoke extends Instrumentation {
+    private void choose(EightProfile profile)throws Exception{home=EightShellSwitch.choose(this,home,profile);root=home.getWindow().getDecorView();}
     MainActivity home;View root;DesktopStore store;EightStartScreen start;long down;boolean touching;
     public void onCreate(Bundle args){super.onCreate(args);start();}
     public void onStart(){Bundle result=new Bundle();try{
@@ -19,7 +20,7 @@ public final class EightGestureSmoke extends Instrumentation {
         home=(MainActivity)startActivitySync(new Intent(Intent.ACTION_MAIN).setComponent(new ComponentName(getTargetContext(),MainActivity.class)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));root=home.getWindow().getDecorView();waitForIdleSync();
         for(EightProfile profile:EightProfile.values()){
             int[] originalGroups={0};
-            ui(()->{home.open("@settings");EightSmoke.description(root,"Use "+profile.label+" shell").performClick();home.open("@desktop");home.open("@start");start=EightSmoke.find(root,EightStartScreen.class);start.data.name(null,"Drag destination");originalGroups[0]=start.data.groups.size();start.refreshHome();});SystemClock.sleep(350);waitForIdleSync();
+            choose(profile);ui(()->{home.open("@desktop");home.open("@start");start=EightSmoke.find(root,EightStartScreen.class);start.data.name(null,"Drag destination");originalGroups[0]=start.data.groups.size();start.refreshHome();});SystemClock.sleep(350);waitForIdleSync();
             HorizontalScrollView[] retained={start.horizontal};View source=EightSmoke.description(start,"Desktop, Wide Start tile");Rect r=bounds(source),viewport=bounds(start.viewport);float x=r.centerX(),y=r.centerY();
             down=SystemClock.uptimeMillis();pointer(MotionEvent.ACTION_DOWN,x,y);SystemClock.sleep(ViewConfiguration.getLongPressTimeout()+180);pointer(MotionEvent.ACTION_MOVE,x+24,y);SystemClock.sleep(180);pointer(MotionEvent.ACTION_MOVE,viewport.right-8,y);SystemClock.sleep(1500);awaitRightEdge(); // The held edge keeps auto-scroll frames active until pointer-up.
             ui(()->{check(start.horizontal==retained[0],"Drag retains the same horizontal viewport");check(source.isAttachedToWindow()&&source.getAlpha()<1,"Native source stays attached during drag");check(start.horizontal.getScrollX()>100,"Holding tile at right edge scrolls across columns");check(EightSmoke.description(start,"Create new Start column")!=null,"Right-edge gutter exposes a new column target");check(start.data.groups.size()==originalGroups[0],"Preview does not create a persisted group");start.refreshHome();check(start.horizontal==retained[0],"Appearance refresh defers rebuilding during drag");});shot("eight4-drag-"+profile.id);
