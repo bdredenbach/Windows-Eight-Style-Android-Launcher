@@ -9,6 +9,8 @@ import java.util.*;
 /** A compact, locale-aware month grid in the desktop's native visual style. */
 final class MonthCalendarView extends View {
     private boolean shell;
+    private final Set<Integer> eventDays=new HashSet<>();
+    void eventDays(Set<Long> days){eventDays.clear();Calendar c=Calendar.getInstance();for(long day:days){c.setTimeInMillis(day);eventDays.add(c.get(Calendar.YEAR)*512+c.get(Calendar.DAY_OF_YEAR));}invalidate();}
     void shellStyle(){shell=true;invalidate();}
     interface Changed{void changed();}
     private final Calendar month=Calendar.getInstance(),selected=Calendar.getInstance();
@@ -30,6 +32,7 @@ final class MonthCalendarView extends View {
         p.setColor(0xffd4dce2);p.setStrokeWidth(density);c.drawLine(0,top-density,getWidth(),top-density,p);
         for(int day=1;day<=month.getActualMaximum(Calendar.DAY_OF_MONTH);day++){
             int index=offset()+day-1,col=index%7,line=index/7;float x=col*w,y=top+line*row;
+            Calendar marker=(Calendar)month.clone();marker.set(Calendar.DAY_OF_MONTH,day);if(eventDays.contains(marker.get(Calendar.YEAR)*512+marker.get(Calendar.DAY_OF_YEAR))){p.setColor(0xff64448e);c.drawCircle(x+w*.8f,y+row*.75f,Math.max(density,Math.min(3*density,row*.07f)),p);}
             boolean picked=selected.get(Calendar.YEAR)==month.get(Calendar.YEAR)&&selected.get(Calendar.MONTH)==month.get(Calendar.MONTH)&&selected.get(Calendar.DAY_OF_MONTH)==day;
             boolean current=today.get(Calendar.YEAR)==month.get(Calendar.YEAR)&&today.get(Calendar.MONTH)==month.get(Calendar.MONTH)&&today.get(Calendar.DAY_OF_MONTH)==day;
             if(picked){p.setShader(new LinearGradient(0,y,0,y+row,shell?TenStyle.accent(getContext()):0xffe8f6ff,shell?TenStyle.accent(getContext()):0xffb6d9f1,Shader.TileMode.CLAMP));c.drawRoundRect(x+3*density,y+3*density,x+w-3*density,y+row-3*density,3*density,3*density,p);p.setShader(null);}

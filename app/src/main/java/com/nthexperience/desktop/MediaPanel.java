@@ -22,6 +22,8 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
     private static final int TILE_PAGE = 16;
     interface Host {
         void addFiles();
+        default void addFolder(){}
+        default void refreshTags(){}
         void switchView(boolean center);
         void closeCenter();
         void libraryChanged();
@@ -31,7 +33,7 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
     private final MediaLibrary library;
     private final Host host;
     private final boolean center;
-    private final FrameLayout body, picture;
+    private FrameLayout body;private final FrameLayout picture;
     private final TextureView video;
     private final ImageView art;
     private final View musicIcon;
@@ -43,6 +45,7 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
     private final LinearLayout now;
     private final int ink;
     private String page;
+    private final EditText librarySearch;private String artistFilter="",albumFilter="";
     private int tilePage;
     private android.graphics.drawable.Drawable desktopDeck,desktopPicture;private boolean seeking, attached, visualize,immersive;private final LinearLayout transportDeck;
     private byte[] artwork;
@@ -73,6 +76,7 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
         brand.setEllipsize(TextUtils.TruncateAt.END);
         heading.addView(brand, new LayoutParams(0, dp(center ? 45 : 36), 1));
         heading.addView(button("Add files", host::addFiles), new LayoutParams(dp(86), dp(42)));
+        heading.addView(button("Add folder",host::addFolder),new LayoutParams(dp(90),dp(42)));
         if (center) heading.addView(button("Close", host::closeCenter), new LayoutParams(dp(72), dp(42)));
         addView(heading);
 
@@ -81,7 +85,10 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
             tab(tabs, "Start"); tab(tabs, "Music"); tab(tabs, "Videos");
         } else tab(tabs, "Library");
         tab(tabs, "Now Playing"); tab(tabs, "Queue");
-        addView(tabs);
+        if(!center){tab(tabs,"Music");tab(tabs,"Artists");tab(tabs,"Albums");tab(tabs,"Videos");tab(tabs,"Recent");}
+        HorizontalScrollView tabScroll=new HorizontalScrollView(context);tabScroll.setHorizontalScrollBarEnabled(false);for(int i=0;i<tabs.getChildCount();i++)tabs.getChildAt(i).setLayoutParams(new LayoutParams(dp(100),dp(46)));tabScroll.addView(tabs);addView(tabScroll);
+        LinearLayout tools=new LinearLayout(context);librarySearch=new EditText(context);librarySearch.setSingleLine();librarySearch.setTextSize(14);librarySearch.setTextColor(0xff222222);librarySearch.setHintTextColor(0xff666666);librarySearch.setBackgroundColor(0xfffafafa);librarySearch.setHint("Search library");librarySearch.setContentDescription("Search media library");tools.addView(librarySearch,new LayoutParams(0,dp(44),1));tools.addView(button("Refresh tags",host::refreshTags),new LayoutParams(dp(100),dp(44)));addView(tools);
+        librarySearch.addTextChangedListener(new android.text.TextWatcher(){public void beforeTextChanged(CharSequence s,int a,int b,int c){}public void afterTextChanged(android.text.Editable e){}public void onTextChanged(CharSequence s,int a,int b,int c){if(body!=null&&!"Now Playing".equals(page))populate();}});
 
         body = new FrameLayout(context);
         addView(body, new LayoutParams(-1, 0, 1));
@@ -251,7 +258,7 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
     }
 
     private void show(String name) {
-        if (!name.equals(page)) tilePage = 0;
+        if (!name.equals(page)) tilePage = 0;artistFilter="";albumFilter="";
         page = name;
         appearance();
         populate();
@@ -260,15 +267,20 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
     private List<MediaLibrary.Entry> visibleItems() {
         if (page.equals("Queue")) return playback.queue();
         List<MediaLibrary.Entry> result = new ArrayList<>(library.items());
-        if (center) result.removeIf(item -> item.video() != page.equals("Videos"));
+        if (center||java.util.Arrays.asList("Music","Artists","Albums","Videos").contains(page)) result.removeIf(item -> item.video() != page.equals("Videos"));
+        String query=librarySearch.getText().toString().trim().toLowerCase(Locale.ROOT);
+        result.removeIf(item->!(item.name+" "+item.title+" "+item.artist+" "+item.album).toLowerCase(Locale.ROOT).contains(query)||!artistFilter.isEmpty()&&!artistFilter.equals(item.artist.isEmpty()?"Unknown artist":item.artist)||!albumFilter.isEmpty()&&!albumFilter.equals(item.album.isEmpty()?"Unknown album":item.album));
+        if(page.equals("Recent"))result.sort(java.util.Comparator.comparingLong((MediaLibrary.Entry e)->-e.added));
         return result;
     }
     private void populate() {
         while (body.getChildCount() > 1) body.removeViewAt(1);
         boolean playing = page.equals("Now Playing");
         now.setVisibility(playing ? VISIBLE : GONE);
+        ((View)librarySearch.getParent()).setVisibility(playing?GONE:VISIBLE);
         if (playing) return;
         if (page.equals("Start")) { centerStart(); return; }
+        if(page.equals("Artists")||page.equals("Albums")){groups();return;}
         List<MediaLibrary.Entry> items = visibleItems();
         if (items.isEmpty()) {
             TextView empty = label(page.equals("Queue") ? "The queue is empty" : "Choose Add files to build your library", 15);
@@ -295,12 +307,12 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
                             : (index % 2 == 0 ? 0xfffafdff : 0xffeaf4fc));
                     row.addView(new AeroIcon(getContext(), item.video() ? "videofile" : "musicfile"),
                             new LayoutParams(dp(29), dp(29)));
-                    TextView name = label(item.name, 14);
+                    TextView name = label(item.title+(!item.artist.isEmpty()?"\n"+item.artist:"")+(!item.album.isEmpty()?" · "+item.album:""), 14);
                     name.setPadding(dp(7), 0, dp(3), 0);
-                    name.setSingleLine(true);
+                    name.setMaxLines(2);
                     name.setEllipsize(TextUtils.TruncateAt.END);
                     row.addView(name, new LayoutParams(0, dp(46), 1));
-                    TextView kind = label(item.video() ? "Video" : "Music", 11);
+                    TextView kind = label(item.duration>0?durationLabel(item.duration):item.video()?"Video":"Music",11);
                     kind.setTextColor(center ? 0xffa9cce8 : 0xff537595);
                     row.addView(kind, new LayoutParams(-2, dp(46)));
                     return row;
@@ -314,6 +326,8 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
             body.addView(list, new FrameLayout.LayoutParams(-1, -1));
         }
     }
+    private static String durationLabel(long ms){return String.format(Locale.ROOT,"%d:%02d",ms/60000,(ms/1000)%60);}
+    private void groups(){java.util.TreeMap<String,Integer> grouped=new java.util.TreeMap<>(String.CASE_INSENSITIVE_ORDER);boolean artists=page.equals("Artists");for(MediaLibrary.Entry item:visibleItems()){String key=artists?item.artist:item.album;if(key.isEmpty())key=artists?"Unknown artist":"Unknown album";grouped.put(key,grouped.getOrDefault(key,0)+1);}java.util.List<String> keys=new java.util.ArrayList<>(grouped.keySet()),labels=new java.util.ArrayList<>();for(String key:keys)labels.add(key+"\n"+grouped.get(key)+" track"+(grouped.get(key)==1?"":"s"));if(labels.isEmpty()){TextView empty=label("No tagged music yet. Add files or choose Refresh tags.",15);empty.setGravity(Gravity.CENTER);body.addView(empty,new FrameLayout.LayoutParams(-1,-1));return;}ListView list=EightAppUi.list(getContext(),labels,n->{page="Music";artistFilter=artists?keys.get(n):"";albumFilter=artists?"":keys.get(n);appearance();populate();});list.setContentDescription(artists?"Media artists":"Media albums");body.addView(list,new FrameLayout.LayoutParams(-1,-1));}
     private void centerStart() {
         ScrollView scroll = new ScrollView(getContext());
         scroll.setFillViewport(true);
