@@ -11,11 +11,13 @@ final class EightSettingsCatalog {
         new Page("storage","Storage"),new Page("installed","Programs and Features"),new Page("defaults","Default Programs"),
         new Page("profile","User Accounts"),new Page("motion","Display and Motion"),new Page("tools","Nth Tools"),
         new Page("games","Games"),new Page("assistant","Nth Nota"),new Page("clipboard","Clipboard"),
-        new Page("about","System"),new Page("backup","Backup and Restore"),new Page("recovery","Recovery")));
+        new Page("about","System"),new Page("backup","Backup and Restore"),new Page("recovery","Recovery"),
+        new Page("startup","Startup and Sounds"),new Page("clock","Clock appearance"),
+        new Page("taskbarapps","Taskbar apps and access"),new Page("backgroundoptions","Picture and slideshow options")));
     static String canonical(String id){
         for(Page p:PAGES)if(p.id.equals(id))return id;
         switch(id){case "home":case "personalization":return "themes";case "system":return "about";case "apps":case "remote":case "components":case "optional":return "installed";
-        case "accounts":return "profile";case "accessibility":case "ease":return "motion";case "gaming":return "games";
+        case "accounts":return "profile";case "icons":return "desktop";case "sounds":return "sound";case "grouping":return "taskbar";case "sidebar":return "tools";case "accessibility":case "ease":return "motion";case "gaming":return "games";
         case "start":case "tablet":return "pc:personalize";case "notifications":case "notification-access":case "focus":return "pc:notifications";
         case "privacy":case "permissions":return "pc:privacy";case "search":case "search-options":return "pc:search";
         case "network":case "wifi":case "airplane":case "vpn":return "android:"+(id.equals("network")?"network":id);

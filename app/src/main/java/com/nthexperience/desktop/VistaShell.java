@@ -23,6 +23,8 @@ abstract class VistaShell extends LinearLayout {
     private boolean restoring,ready,compact,veryNarrow,keepFoldersButton,hideFoldersButton;private Boolean navigationOverride;private String navigationPreference;
     private int pendingPosition=-1,pendingOffset;
     private boolean restoreFocus;
+    private java.util.function.Consumer<String> navigationHost;
+    final void navigationHost(java.util.function.Consumer<String> host){navigationHost=host;}
     VistaShell(Context c,DesktopStore store,Actions actions,String hint){
         super(c);this.store=store;this.actions=actions;setOrientation(VERTICAL);setBackgroundColor(0xfff7f9fb);setFocusableInTouchMode(true);
         LinearLayout location=new LinearLayout(c);location.setGravity(Gravity.CENTER_VERTICAL);location.setPadding(dp(4),dp(3),dp(4),dp(3));location.setBackground(Aero.panel(c,0xfff5f6f7,0xfff5f6f7,0,0xffd7d7d7));
@@ -64,7 +66,7 @@ abstract class VistaShell extends LinearLayout {
     final String page(){return historyIndex>=0?history.get(historyIndex):"home";}
     final String query(){return search.getText().toString().trim().toLowerCase(Locale.getDefault());}
     final boolean compact(){return compact;}
-    final void navigate(String page){if(page.equals(page())&&query().isEmpty())return;while(history.size()>historyIndex+1)history.remove(history.size()-1);history.add(page);if(history.size()>16)history.remove(0);historyIndex=history.size()-1;resetSearch();pendingPosition=-1;render();updateNavigation();}
+    final void navigate(String page){if(navigationHost!=null){navigationHost.accept(page);return;}if(page.equals(page())&&query().isEmpty())return;while(history.size()>historyIndex+1)history.remove(history.size()-1);history.add(page);if(history.size()>16)history.remove(0);historyIndex=history.size()-1;resetSearch();pendingPosition=-1;render();updateNavigation();}
     final void replacePage(String value){if(historyIndex<0){navigate(value);return;}history.set(historyIndex,value);resetSearch();render();updateNavigation();}
     final boolean goBack(){if(historyIndex<=0)return false;historyIndex--;resetSearch();render();updateNavigation();return true;}
     final java.util.List<String> historyPages(){return new java.util.ArrayList<>(history);}
