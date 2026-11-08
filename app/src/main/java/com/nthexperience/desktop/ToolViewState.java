@@ -10,6 +10,7 @@ final class ToolViewState {
     private static void capture(View view,String path,JSONObject result){
         if(view instanceof BrowserPanel)return;
         JSONObject item=new JSONObject();
+        if(view instanceof EightDesktopOptions)GadgetLayout.put(item,"eight_settings",((EightDesktopOptions)view).state());
         if(view instanceof MediaPanel){GadgetLayout.put(item,"media",((MediaPanel)view).state());GadgetLayout.put(result,path,item);return;}
         if(view instanceof EightCalendar){GadgetLayout.put(item,"pim",((EightCalendar)view).state());GadgetLayout.put(result,path,item);return;}
         if(view instanceof EightPeople){GadgetLayout.put(item,"pim",((EightPeople)view).state());GadgetLayout.put(result,path,item);return;}
@@ -34,6 +35,7 @@ final class ToolViewState {
         if(view instanceof BrowserPanel)return;
         JSONObject item=state.optJSONObject(path);
         if(item!=null){
+            if(view instanceof EightDesktopOptions)((EightDesktopOptions)view).restore(item.optJSONObject("eight_settings"));
             if(view instanceof MediaPanel){((MediaPanel)view).restore(item.optJSONObject("media"));return;}
             if(view instanceof EightCalendar){((EightCalendar)view).restore(item.optJSONObject("pim"));return;}
             if(view instanceof EightPeople){((EightPeople)view).restore(item.optJSONObject("pim"));return;}
