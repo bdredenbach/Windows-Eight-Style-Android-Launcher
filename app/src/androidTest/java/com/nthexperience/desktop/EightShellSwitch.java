@@ -36,7 +36,14 @@ final class EightShellSwitch {
                 if(!ready[0])throw new AssertionError("Refreshed shell reaches its default Desktop/Start surface");
                 if(!current.isDestroyed())throw new AssertionError("Previous shell Activity is released");
             }
-            if(monitor.waitForActivityWithTimeout(400)!=null)throw new AssertionError("Shell selection must not refresh twice or refresh an unchanged profile");
+            // Instrumentation reports both create and resume for the same Activity.
+            // Only a different instance represents an additional launcher refresh.
+            long guard=SystemClock.uptimeMillis()+400;
+            while(SystemClock.uptimeMillis()<guard){
+                Activity extra=monitor.waitForActivityWithTimeout(Math.max(1,guard-SystemClock.uptimeMillis()));
+                if(extra!=null&&extra!=result)throw new AssertionError("Unexpected additional launcher Activity after shell selection");
+            }
+            if(result.isDestroyed())throw new AssertionError("Selected shell stays active after its one refresh");
             test.waitForIdleSync();
             return result;
         }finally{test.removeMonitor(monitor);}
