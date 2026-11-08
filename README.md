@@ -1,6 +1,6 @@
 # Nth Desktop Eight
 
-Current preview: **0.7.6** prevents touches on blank parts of app windows from reaching desktop shortcuts and gives Nota an always-visible **New command** workflow for opening installed apps. See [the touch and Nota changes](docs/EIGHT_0_7_6.md). The [0.7.5 Control Panel navigation](docs/EIGHT_0_7_5.md), [0.7.4 shell defaults/refresh](docs/EIGHT_0_7_4.md), [0.7.3 settings colors](docs/EIGHT_0_7_3.md), [0.7.2 Maps location](docs/EIGHT_0_7_2.md) and [0.7.0 connected apps](docs/EIGHT_0_7.md) remain included.
+Current preview: **0.7.7** replaces Nota’s fixed helper sentence with summaries for all six tasks and adds space between Start and the app strip in the 8.1 taskbar. See [the Nota and taskbar polish record](docs/EIGHT_0_7_7.md). The [0.7.6 touch and app-command fixes](docs/EIGHT_0_7_6.md), [0.7.5 Control Panel navigation](docs/EIGHT_0_7_5.md), [0.7.4 shell defaults/refresh](docs/EIGHT_0_7_4.md), [0.7.3 settings colors](docs/EIGHT_0_7_3.md), [0.7.2 Maps location](docs/EIGHT_0_7_2.md) and [0.7.0 connected apps](docs/EIGHT_0_7.md) remain included.
 
 A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Android 8.0+; targets Android 16.
 
