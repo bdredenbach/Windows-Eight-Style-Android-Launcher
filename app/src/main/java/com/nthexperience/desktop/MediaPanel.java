@@ -206,7 +206,7 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
         return key;
     }
     private void tab(LinearLayout row, String name) {
-        TextView tab = control(row, name, () -> show(name));
+        TextView tab = control(row, name, () -> show(name));tab.setContentDescription(name);
         tab.setSingleLine(true);
         tab.setEllipsize(TextUtils.TruncateAt.END);
         if (center && name.equals("Now Playing")) {
@@ -251,6 +251,8 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
                 : Aero.panel(context, 0x00ffffff, 0x00ffffff, 4, 0));
         return surface;
     }
+    org.json.JSONObject state(){org.json.JSONObject s=new org.json.JSONObject();GadgetLayout.put(s,"page",page);GadgetLayout.put(s,"query",librarySearch.getText().toString());GadgetLayout.put(s,"artist",artistFilter);GadgetLayout.put(s,"album",albumFilter);return s;}
+    void restore(org.json.JSONObject s){if(s==null)return;String p=s.optString("page","Library");if(!java.util.Arrays.asList("Library","Music","Artists","Albums","Videos","Recent","Now Playing","Queue","Start").contains(p))p="Library";page=p;artistFilter=s.optString("artist");albumFilter=s.optString("album");librarySearch.setText(s.optString("query"));appearance();populate();updatePlayback();}
     void showNow() { show("Now Playing"); }
     TextureView videoSurface() { return video; }
     void libraryChanged() {
