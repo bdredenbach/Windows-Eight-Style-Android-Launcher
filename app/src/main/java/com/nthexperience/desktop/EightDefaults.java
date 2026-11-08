@@ -2,6 +2,15 @@ package com.nthexperience.desktop;
 
 final class EightDefaults {
     static EightProfile profile(DesktopStore store){return EightProfile.from(store.prefs.getString("eight_profile","8"));}
+    static boolean selectProfile(DesktopStore store,EightProfile selected){
+        if(profile(store)==selected)return false;
+        boolean updated=selected==EightProfile.EIGHT_POINT_ONE;
+        store.prefs.edit().putString("eight_profile",selected.id)
+            .putBoolean("eight_boot_desktop",updated)
+            .putBoolean("eight_start_wallpaper",updated)
+            .putBoolean("eight_81_update",updated).apply();
+        return true;
+    }
     static void initialize(DesktopStore store){
         if(!store.prefs.getBoolean("eight_v3_surfaces",false)){store.prefs.edit().putBoolean("eight_v3_surfaces",true).putBoolean("ten_apps_dark",false).putBoolean("ten_light",true).putBoolean("ten_accent_titles",true).putBoolean("ten_accent_shell",false).putBoolean("ten_transparency",false).apply();}
         if(store.prefs.getBoolean("eight_initialized",false))return;

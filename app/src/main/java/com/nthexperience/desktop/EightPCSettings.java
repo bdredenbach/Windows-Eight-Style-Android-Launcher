@@ -14,13 +14,14 @@ final class EightPCSettings extends LinearLayout {
     static final String[][] CATEGORIES_81={{"pcdevices","PC and devices"},{"users","Accounts"},{"storage","Storage and sync"},{"searchapps","Search and apps"},{"privacy","Privacy"},{"wireless","Network"},{"time","Time and language"},{"access","Ease of Access"},{"recovery","Update and recovery"}};
     static String[][] categories(DesktopStore store){return EightDefaults.profile(store)==EightProfile.EIGHT_POINT_ONE?CATEGORIES_81:CATEGORIES;}
     final DesktopStore store; final Consumer<String> open; final Runnable changed,back;
+    final Consumer<EightProfile> selectProfile;
     final LinearLayout categories,body,top,split,rail;final TextView heading,close;final ScrollView navigation;
     private Boolean classicLayout;
     String page="personalize",subpage="";
     final java.util.Map<String,Integer> scrollPositions=new java.util.HashMap<>();
     ScrollView detailScroll;
-    EightPCSettings(Context context,DesktopStore store,Consumer<String> open,Runnable changed,Runnable back){
-        super(context);setSaveFromParentEnabled(false);this.store=store;this.open=open;this.changed=changed;this.back=back;
+    EightPCSettings(Context context,DesktopStore store,Consumer<String> open,Runnable changed,Consumer<EightProfile> selectProfile,Runnable back){
+        super(context);setSaveFromParentEnabled(false);this.store=store;this.open=open;this.changed=changed;this.selectProfile=selectProfile;this.back=back;
         setOrientation(VERTICAL);setBackgroundColor(0xfff0f0f0);setElevation(Aero.dp(context,28));setContentDescription("Eight PC settings");TenAppearance.preserve(this);
         top=new LinearLayout(context);top.setGravity(Gravity.CENTER_VERTICAL);
         close=text("←",26,Color.WHITE);close.setGravity(Gravity.CENTER);close.setContentDescription("Back from PC settings");close.setFocusable(true);close.setOnClickListener(v->goBack());
@@ -108,7 +109,7 @@ final class EightPCSettings extends LinearLayout {
     private void personalize(){
         note("Shell experience");RadioGroup profiles=new RadioGroup(getContext());
         for(EightProfile profile:EightProfile.values()){RadioButton radio=new RadioButton(getContext());radio.setId(profile==EightProfile.EIGHT?800:801);radio.setText(profile.label);radio.setTextColor(0xff222222);radio.setContentDescription("Use "+profile.label+" shell");radio.setMinHeight(dp(48));profiles.addView(radio);}
-        profiles.check(EightDefaults.profile(store)==EightProfile.EIGHT?800:801);profiles.setOnCheckedChangeListener((group,id)->{store.prefs.edit().putString("eight_profile",id==801?"81":"8").apply();changed.run();render();});body.addView(profiles);
+        profiles.check(EightDefaults.profile(store)==EightProfile.EIGHT?800:801);profiles.setOnCheckedChangeListener((group,id)->selectProfile.accept(id==801?EightProfile.EIGHT_POINT_ONE:EightProfile.EIGHT));body.addView(profiles);
         note("Each shell remembers its own tile sizes, groups and ordering.");
         if(EightDefaults.profile(store)==EightProfile.EIGHT_POINT_ONE){toggle("Open Desktop when Eight launches","eight_boot_desktop",false);toggle("Use desktop wallpaper on Start","eight_start_wallpaper",false);toggle("8.1 Update mouse controls and taskbar apps","eight_81_update",false);toggle("Keep browser address bar visible","eight_always_address",false);}
         button("Start color",()->{String[] names={"Indigo","Plum","Teal","Crimson","Graphite","Deep blue"};int[] colors={0xff21164f,0xff4a1958,0xff004b50,0xff771b35,0xff252525,0xff17385e};Aero.dialog(getContext()).setTitle("Start color").setItems(names,(d,n)->{store.prefs.edit().putInt("eight_start_color",colors[n]).apply();changed.run();}).show();});
