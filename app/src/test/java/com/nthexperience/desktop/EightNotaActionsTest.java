@@ -11,6 +11,11 @@ public class EightNotaActionsTest {
         TenNotaActions.Plan ambiguous=TenNotaActions.resolve("open Reader",apps);
         assertFalse(ambiguous.autoOpen);assertEquals(2,ambiguous.actions.size());assertNotEquals(ambiguous.actions.get(0).label,ambiguous.actions.get(1).label);
     }
+    @Test public void samePackageLauncherEntriesHaveDistinctVisibleLabels(){
+        List<TenNotaActions.Target> aliases=Arrays.asList(new TenNotaActions.Target("Duplicate","com.test/.First"),new TenNotaActions.Target("Duplicate","com.test/com.test.Second"));
+        TenNotaActions.Plan p=TenNotaActions.resolve("open Duplicate",aliases);assertFalse(p.autoOpen);assertEquals(2,p.actions.size());
+        assertNotEquals(p.actions.get(0).label,p.actions.get(1).label);assertTrue(p.actions.get(0).label.contains("First"));assertTrue(p.actions.get(1).label.contains("Second"));
+    }
     @Test public void writingAndUnsupportedRoutesCannotBecomeAppCommands(){
         for(String passage:new String[]{"Summarize: open ChatGPT","My note says open Calculator","Do not open Calculator","open Calculator\nopen ChatGPT"})assertNull(passage,TenNotaActions.resolve(passage,Collections.emptyList()));
         for(String route:new String[]{"@browser","intent://example","javascript:alert(1)","content://private","nonexistent app"}){
