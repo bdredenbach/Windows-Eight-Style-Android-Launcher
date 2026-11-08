@@ -58,7 +58,7 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
     };
 
     MediaPanel(Context context, MediaPlayback playback, MediaLibrary library, Host host, boolean center) {
-        super(context);
+        super(context);setSaveFromParentEnabled(false);
         this.playback = playback;
         this.library = library;
         this.host = host;
@@ -84,9 +84,9 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
         if (center) {
             tab(tabs, "Start"); tab(tabs, "Music"); tab(tabs, "Videos");
         } else tab(tabs, "Library");
-        tab(tabs, "Now Playing"); tab(tabs, "Queue");
         if(!center){tab(tabs,"Music");tab(tabs,"Artists");tab(tabs,"Albums");tab(tabs,"Videos");tab(tabs,"Recent");}
-        HorizontalScrollView tabScroll=new HorizontalScrollView(context);tabScroll.setHorizontalScrollBarEnabled(false);for(int i=0;i<tabs.getChildCount();i++)tabs.getChildAt(i).setLayoutParams(new LayoutParams(dp(100),dp(46)));tabScroll.addView(tabs);addView(tabScroll);
+        tab(tabs, "Now Playing"); tab(tabs, "Queue");
+        HorizontalScrollView tabScroll=new HorizontalScrollView(context);tabScroll.setHorizontalScrollBarEnabled(true);for(int i=0;i<tabs.getChildCount();i++)tabs.getChildAt(i).setLayoutParams(new LayoutParams(dp(100),dp(46)));tabScroll.addView(tabs);addView(tabScroll);
         LinearLayout tools=new LinearLayout(context);librarySearch=new EditText(context);librarySearch.setSingleLine();librarySearch.setTextSize(14);librarySearch.setTextColor(0xff222222);librarySearch.setHintTextColor(0xff666666);librarySearch.setBackgroundColor(0xfffafafa);librarySearch.setHint("Search library");librarySearch.setContentDescription("Search media library");tools.addView(librarySearch,new LayoutParams(0,dp(44),1));tools.addView(button("Refresh tags",host::refreshTags),new LayoutParams(dp(100),dp(44)));addView(tools);
         librarySearch.addTextChangedListener(new android.text.TextWatcher(){public void beforeTextChanged(CharSequence s,int a,int b,int c){}public void afterTextChanged(android.text.Editable e){}public void onTextChanged(CharSequence s,int a,int b,int c){if(body!=null&&!"Now Playing".equals(page))populate();}});
 
@@ -233,7 +233,7 @@ final class MediaPanel extends LinearLayout implements Player.Listener {
         for (Map.Entry<String,TextView> item : navigation.entrySet()) {
             boolean selected = item.getKey().equals(page);
             TextView tab = item.getValue();
-            tab.setSelected(selected);
+            tab.setSelected(selected);if(selected)tab.post(()->tab.requestRectangleOnScreen(new android.graphics.Rect(0,0,tab.getWidth(),tab.getHeight()),true));
             tab.setTextColor(dark ? 0xffedf9ff : 0xff284763);
             tab.setBackground(navigationSurface(dark, selected));
         }
