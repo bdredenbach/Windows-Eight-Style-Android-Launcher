@@ -247,7 +247,9 @@ final class DesktopWindow extends LinearLayout {
         return true;
     }
     @Override public boolean onTouchEvent(MotionEvent event){
-        if(resizeCorner==0)return super.onTouchEvent(event);
+        // The whole visible window owns its touch sequence, including blank body/chrome.
+        // Children still receive dispatch first; desktop siblings must never receive a rejected DOWN.
+        if(resizeCorner==0){super.onTouchEvent(event);return true;}
         switch(event.getActionMasked()){
             case MotionEvent.ACTION_MOVE:
                 dragCorner(event.getRawX(),event.getRawY());
