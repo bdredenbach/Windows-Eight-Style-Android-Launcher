@@ -25,6 +25,7 @@ final class EightLiveTiles {
         List<EightTileSnapshot.Item> items=new ArrayList<>();long expiry=0;int badge=0;
         if(id.equals("@calendar")){
             items.add(new EightTileSnapshot.Item("date",new SimpleDateFormat("d",Locale.getDefault()).format(new Date(now)),new SimpleDateFormat("EEEE\nMMMM yyyy",Locale.getDefault()).format(new Date(now))));
+            java.util.List<JSONObject> events=new java.util.ArrayList<>();JSONArray local=EightPimStore.rows(store,EightPimModels.EVENTS);for(int i=0;i<local.length();i++){JSONObject e=local.optJSONObject(i);if(e!=null&&e.optLong("end")>now)events.add(e);}events.sort(java.util.Comparator.comparingLong(e->e.optLong("start")));for(int i=0;i<Math.min(2,events.size());i++){JSONObject e=events.get(i);long at=EightPimModels.displayTime(e,"start",TimeZone.getDefault());items.add(new EightTileSnapshot.Item(e.optString("id"),e.optString("title"),new SimpleDateFormat(e.optBoolean("allDay")?"MMM d · 'All day'":"MMM d HH:mm",Locale.getDefault()).format(new Date(at))));}
         }else if(id.equals("@weather")){
             try{WeatherClient.Snapshot w=weather();if(w==null)return null;
                 boolean cached=now>=store.prefs.getLong("weather_expires",0);

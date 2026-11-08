@@ -16,5 +16,6 @@ assert 'com.nthexperience.desktop.ten' not in main
 assert 'com.nthexperience.desktop.eight.test' in tests
 for runner in ('EightConnectedSmoke','EightReleaseSmoke','EightFidelitySmoke','EightSmoke','EightGestureSmoke','EightAuditSmoke','EightImmersiveSmoke','EightResearchSmoke','BrowserSmoke','ExplorerSmoke','PhotoSmoke','MediaSmoke'):
     assert 'com.nthexperience.desktop.'+runner in tests,runner+' registration missing'
+assert 'android.permission.WRITE_CONTACTS' not in main and 'android.permission.WRITE_CALENDAR' not in main
 assert 'android.intent.category.HOME' in main
 print('PASS: Eight app identity, isolated providers, non-debuggable release, Home intent and twelve native runners')
