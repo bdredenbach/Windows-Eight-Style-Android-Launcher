@@ -1,8 +1,8 @@
 # Nth Desktop Eight
 
-Release review **0.6.3** fixes Start typing/submit, Ctrl+Tab, the 8.1 Apps gesture, Win+D, settings return paths and Charms symbols. The non-debuggable release passed 24 unit tests and eleven native suites on Android 11 and Android 16. See [coverage and remaining features](docs/EIGHT_0_6_3_REVIEW.md) and [validated delivery](docs/EIGHT_0_6_3_DELIVERY.md).
+Current preview: **0.7.0** adds appointments, connected People/Mail/Maps, photo folder albums and richer media libraries. See [features, usage and limits](docs/EIGHT_0_7.md) and [validated delivery](docs/EIGHT_0_7_DELIVERY.md).
 
-A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Current preview: **0.6.2**. Android 8.0+; targets Android 16.
+A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Android 8.0+; targets Android 16.
 
 Package: `com.nthexperience.desktop.eight`. Installs alongside Nth Desktop Ten, Seven and Vista.
 
@@ -14,7 +14,7 @@ See [the 0.4 gesture and app audit](docs/EIGHT_0_4_AUDIT.md) and [device validat
 - Weather exposes location setup on first open and visible Places, My location and Refresh actions. Real cached/fetched temperature and condition art appear in Weather and the live Start tile.
 - Full-screen horizontal Start, independent saved layouts, All Apps, group overview and a selection command bar. Original Eight supports square/wide tiles; 8.1 adds small/large formats, wallpaper on Start, startup at Desktop and Apps sorting.
 - The owner's 17-icon pack supplies Computer, Desktop folders, Documents, Downloads, Favorites, Music, Pictures, Videos, Network, Contacts, Links, UserFolder, Games, Searches and empty/full Recycle Bin artwork. Exact 256px ICO frames are converted losslessly to PNG. See `docs/EIGHT_ICON_PROVENANCE.json`. A second owner-supplied pack adds 20 visually reviewed native 256px icons for Internet Explorer, Control Panel, file types and desktop tools; smaller-only and dithered resources were excluded. See `docs/EIGHT_0_6_1_ICON_PROVENANCE.json`. Other artwork uses original Nth fallbacks.
-- Supported Nth tools open from Start in a true immersive host: Notepad, Nota, Calculator, Calendar, Weather, News, Browser, Photos and Media Player. Desktop shortcuts keep their desktop presentation. Open on Desktop transfers the same app body/session, without creating a second browser or player or closing the assistant.
+- Supported Nth tools open from Start in a true immersive host: Notepad, Nota, Calculator, Calendar, Weather, News, Browser, Photos, Media Player, Mail, People and Maps. Desktop shortcuts keep their desktop presentation. Open on Desktop transfers the same app body/session, without creating a second browser or player or closing the assistant.
 - The left app switcher retains real owned sessions and treats Desktop as one surface. Use its left handle, Windows+Tab or Start's Switch apps command. Browser InPrivate content is excluded from switcher thumbnails. Other Android apps continue using real Android tasks.
 - Reveal immersive commands with the bottom command-strip ellipsis, Windows+Z or a short top-edge pull. A deliberate longer pull to the bottom closes the focused app. Commands offer switching, supported sharing, docking to Desktop, snap and close.
 - Original Eight uses a fixed 320dp compact companion when both apps remain usable. The 8.1 shell supports a movable divider within each app's minimum width. Narrow screens use full-screen switching; rotating back to a wide viewport restores the retained pair.
@@ -46,13 +46,21 @@ The [research implementation notes](docs/EIGHT_0_5.md) describe the retained liv
 
 ## Build and validation
 
+## App collections 0.7.0
+
+Calendar supports local appointments, Day/Week/Month/Agenda, optional device calendars and .ics export. People has local/favorite contacts and optional device contacts, with actions to compose in Mail or find an address in Maps. Mail keeps local drafts and read-only attachments and hands sending/inbox access to an Android email app. Maps provides an attributed online map, address/coordinate lookup, saved places and a directions handoff. Photos remembers chosen folder albums with real thumbnails. Media Player adds folder import and metadata-based Music, Artists, Albums, Videos, Recent and search.
+
+Existing Start layouts are preserved. Find **Mail**, **People** and **Maps** in Apps/search and hold to pin them. New installations include their default tiles. The [0.6.3 promotion review](docs/EIGHT_0_6_3_REVIEW.md) is a historical snapshot; the three gaps it lists are addressed within the scope documented for 0.7.0.
+
+## Build commands
+
 Use Java 17 and Android SDK 36:
 
 ```sh
-./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest :fixture:assembleDebug
+./gradlew :app:testReleaseUnitTest :app:assembleRelease :app:assembleDebug :app:assembleDebugAndroidTest :fixture:assembleDebug :installprobe:assembleDebug
 ```
 
-The main workflow builds for Android 11 and Android 16, runs the Eight surface/profile scenario plus the immersive session/snap scenario the whole-surface audit, and shared Browser, Explorer, Photo and Media scenarios, and uploads APKs and native screenshots. `checks/EightTileLayoutCheck.java` checks 77,325 placements for bounds, overlap, determinism and profile-specific formats. `checks/EightSnapCheck.java` checks 203,980 supported combinations for classic/flexible sizing, per-app minimum widths and narrow fallback. Unit tests cover website tile validation and deduplication, tile queue/expiry/badge and settings-route invariants alongside the shared calculator, AI lifecycle and accent checks. Historical Ten suites are preserved as source reference and are not asserted to pass against Eight's replacement shell.
+The main workflow tests the non-debuggable release on Android 11 and Android 16 with 33 unit tests and twelve native suites for connected apps, shell/profiles, gestures, retained sessions/snap, research utilities and shared Browser, Explorer, Photo and Media behavior. It uploads release APKs and native evidence. `checks/EightTileLayoutCheck.java` checks 77,325 placements for bounds, overlap, determinism and profile-specific formats. `checks/EightSnapCheck.java` checks 308,182 supported combinations for classic/flexible sizing, per-app minimum widths and narrow fallback. Unit tests cover website tile validation and deduplication, tile queue/expiry/badge and settings-route invariants alongside the shared calculator, AI lifecycle and accent checks. Historical Ten suites are preserved as source reference and are not asserted to pass against Eight's replacement shell.
 
 The complete visual gallery and illustrated brief are in the owner-supplied handoff ZIP; research text and source attribution are retained here.
 
