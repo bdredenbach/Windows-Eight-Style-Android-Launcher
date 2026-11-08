@@ -29,7 +29,7 @@ final class EightStartData {
         String[] ids={"@desktop","@nota","@browser","@files","@calendar","@weather"};
         for(String id:ids)essentials.items.add(new Item(id,id.equals("@desktop")||id.equals("@nota")||id.equals("@weather")?"Wide":"Medium"));
         result.add(essentials);Group tools=new Group("Nth tools");
-        for(String id:new String[]{"@photos",MediaLibrary.PLAYER,"@notes","@gadget:calculator","@settings","@legacycontrol"})tools.items.add(new Item(id,"Medium"));
+        for(String id:new String[]{"@mail","@people","@maps","@photos",MediaLibrary.PLAYER,"@notes","@gadget:calculator","@settings","@legacycontrol"})tools.items.add(new Item(id,"Medium"));
         result.add(tools);return result;
     }
     static List<Group> parse(String value,EightProfile profile)throws JSONException{

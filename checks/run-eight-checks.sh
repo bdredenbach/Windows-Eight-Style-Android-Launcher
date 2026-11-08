@@ -12,11 +12,12 @@ collect() {
 }
 adb install -r fixture/build/outputs/apk/debug/fixture-debug.apk
 # Root is used only to collect private screenshot evidence on these AOSP emulators.
-adb root
+# Some emulator builds disconnect adb while restarting it as root.
+adb root || true
 adb wait-for-device
 adb install -r app/build/outputs/apk/release/app-release.apk
 adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
-for suite in EightReleaseSmoke EightFidelitySmoke EightSmoke EightGestureSmoke EightAuditSmoke EightImmersiveSmoke EightResearchSmoke BrowserSmoke ExplorerSmoke PhotoSmoke MediaSmoke; do
+for suite in EightConnectedSmoke EightReleaseSmoke EightFidelitySmoke EightSmoke EightGestureSmoke EightAuditSmoke EightImmersiveSmoke EightResearchSmoke BrowserSmoke ExplorerSmoke PhotoSmoke MediaSmoke; do
   adb shell wm size reset
   adb shell wm density reset
   adb shell am force-stop "$launcher"

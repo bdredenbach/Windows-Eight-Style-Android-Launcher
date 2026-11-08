@@ -10,6 +10,11 @@ final class ToolViewState {
     private static void capture(View view,String path,JSONObject result){
         if(view instanceof BrowserPanel)return;
         JSONObject item=new JSONObject();
+        if(view instanceof MediaPanel){GadgetLayout.put(item,"media",((MediaPanel)view).state());GadgetLayout.put(result,path,item);return;}
+        if(view instanceof EightCalendar){GadgetLayout.put(item,"pim",((EightCalendar)view).state());GadgetLayout.put(result,path,item);return;}
+        if(view instanceof EightPeople){GadgetLayout.put(item,"pim",((EightPeople)view).state());GadgetLayout.put(result,path,item);return;}
+        if(view instanceof EightMail){GadgetLayout.put(item,"pim",((EightMail)view).state());GadgetLayout.put(result,path,item);return;}
+        if(view instanceof EightMaps){GadgetLayout.put(item,"pim",((EightMaps)view).state());GadgetLayout.put(result,path,item);return;}
         if(view instanceof TaskManagerPanel){GadgetLayout.put(item,"taskmanager",((TaskManagerPanel)view).state());GadgetLayout.put(result,path,item);return;}
         if(view instanceof PhotoGallery){GadgetLayout.put(item,"photo",((PhotoGallery)view).state());GadgetLayout.put(result,path,item);return;}
         if(view instanceof VistaShell){GadgetLayout.put(item,"shell",((VistaShell)view).state());GadgetLayout.put(result,path,item);return;}
@@ -29,6 +34,11 @@ final class ToolViewState {
         if(view instanceof BrowserPanel)return;
         JSONObject item=state.optJSONObject(path);
         if(item!=null){
+            if(view instanceof MediaPanel){((MediaPanel)view).restore(item.optJSONObject("media"));return;}
+            if(view instanceof EightCalendar){((EightCalendar)view).restore(item.optJSONObject("pim"));return;}
+            if(view instanceof EightPeople){((EightPeople)view).restore(item.optJSONObject("pim"));return;}
+            if(view instanceof EightMail){((EightMail)view).restore(item.optJSONObject("pim"));return;}
+            if(view instanceof EightMaps){((EightMaps)view).restore(item.optJSONObject("pim"));return;}
             if(view instanceof EightAlarms){EightAlarms alarms=(EightAlarms)view;String tab=item.optString("eight_alarm_tab","Alarm");alarms.tab=java.util.Arrays.asList("Alarm","Timer","Stopwatch").contains(tab)?tab:"Alarm";alarms.render();}
             if(view instanceof EightReadingList){EightReadingList reading=(EightReadingList)view;reading.unread=item.optBoolean("eight_reading_unread");reading.render();}
             if(view instanceof TaskManagerPanel){((TaskManagerPanel)view).restore(item.optJSONObject("taskmanager"));return;}

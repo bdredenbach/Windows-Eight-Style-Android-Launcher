@@ -20,7 +20,7 @@ final class EightPCSettings extends LinearLayout {
     final java.util.Map<String,Integer> scrollPositions=new java.util.HashMap<>();
     ScrollView detailScroll;
     EightPCSettings(Context context,DesktopStore store,Consumer<String> open,Runnable changed,Runnable back){
-        super(context);this.store=store;this.open=open;this.changed=changed;this.back=back;
+        super(context);setSaveFromParentEnabled(false);this.store=store;this.open=open;this.changed=changed;this.back=back;
         setOrientation(VERTICAL);setBackgroundColor(0xfff0f0f0);setElevation(Aero.dp(context,28));setContentDescription("Eight PC settings");TenAppearance.preserve(this);
         top=new LinearLayout(context);top.setGravity(Gravity.CENTER_VERTICAL);
         close=text("←",26,Color.WHITE);close.setGravity(Gravity.CENTER);close.setContentDescription("Back from PC settings");close.setFocusable(true);close.setOnClickListener(v->goBack());

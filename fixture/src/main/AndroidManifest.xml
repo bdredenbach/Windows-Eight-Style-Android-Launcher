@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <queries><package android:name="${launcherApplicationId}" /></queries>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/><uses-permission android:name="android.permission.WRITE_CONTACTS"/><uses-permission android:name="android.permission.READ_CALENDAR"/><uses-permission android:name="android.permission.WRITE_CALENDAR"/>
     <application android:label="Nth isolated test files" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:allowBackup="false">
         <provider android:name=".FixtureProvider" android:authorities="com.nthexperience.desktop.fixture.documents" android:exported="true" android:grantUriPermissions="true" android:permission="android.permission.MANAGE_DOCUMENTS">
             <intent-filter><action android:name="android.content.action.DOCUMENTS_PROVIDER" /></intent-filter>
@@ -9,5 +10,5 @@
         <activity-alias android:name=".NotaChoiceOne" android:targetActivity=".TaskActivity" android:exported="true" android:label="Nota duplicate"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity-alias>
         <activity-alias android:name=".NotaChoiceTwo" android:targetActivity=".TaskActivity" android:exported="true" android:label="Nota duplicate"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity-alias>
         <activity android:name=".GrantActivity" android:exported="true" />
-    </application>
+    <activity android:name=".PimFixtureActivity" android:exported="true" android:theme="@android:style/Theme.Material.Light.NoActionBar" /></application>
 </manifest>

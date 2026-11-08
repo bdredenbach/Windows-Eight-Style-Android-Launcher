@@ -14,6 +14,9 @@ final class EightTileGlyph extends View {
     @Override protected void onDraw(Canvas canvas){super.onDraw(canvas);canvas.save();float scale=Math.min(getWidth(),getHeight())/64f;canvas.translate((getWidth()-64*scale)/2,(getHeight()-64*scale)/2);canvas.scale(scale,scale);paint.setColor(Color.WHITE);paint.setStrokeWidth(3);paint.setStyle(Paint.Style.STROKE);
         if(supplied!=null){supplied.draw(canvas);canvas.restore();return;}
         switch(id){
+            case "@mail":canvas.drawRect(5,15,59,51,paint);canvas.drawLine(6,16,32,36,paint);canvas.drawLine(58,16,32,36,paint);break;
+            case "@people":canvas.drawCircle(24,19,9,paint);canvas.drawCircle(45,23,7,paint);canvas.drawArc(8,30,40,63,180,180,false,paint);canvas.drawArc(35,34,59,59,180,180,false,paint);break;
+            case "@maps":canvas.drawLine(22,13,22,54,paint);canvas.drawLine(42,10,42,50,paint);path.reset();path.moveTo(4,16);path.lineTo(22,9);path.lineTo(42,15);path.lineTo(60,8);path.lineTo(60,49);path.lineTo(42,56);path.lineTo(22,50);path.lineTo(4,57);path.close();canvas.drawPath(path,paint);break;
             case "@settings":paint.setStyle(Paint.Style.FILL);for(int i=0;i<8;i++){canvas.save();canvas.rotate(i*45,32,32);canvas.drawRect(28,8,36,21,paint);canvas.restore();}path.reset();path.setFillType(Path.FillType.EVEN_ODD);path.addCircle(32,32,19,Path.Direction.CW);path.addCircle(32,32,8,Path.Direction.CW);canvas.drawPath(path,paint);break;
             case "@paint":canvas.drawOval(7,11,57,53,paint);canvas.drawCircle(20,25,4,paint);canvas.drawCircle(34,20,4,paint);canvas.drawCircle(47,29,4,paint);canvas.drawLine(17,52,48,12,paint);break;
             case "@wordpad":canvas.drawRect(10,6,54,58,paint);paint.setStyle(Paint.Style.FILL);paint.setTypeface(Typeface.create("serif",Typeface.BOLD));paint.setTextSize(33);paint.setTextAlign(Paint.Align.CENTER);canvas.drawText("W",32,45,paint);break;
