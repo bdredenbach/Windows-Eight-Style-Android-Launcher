@@ -1,6 +1,6 @@
 # Nth Desktop Eight
 
-Current preview: **0.7.2** adds Android Precise/Approximate choice for Maps, fresh GPS lookup and estimated accuracy. See [the location fix and validated update](docs/EIGHT_0_7_2.md). The [0.7.1 panel/camera spacing fixes](docs/EIGHT_0_7_1.md) and [0.7.0 connected apps and collections](docs/EIGHT_0_7.md) remain included.
+Current preview: **0.7.3** uses full-height light grey desktop settings sidebars and white content. See [the settings color update and validation](docs/EIGHT_0_7_3.md). The [0.7.2 precise Maps location fix](docs/EIGHT_0_7_2.md), [0.7.1 panel/camera spacing](docs/EIGHT_0_7_1.md) and [0.7.0 connected apps](docs/EIGHT_0_7.md) remain included.
 
 A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Android 8.0+; targets Android 16.
 
