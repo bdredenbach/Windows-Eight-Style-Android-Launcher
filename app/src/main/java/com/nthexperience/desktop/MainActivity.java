@@ -141,8 +141,8 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
         shell.setOnApplyWindowInsetsListener((v,insets)->{
             int left,top,right,bottom;
             if(Build.VERSION.SDK_INT>=30){android.graphics.Insets bars=insets.getInsets(WindowInsets.Type.systemBars());android.graphics.Insets cutout=insets.getInsets(WindowInsets.Type.displayCutout());android.graphics.Insets ime=insets.getInsets(WindowInsets.Type.ime());desktopCutoutLeft=Math.max(0,cutout.left-bars.left);desktopCutoutRight=Math.max(0,cutout.right-bars.right);left=bars.left;top=store.prefs.getBoolean("show_status_bar",false)?Math.max(bars.top,cutout.top):bars.top;windowTopInset=Math.max(0,cutout.top-top);right=bars.right;bottom=Math.max(Math.max(bars.bottom,cutout.bottom),ime.bottom);}
-            else{left=insets.getSystemWindowInsetLeft();top=insets.getSystemWindowInsetTop();right=insets.getSystemWindowInsetRight();bottom=insets.getSystemWindowInsetBottom();windowTopInset=0;if(Build.VERSION.SDK_INT>=28&&insets.getDisplayCutout()!=null&&!store.prefs.getBoolean("show_status_bar",false)){int safe=insets.getDisplayCutout().getSafeInsetTop();top=Math.max(0,top-safe);windowTopInset=safe;}}
-            shell.setPadding(left,top,right,bottom);if(eightLayer!=null)eightLayer.setPadding(left+desktopCutoutLeft,top+windowTopInset,right+desktopCutoutRight,bottom);if(workspace!=null)workspace.post(this::layoutWorkspace);return insets;
+            else{left=insets.getSystemWindowInsetLeft();top=insets.getSystemWindowInsetTop();right=insets.getSystemWindowInsetRight();bottom=insets.getSystemWindowInsetBottom();windowTopInset=desktopCutoutLeft=desktopCutoutRight=0;if(Build.VERSION.SDK_INT>=28&&insets.getDisplayCutout()!=null){android.view.DisplayCutout cutout=insets.getDisplayCutout();desktopCutoutLeft=Math.max(0,cutout.getSafeInsetLeft()-left);desktopCutoutRight=Math.max(0,cutout.getSafeInsetRight()-right);if(!store.prefs.getBoolean("show_status_bar",false)){int safe=cutout.getSafeInsetTop();top=Math.max(0,top-safe);windowTopInset=safe;}}}
+            shell.setPadding(left,top,right,bottom);if(desktopScroll!=null)desktopScroll.setPadding(dp(7)+desktopCutoutLeft,dp(10),dp(7)+desktopCutoutRight,dp(12));applyEightInsets();if(workspace!=null)workspace.post(this::layoutWorkspace);return insets;
         });
         workspace=new FrameLayout(this);shell.addView(workspace,new LinearLayout.LayoutParams(-1,0,1));
         ScrollView scroll=new ScrollView(this);desktopScroll=scroll;scroll.setFillViewport(true);scroll.setClipToPadding(false);scroll.setPadding(dp(7),dp(10),dp(7),dp(12));scroll.setVerticalScrollBarEnabled(false);
@@ -173,6 +173,16 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
         eightLayer.addOnLayoutChangeListener((v,l,t,r,b,ol,ot,or,ob)->positionEightHandles());
         eightCharms=new EightCharms(this,new EightCharms.Host(){public void changed(){refreshEightStart();}public void open(String id){MainActivity.this.open(id);}public void start(){toggleEightStart();}public void share(){shareEightContext();}public String context(){return startMenu.getVisibility()==View.VISIBLE?"Start":eightSettings.getVisibility()==View.VISIBLE?"PC settings":eightImmersive.visible()?eightImmersive.title():"Desktop";}});eightLayer.addView(eightCharms,new FrameLayout.LayoutParams(-1,-1));
         setContentView(root);shell.requestApplyInsets();renderDesktop();refreshRecycleIcon();
+    }
+    // Page contents avoid the camera; transient panel backgrounds and bottom handles reach the edge.
+    private void applyEightInsets(){
+        if(eightLayer==null||shell==null)return;
+        int safeTop=shell.getPaddingTop()+windowTopInset;
+        eightLayer.setPadding(shell.getPaddingLeft(),0,shell.getPaddingRight(),shell.getPaddingBottom());
+        for(View page:new View[]{startMenu,eightSettings,eightImmersive})if(page!=null){FrameLayout.LayoutParams bounds=(FrameLayout.LayoutParams)page.getLayoutParams();if(bounds.leftMargin!=desktopCutoutLeft||bounds.rightMargin!=desktopCutoutRight||bounds.topMargin!=safeTop){bounds.leftMargin=desktopCutoutLeft;bounds.rightMargin=desktopCutoutRight;bounds.topMargin=safeTop;page.setLayoutParams(bounds);}}
+        if(eightSwitcher!=null)eightSwitcher.safeInsets(desktopCutoutLeft,safeTop,desktopCutoutRight);
+        if(eightCharms!=null)eightCharms.safeInsets(desktopCutoutLeft,safeTop,desktopCutoutRight);
+        positionEightHandles();
     }
     private View edgeHandle(String arrow,String description,Runnable action,int side){
         TextView handle=Aero.text(this,arrow,23,Color.WHITE);handle.setGravity(Gravity.CENTER);android.graphics.drawable.StateListDrawable fill=new android.graphics.drawable.StateListDrawable();for(int state:new int[]{android.R.attr.state_pressed,android.R.attr.state_hovered,android.R.attr.state_focused})fill.addState(new int[]{state},new android.graphics.drawable.ColorDrawable(0x88000000));fill.addState(new int[]{},new android.graphics.drawable.ColorDrawable(0x55000000));handle.setBackground(fill);handle.setElevation(dp(34));handle.setOutlineProvider(null);handle.setFocusable(true);handle.setContentDescription(description);handle.setOnClickListener(v->action.run());TenAppearance.preserve(handle);
