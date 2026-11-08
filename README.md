@@ -1,6 +1,6 @@
 # Nth Desktop Eight
 
-Current preview: **0.7.4** applies the recorded Navigation defaults and refreshes once when switching between Windows 8/8.1 shells. See [the shell defaults and validated update](docs/EIGHT_0_7_4.md). The [0.7.3 settings colors](docs/EIGHT_0_7_3.md), [0.7.2 precise Maps location](docs/EIGHT_0_7_2.md), [0.7.1 camera spacing](docs/EIGHT_0_7_1.md) and [0.7.0 connected apps](docs/EIGHT_0_7.md) remain included.
+Current preview: **0.7.5** unifies Control Panel links in the recorded Eight layout and gives settings proper Back history, preventing an older Internet Explorer window from appearing. See [the navigation fixes and validated update](docs/EIGHT_0_7_5.md). The [0.7.4 shell defaults/refresh](docs/EIGHT_0_7_4.md), [0.7.3 settings colors](docs/EIGHT_0_7_3.md), [0.7.2 Maps location](docs/EIGHT_0_7_2.md) and [0.7.0 connected apps](docs/EIGHT_0_7.md) remain included.
 
 A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Android 8.0+; targets Android 16.
 
