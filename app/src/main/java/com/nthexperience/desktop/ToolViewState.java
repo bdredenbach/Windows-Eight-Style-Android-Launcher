@@ -8,7 +8,9 @@ import org.json.*;
 final class ToolViewState {
     static JSONObject capture(View root){JSONObject result=new JSONObject();capture(root,"",result);return result;}
     private static void capture(View view,String path,JSONObject result){
-        if(view instanceof BrowserPanel)return;
+        // Nota owns full-length ordinary drafts and their writing origin in preferences.
+        // Generic path snapshots must not copy private passages or restore stale composer text.
+        if(view instanceof BrowserPanel||view instanceof TenNotaPanel)return;
         JSONObject item=new JSONObject();
         if(view instanceof EightDesktopOptions)GadgetLayout.put(item,"eight_settings",((EightDesktopOptions)view).state());
         if(view instanceof MediaPanel){GadgetLayout.put(item,"media",((MediaPanel)view).state());GadgetLayout.put(result,path,item);return;}
@@ -32,7 +34,9 @@ final class ToolViewState {
     }
     static void restore(View root,JSONObject state){if(state!=null)restore(root,"",state);}
     private static void restore(View view,String path,JSONObject state){
-        if(view instanceof BrowserPanel)return;
+        // Nota owns full-length ordinary drafts and their writing origin in preferences.
+        // Generic path snapshots must not copy private passages or restore stale composer text.
+        if(view instanceof BrowserPanel||view instanceof TenNotaPanel)return;
         JSONObject item=state.optJSONObject(path);
         if(item!=null){
             if(view instanceof EightDesktopOptions)((EightDesktopOptions)view).restore(item.optJSONObject("eight_settings"));
