@@ -31,3 +31,11 @@ Run with Java 17 and Android SDK 36:
 The local unit tests and APK/instrumentation-APK builds are the validation for this change. Android device/emulator instrumentation suites are compiled but have not been executed in this workspace; existing CI runs the device suites. These are source changes for review, not a newly signed production release.
 
 The corrected companion baselines are Vista 0.26.1 and Seven 0.7.1. Eight 0.7.12, Ten 0.26.0 and Eleven 0.8.2 match the user’s existing version numbers. First-scan catalog failures also skip external-task refresh instead of passing it an unavailable catalog.
+
+## Extended taskbars and rendering caches
+
+The desktop grid uses the actual work area above the taskbar. It measures each label before fitting the icon, keeps complete rows visible, and starts overflow rows outside the first viewport so they can be scrolled into view. Expanded taskbars temporarily fit saved positions without writing those coordinates back to preferences. The normal taskbar layout returns when the taskbar collapses. Larger system text participates in row sizing.
+
+All five variants now share static built-in artwork in a bounded 4 MiB bitmap cache keyed by icon kind, pixel size, padding, density and UI mode. Existing drawing commands remain unchanged; live gadget faces are separate. Folder names, shortcut aliases and normalized preference lists reuse parsed snapshots until their raw saved data changes. Mutable folder/list return values remain independent so edits cannot accidentally corrupt the cache. Desktop placement plans are reused until dimensions, orientation, cutouts, shortcut membership or saved positions change. An unchanged in-memory app catalog no longer recreates the desktop and hidden Start contents on every Home/resume.
+
+`LauncherRenderingTest` checks expanded taskbars with automatic/requested rows, two-line labels, larger system text, whole overflow rows, temporary saved-position fitting, geometry invalidation, mutable model safety, static icon reuse and bounded cache size. Phone/emulator timing and visual checks remain pending; the APKs are development-signed test builds.

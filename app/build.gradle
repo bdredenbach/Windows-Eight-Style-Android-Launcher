@@ -15,6 +15,7 @@ android {
     }
     // CI tests the non-debuggable release variant; delivery is re-signed with the retained owner key.
     buildTypes { release { signingConfig signingConfigs.debug } }
+    testOptions { unitTests.includeAndroidResources = true }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
