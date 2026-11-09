@@ -23,7 +23,7 @@ final class EightStartData {
         groups=loaded;
     }
     static String key(EightProfile profile){return profile==EightProfile.EIGHT?EIGHT:EIGHT_ONE;}
-    private static List<Group> defaults(){
+    static List<Group> defaults(){
         List<Group> result=new ArrayList<>();
         Group essentials=new Group("Essentials");
         String[] ids={"@desktop","@nota","@browser","@files","@calendar","@weather"};
@@ -50,11 +50,12 @@ final class EightStartData {
         return groups;
     }
     static boolean validId(String id){return id.equals("@desktop")||EightWebTiles.validId(id)||DesktopBackup.shortcut(id,new JSONObject(),false);}
-    void save(){
-        try{JSONArray array=new JSONArray();for(Group group:groups){JSONArray items=new JSONArray();for(Item item:group.items)items.put(new JSONObject().put("id",item.id).put("size",item.size));array.put(new JSONObject().put("name",group.name).put("items",items));}
-            store.prefs.edit().putString(key(profile),new JSONObject().put("version",1).put("groups",array).toString()).apply();
-        }catch(JSONException e){throw new IllegalStateException(e);}
+    static String encode(List<Group> groups)throws JSONException {
+        JSONArray array=new JSONArray();
+        for(Group group:groups){JSONArray items=new JSONArray();for(Item item:group.items)items.put(new JSONObject().put("id",item.id).put("size",item.size));array.put(new JSONObject().put("name",group.name).put("items",items));}
+        return new JSONObject().put("version",1).put("groups",array).toString();
     }
+    void save(){try{store.prefs.edit().putString(key(profile),encode(groups)).apply();}catch(JSONException e){throw new IllegalStateException(e);}}
     Item item(String id){for(Group group:groups)for(Item item:group.items)if(item.id.equals(id))return item;return null;}
     boolean pin(String id){if(item(id)!=null||!validId(id)||count()>=MAX_TILES)return false;groups.get(0).items.add(new Item(id,"Medium"));save();return true;}
     int count(){int count=0;for(Group group:groups)count+=group.items.size();return count;}

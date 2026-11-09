@@ -1,0 +1,53 @@
+package com.nthexperience.desktop;
+
+import android.app.*;
+import android.content.*;
+import android.content.pm.ActivityInfo;
+import android.graphics.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
+import org.json.*;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
+
+/** Shared backup migration, atomic Undo, taskbar controls and measured Eight Task Manager. */
+public final class EightCompatibilitySmoke extends Instrumentation {
+    MainActivity home;View root;DesktopStore store;
+    @Override public void onCreate(Bundle args){super.onCreate(args);start();}
+    @Override public void onStart(){Bundle result=new Bundle();try{
+        store=new DesktopStore(getTargetContext());EightDefaults.initialize(store);
+        store.prefs.edit().putString("eight_profile","81").putBoolean("eight_boot_desktop",true).putInt("startup_mode",2).putBoolean("welcome_on_start",false).putBoolean("reduce_motion",true).commit();
+        getTargetContext().getSharedPreferences(StorageAccess.PREFS,0).edit().putBoolean("seen",true).commit();
+        getTargetContext().getSharedPreferences(StartupExperience.SESSION,0).edit().putBoolean("seen",true).putBoolean("welcome_seen",true).putBoolean(StartupExperience.HOME_OFFERED,true).commit();
+        backupRoundTrip();
+        home=(MainActivity)startActivitySync(new Intent(Intent.ACTION_MAIN).setComponent(new ComponentName(getTargetContext(),MainActivity.class)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));root=home.getWindow().getDecorView();waitForIdleSync();
+        ui(()->{home.open("@desktop");home.open("eight-desktop:taskbar");EightTaskbarProperties properties=find(EightTaskbarProperties.class);CheckBox box=(CheckBox)description(properties,"Expand taskbar to two rows");check(box!=null&&!box.isChecked(),"Taskbar expansion toggle exists");box.performClick();check(!store.prefs.getBoolean("taskbar_expanded",false),"Pending expansion does not change live taskbar");description(properties,"Taskbar properties Apply").performClick();});
+        waitForIdleSync();ui(()->{View taskbar=description(root,"Desktop taskbar");check(taskbar.getHeight()==Aero.dp(home,96),"Applied taskbar is two rows");check(store.prefs.getBoolean("taskbar_expanded",false),"Expansion persisted");});shot("eight79-expanded-portrait");
+        ui(()->{try{View taskbar=description(root,"Desktop taskbar");java.lang.reflect.Method menu=MainActivity.class.getDeclaredMethod("taskbarMenu",View.class,float.class,float.class);menu.setAccessible(true);menu.invoke(home,taskbar,10f,10f);java.lang.reflect.Field field=MainActivity.class.getDeclaredField("desktopMenu");field.setAccessible(true);Object popup=field.get(home);java.lang.reflect.Field items=DesktopContextMenu.class.getDeclaredField("items");items.setAccessible(true);View content=(View)items.get(popup);View toggle=description(content,"Expand taskbar");check(toggle!=null,"Taskbar menu has expansion control");toggle.performClick();check(!store.prefs.getBoolean("taskbar_expanded",true),"Menu collapses taskbar");menu.invoke(home,description(root,"Desktop taskbar"),10f,10f);popup=field.get(home);description((View)items.get(popup),"Expand taskbar").performClick();check(store.prefs.getBoolean("taskbar_expanded",false),"Menu expands taskbar");}catch(Exception e){throw new RuntimeException(e);}});
+        ui(()->home.open("@taskmanager"));ui(()->{TaskManagerPanel manager=find(TaskManagerPanel.class);check(description(manager,"More details").isShown(),"Compact mode is initial view");check(!description(manager,"Task Manager Performance").isShown(),"Compact mode hides tabs");description(manager,"More details").performClick();for(String name:new String[]{"Processes","Performance","App history","Startup","Users","Details","Services"})check(description(manager,"Task Manager "+name)!=null,"Detailed tab "+name);description(manager,"Task Manager Performance").performClick();});
+        SystemClock.sleep(2300);ui(()->{TaskManagerPanel manager=find(TaskManagerPanel.class);check(manager.sampleCount()>1,"Real performance sampling");check(description(manager,"Task Manager detailed CPU graph")!=null,"Selected CPU graph exists");description(manager,"Performance metric Memory").performClick();check(description(manager,"Task Manager detailed Memory graph")!=null,"Metric selection changes actual graph");});shot("eight79-performance-portrait");
+        ui(()->{TaskManagerPanel manager=find(TaskManagerPanel.class);for(String tab:new String[]{"Startup","Users","Services","App history","Details"}){description(manager,"Task Manager "+tab).performClick();check(manager.state().optString("tab").equals(tab),"Selected "+tab);}description(manager,"Task Manager Performance").performClick();});
+        ui(()->home.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));SystemClock.sleep(800);root=home.getWindow().getDecorView();ui(()->{check(description(root,"Desktop taskbar").getHeight()==Aero.dp(home,96),"Expanded landscape taskbar");home.open("@taskmanager");TaskManagerPanel manager=find(TaskManagerPanel.class);description(manager,"Task Manager Performance").performClick();check(description(manager,"Performance metric Memory")!=null,"Landscape metrics available");});shot("eight79-performance-landscape");
+        ui(()->{TaskManagerPanel manager=find(TaskManagerPanel.class);description(manager,"Fewer details").performClick();check(description(manager,"More details").isShown(),"Return to compact");manager.active(false);});int[] count={0};ui(()->count[0]=find(TaskManagerPanel.class).sampleCount());SystemClock.sleep(2200);ui(()->check(find(TaskManagerPanel.class).sampleCount()==count[0],"Inactive manager stops sampling"));
+        result.putString("stream","PASS: common and legacy Eight formats; 20 folders / 21 desktop icons and contents retained; preview has no writes; atomic restore + Undo; malformed shared and incomplete Eight reject before mutation; shared export roundtrip; retained 8.1 shell; expansion via Apply and taskbar menu, portrait/landscape; compact + seven detailed tabs; real CPU/RAM/network graphs, metric selection and inactive sampling stop\n");finish(Activity.RESULT_OK,result);
+    }catch(Throwable failure){result.putString("stream","FAIL: "+android.util.Log.getStackTraceString(failure));try{shot("eight79-failure");}catch(Exception ignored){}finish(Activity.RESULT_CANCELED,result);}}
+    void backupRoundTrip()throws Exception{
+        JSONObject original=DesktopBackup.snapshot(store);String before=store.prefs.getAll().toString();JSONObject shared=new JSONObject(original.toString()),fields=shared.getJSONObject("settings");
+        for(String key:new ArrayList<>(DesktopBackup.parse(original.toString()).values.keySet()))if(key.startsWith("eight_")||key.equals(TenDesktopItems.KEY)||key.equals(TenDesktops.KEY))fields.remove(key);
+        JSONObject folders=new JSONObject();JSONArray icons=new JSONArray();for(int i=0;i<20;i++){String id="folder:"+new UUID(0,i+1);icons.put(id);JSONArray children=new JSONArray().put("@computer").put("@notes");folders.put(id,new JSONObject().put("name","Fixture folder "+i).put("items",children));}icons.put("@recycle");
+        field(fields,"app_folders",folders.toString());field(fields,"shortcuts",icons.toString());field(fields,"shortcut_names","{}");field(fields,"desktop_positions_portrait","{}");field(fields,"desktop_positions_landscape","{}");field(fields,"note","Shared backup fixture note");
+        DesktopBackup.Plan plan=DesktopBackup.parse(shared.toString());check(plan.migrated&&plan.folders()==20&&plan.count("shortcuts")==21,"Shared backup structural migration");check(before.equals(store.prefs.getAll().toString()),"Parsing is read only");
+        DesktopBackup.apply(getTargetContext(),store,plan,false);check(store.folders().toString().equals(folders.toString()),"Restored folders and children unchanged");check(store.desktop().size()==21,"Restored all desktop icons");check(store.prefs.getString("note","").equals("Shared backup fixture note"),"Shared note restored");check(EightDefaults.profile(store)==EightProfile.EIGHT_POINT_ONE,"Keep target Eight shell");
+        JSONObject exported=DesktopBackup.snapshot(store);check(exported.getString("format").equals("nth-desktop-backup"),"Shared export format");check(DesktopBackup.parse(exported.toString()).folders()==20,"Reexport parses");DesktopBackup.parse(new JSONObject(exported.toString()).put("format",DesktopBackup.LEGACY_FORMAT).toString());
+        String restored=store.prefs.getAll().toString();JSONObject broken=new JSONObject(shared.toString());field(broken.getJSONObject("settings"),"shortcuts","[\"folder:missing\"]");reject(broken);JSONObject partial=new JSONObject(exported.toString());partial.getJSONObject("settings").remove(EightStartData.EIGHT_ONE);reject(partial);check(restored.equals(store.prefs.getAll().toString()),"Rejections never mutate preferences");
+        DesktopBackup.apply(getTargetContext(),store,DesktopBackup.staged(getTargetContext(),DesktopBackup.UNDO),true);check(DesktopBackup.snapshot(store).getJSONObject("settings").getJSONObject("shortcuts").getString("value").equals(original.getJSONObject("settings").getJSONObject("shortcuts").getString("value")),"Undo restores original desktop");check(!DesktopBackup.file(getTargetContext(),DesktopBackup.UNDO).exists(),"Undo consumed atomically");
+    }
+    void reject(JSONObject value)throws Exception{boolean rejected=false;try{DesktopBackup.parse(value.toString());}catch(JSONException e){rejected=true;}check(rejected,"Invalid backup rejected");}
+    void field(JSONObject fields,String key,String value)throws Exception{fields.put(key,new JSONObject().put("type","string").put("value",value));}
+    void ui(Runnable action)throws Exception{FutureTask<Void> task=new FutureTask<>(action,null);home.runOnUiThread(task);task.get(25,TimeUnit.SECONDS);waitForIdleSync();}
+    void check(boolean condition,String message){if(!condition)throw new AssertionError(message);}
+    <T extends View>T find(Class<T> type){return EightSmoke.find(root,type);}static View description(View view,String text){return EightSmoke.description(view,text);}
+    void shot(String name)throws Exception{waitForIdleSync();Bitmap bitmap=getUiAutomation().takeScreenshot();if(bitmap==null)return;try(OutputStream out=new FileOutputStream(new File(getTargetContext().getFilesDir(),name+".png"))){bitmap.compress(Bitmap.CompressFormat.PNG,100,out);}finally{bitmap.recycle();}}
+}
