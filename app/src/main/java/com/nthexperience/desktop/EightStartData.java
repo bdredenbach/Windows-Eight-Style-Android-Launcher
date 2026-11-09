@@ -19,18 +19,27 @@ final class EightStartData {
     EightStartData(DesktopStore store,EightProfile profile){
         this.store=store;this.profile=profile;
         List<Group> loaded;
-        try{loaded=parse(store.prefs.getString(key(profile),""),profile);}catch(JSONException e){loaded=defaults();}
+        try{loaded=parse(store.prefs.getString(key(profile),""),profile);}catch(JSONException e){loaded=defaults(profile);}
         groups=loaded;
     }
     static String key(EightProfile profile){return profile==EightProfile.EIGHT?EIGHT:EIGHT_ONE;}
-    static List<Group> defaults(){
-        List<Group> result=new ArrayList<>();
-        Group essentials=new Group("Essentials");
-        String[] ids={"@desktop","@nota","@browser","@files","@calendar","@weather"};
-        for(String id:ids)essentials.items.add(new Item(id,id.equals("@desktop")||id.equals("@nota")||id.equals("@weather")?"Wide":"Medium"));
-        result.add(essentials);Group tools=new Group("Nth tools");
-        for(String id:new String[]{"@mail","@people","@maps","@photos",MediaLibrary.PLAYER,"@notes","@gadget:calculator","@settings","@legacycontrol"})tools.items.add(new Item(id,"Medium"));
-        result.add(tools);return result;
+    static List<Group> defaults(){return defaults(EightProfile.EIGHT);}
+    static List<Group> defaults(EightProfile profile){return EightTileCatalog.defaults(profile);}
+    int addMissingApps(){
+        Set<String> present=new HashSet<>();Set<String> names=new HashSet<>();for(Group group:groups){names.add(group.name.toLowerCase(Locale.ROOT));for(Item item:group.items)present.add(item.id);}
+        int added=0;
+        for(Group preset:defaults(profile)){
+            Group target=null;
+            for(Item item:preset.items){
+                if(present.contains(item.id)||present.size()>=MAX_TILES)continue;
+                if(target==null){
+                    if(groups.size()<MAX_GROUPS){String name=preset.name;int suffix=1;while(names.contains(name.toLowerCase(Locale.ROOT)))name="Nth "+preset.name+(suffix++==1?"":" "+(suffix-1));target=new Group(name);groups.add(target);names.add(name.toLowerCase(Locale.ROOT));}
+                    else target=groups.get(groups.size()-1);
+                }
+                target.items.add(item);present.add(item.id);added++;
+            }
+        }
+        if(added>0)save();return added;
     }
     static List<Group> parse(String value,EightProfile profile)throws JSONException{
         JSONObject root=new JSONObject(value);JSONArray raw=root.getJSONArray("groups");

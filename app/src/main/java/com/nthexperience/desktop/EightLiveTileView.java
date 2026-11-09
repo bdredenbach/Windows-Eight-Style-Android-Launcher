@@ -29,7 +29,7 @@ final class EightLiveTileView extends FrameLayout {
     void show(EightTileSnapshot snapshot,int index,boolean motion){
         if(snapshot==null||snapshot.items.isEmpty())return;EightTileSnapshot.Item item=snapshot.items.get(Math.floorMod(index,snapshot.items.size()));badge.setText(snapshot.badgeText());badge.setVisibility(snapshot.badge==0?GONE:VISIBLE);
         android.graphics.Rect visible=new android.graphics.Rect();if(!item.image.equals(requested)&&(item.image.isEmpty()||getGlobalVisibleRect(visible))){requested=item.image;loadImage(item.image);}
-        if(item.key().equals(current))return;boolean slide=motion&&!current.isEmpty()&&isShown();pause();current=item.key();heading.setText(item.title);heading.setTextSize(item.tag.equals("date")||item.tag.equals("current")?large?54:38:large?24:20);detail.setText(item.detail);
+        if(item.key().equals(current))return;boolean slide=motion&&!current.isEmpty()&&isShown();pause();current=item.key();heading.setText(item.title);heading.setTextSize(item.tag.equals("date")||item.tag.equals("current")||item.tag.equals("count")?large?54:34:item.tag.startsWith("time")?large?40:27:large?24:20);detail.setText(item.detail);
         if(slide){setTranslationY(dp(18));setAlpha(.5f);animate().translationY(0).alpha(1).setDuration(300).start();}
     }
     private void clearBitmap(){image.setImageDrawable(null);if(bitmap!=null){bitmap.recycle();bitmap=null;}}

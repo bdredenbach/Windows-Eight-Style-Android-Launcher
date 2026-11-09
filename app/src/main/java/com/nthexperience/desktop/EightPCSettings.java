@@ -114,6 +114,7 @@ final class EightPCSettings extends LinearLayout {
         if(EightDefaults.profile(store)==EightProfile.EIGHT_POINT_ONE){toggle("Open Desktop when Eight launches","eight_boot_desktop",false);toggle("Use desktop wallpaper on Start","eight_start_wallpaper",false);toggle("8.1 Update mouse controls and taskbar apps","eight_81_update",false);toggle("Keep browser address bar visible","eight_always_address",false);}
         button("Start color",()->{String[] names={"Indigo","Plum","Teal","Crimson","Graphite","Deep blue"};int[] colors={0xff21164f,0xff4a1958,0xff004b50,0xff771b35,0xff252525,0xff17385e};Aero.dialog(getContext()).setTitle("Start color").setItems(names,(d,n)->{store.prefs.edit().putInt("eight_start_color",colors[n]).apply();changed.run();}).show();});
         toggle("Live tiles","eight_live_tiles",true);
+        button("Add missing Nth app tiles",()->open.accept("eight-start:app-tiles"));
         CheckBox aero=new CheckBox(getContext());aero.setText("Aero desktop finish");aero.setTextColor(0xff222222);aero.setChecked(TenThemes.aero(store.prefs));aero.setMinHeight(dp(48));aero.setOnCheckedChangeListener((v,value)->{store.prefs.edit().putString("ten_shell_style",value?"Aero":"Ten").apply();changed.run();});body.addView(aero);
         button("Desktop background",()->open.accept("setting:page:background"));button("Desktop colors and Aero controls",()->open.accept("ten-setting:colors"));button("Control Panel",()->open.accept("@legacycontrol"));
     }
