@@ -632,18 +632,21 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
     private void fitTaskButtons(int first,int room){
         int count=taskItems.getChildCount()-first;
         if(count==0)return;
-        int preferred=0;
-        for(int i=first;i<taskItems.getChildCount();i++){
-            LinearLayout.LayoutParams size=(LinearLayout.LayoutParams)taskItems.getChildAt(i).getLayoutParams();
-            preferred+=size.width+size.rightMargin;
+        boolean expanded=store.prefs.getBoolean("taskbar_expanded",false);
+        int slots=expanded?(count+1)/2:count;if(expanded)room/=2;
+        int preferred=0,column=0;
+        for(int i=0;i<count;i++){
+            LinearLayout.LayoutParams size=(LinearLayout.LayoutParams)taskItems.getChildAt(first+i).getLayoutParams();
+            if(expanded){column=Math.max(column,size.width+size.rightMargin);if(i%2==1||i==count-1){preferred+=column;column=0;}}
+            else preferred+=size.width+size.rightMargin;
         }
         if(preferred<=room)return;
-        int gap=room/count>=dp(32)?dp(3):0;
-        int width=Math.max(0,room-count*gap);
+        int gap=room/slots>=dp(32)?dp(3):0;
+        int width=Math.max(0,room-slots*gap);
         for(int i=0;i<count;i++){
             LinearLayout button=(LinearLayout)taskItems.getChildAt(first+i);
             LinearLayout.LayoutParams size=(LinearLayout.LayoutParams)button.getLayoutParams();
-            size.width=width/count+(i<width%count?1:0);
+            int slot=expanded?i/2:i;size.width=width/slots+(slot<width%slots?1:0);
             size.rightMargin=gap;
             button.setLayoutParams(size);
             if(size.width<dp(46)){
