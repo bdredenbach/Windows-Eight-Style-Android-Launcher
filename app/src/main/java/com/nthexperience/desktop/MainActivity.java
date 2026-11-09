@@ -198,9 +198,11 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
     }
     private void layoutWorkspace(){
         positionEightHandles();
-        if(destroyed||workspace==null||workspace.getWidth()==0)return;int width=workspace.getWidth(),height=workspace.getHeight();if(tray!=null){tray.fitWidth(width);tray.bounds(desktopCutoutLeft,desktopCutoutRight,windowTopInset);}if(tenTasks!=null)tenTasks.safeInsets(desktopCutoutLeft,desktopCutoutRight,windowTopInset);if(tenActions!=null)tenActions.safeInsets(desktopCutoutLeft,desktopCutoutRight,windowTopInset);if(tenNews!=null)tenNews.bounds(desktopCutoutLeft,desktopCutoutRight,windowTopInset);
+        if(destroyed||workspace==null||workspace.getWidth()==0)return;int width=workspace.getWidth(),height=Math.max(1,shell.getHeight()-shell.getPaddingTop()-shell.getPaddingBottom()-dp(48));if(tray!=null){tray.fitWidth(width);tray.bounds(desktopCutoutLeft,desktopCutoutRight,windowTopInset);}if(tenTasks!=null)tenTasks.safeInsets(desktopCutoutLeft,desktopCutoutRight,windowTopInset);if(tenActions!=null)tenActions.safeInsets(desktopCutoutLeft,desktopCutoutRight,windowTopInset);if(tenNews!=null)tenNews.bounds(desktopCutoutLeft,desktopCutoutRight,windowTopInset);
             WindowInsets current=root.getRootWindowInsets();java.util.List<android.graphics.Rect> holes=new ArrayList<>();
             if(current!=null&&Build.VERSION.SDK_INT>=28&&current.getDisplayCutout()!=null)holes.addAll(current.getDisplayCutout().getBoundingRects());
+            // Keep desktop rows anchored to the one-row work area. A taller taskbar
+            // crops the scroll viewport; it must not resnap or repack saved icon positions.
             desktop.configure(dp(store.tileWidth()),dp(store.tileHeight()),holes);desktop.viewport(Math.max(1,height-desktopScroll.getPaddingTop()-desktopScroll.getPaddingBottom()));
             for(DesktopWindow tool:windows.values())tool.safeTop(windowTopInset);
     }

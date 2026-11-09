@@ -14,10 +14,10 @@ assert 'Nth Desktop Eight' in subprocess.check_output([str(aapt),'dump','badging
 assert 'com.nthexperience.desktop.eight.storage' in main
 assert 'com.nthexperience.desktop.ten' not in main
 assert 'com.nthexperience.desktop.eight.test' in tests
-for runner in ('EightCompatibilitySmoke','EightInteractionSmoke','EightLocationSmoke','EightInsetsSmoke','EightConnectedSmoke','EightReleaseSmoke','EightFidelitySmoke','EightSmoke','EightGestureSmoke','EightAuditSmoke','EightImmersiveSmoke','EightResearchSmoke','BrowserSmoke','ExplorerSmoke','PhotoSmoke','MediaSmoke'):
+for runner in ('EightTaskbarStabilitySmoke','EightCompatibilitySmoke','EightInteractionSmoke','EightLocationSmoke','EightInsetsSmoke','EightConnectedSmoke','EightReleaseSmoke','EightFidelitySmoke','EightSmoke','EightGestureSmoke','EightAuditSmoke','EightImmersiveSmoke','EightResearchSmoke','BrowserSmoke','ExplorerSmoke','PhotoSmoke','MediaSmoke'):
     assert 'com.nthexperience.desktop.'+runner in tests,runner+' registration missing'
 assert 'android.permission.WRITE_CONTACTS' not in main and 'android.permission.WRITE_CALENDAR' not in main
 assert 'android.permission.ACCESS_FINE_LOCATION' in main and 'android.permission.ACCESS_COARSE_LOCATION' in main
 assert 'android.permission.ACCESS_BACKGROUND_LOCATION' not in main
 assert 'android.intent.category.HOME' in main
-print('PASS: Eight app identity, isolated providers, non-debuggable release, Home intent and sixteen native runners')
+print('PASS: Eight app identity, isolated providers, non-debuggable release, Home intent and seventeen native runners')
