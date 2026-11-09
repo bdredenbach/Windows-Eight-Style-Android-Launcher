@@ -15,7 +15,7 @@ import java.util.concurrent.*;
 /** Recording regression: changing taskbar height must not resnap the desktop behind it. */
 public final class EightTaskbarStabilitySmoke extends Instrumentation {
     MainActivity home;View root;DesktopStore store;int scenarios,frames;
-    @Override public void onCreate(Bundle args){super.onCreate(args);start();}
+    @Override public void onCreate(Bundle args){EightTestSetup.afterInitialization(getTargetContext());super.onCreate(args);start();}
     @Override public void onStart(){Bundle result=new Bundle();try{
         shell("wm size 1080x2400");
         store=new DesktopStore(getTargetContext());EightDefaults.initialize(store);

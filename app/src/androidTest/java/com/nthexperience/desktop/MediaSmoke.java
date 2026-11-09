@@ -27,7 +27,7 @@ import java.util.function.Predicate;
 public final class MediaSmoke extends Instrumentation {
     private MainActivity home;
     private View root;
-    @Override public void onCreate(Bundle arguments) { super.onCreate(arguments); start(); }
+    @Override public void onCreate(Bundle arguments) {EightTestSetup.afterInitialization(getTargetContext()); super.onCreate(arguments); start(); }
     @Override public void onStart() {
         Bundle result = new Bundle();
         Uri folder = null;

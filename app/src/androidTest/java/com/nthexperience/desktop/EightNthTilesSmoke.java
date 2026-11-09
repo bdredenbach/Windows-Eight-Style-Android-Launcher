@@ -15,7 +15,7 @@ import org.json.*;
 /** Fresh installs, upgrades, portable backups and real local tile content. */
 public final class EightNthTilesSmoke extends Instrumentation {
     MainActivity home;View root;DesktopStore store;EightStartScreen screen;FrameLayout overlay;String opened;int launches;
-    @Override public void onCreate(Bundle args){super.onCreate(args);start();}
+    @Override public void onCreate(Bundle args){EightTestSetup.afterInitialization(getTargetContext());super.onCreate(args);start();}
     @Override public void onStart(){Bundle result=new Bundle();try{
         store=new DesktopStore(getTargetContext());lifecycle();fixtures();
         store.prefs.edit().putInt("startup_mode",2).putBoolean("welcome_on_start",false).putBoolean("reduce_motion",true).commit();
