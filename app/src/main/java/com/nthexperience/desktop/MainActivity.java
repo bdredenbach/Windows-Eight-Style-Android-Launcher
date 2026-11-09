@@ -192,11 +192,12 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
     }
     private void positionEightHandles(){
         if(eightLayer==null||eightSwitchHandle==null||eightCharmsHandle==null)return;
-        int inset=startMenu!=null&&startMenu.getVisibility()==View.VISIBLE?dp(56):eightImmersive!=null&&eightImmersive.visible()?eightImmersive.edgeHandleInset():dp(48);
-        if(eightTaskbarPeek)inset=Math.max(inset,dp(48));
+        int inset=startMenu!=null&&startMenu.getVisibility()==View.VISIBLE?dp(56):eightImmersive!=null&&eightImmersive.visible()?eightImmersive.edgeHandleInset():dp(store.prefs.getBoolean("taskbar_expanded",false)?96:48);
+        if(eightTaskbarPeek)inset=Math.max(inset,dp(store.prefs.getBoolean("taskbar_expanded",false)?96:48));
         for(View handle:new View[]{eightSwitchHandle,eightCharmsHandle}){FrameLayout.LayoutParams bounds=(FrameLayout.LayoutParams)handle.getLayoutParams();if(bounds.bottomMargin!=inset){bounds.bottomMargin=inset;handle.setLayoutParams(bounds);}}
     }
     private void layoutWorkspace(){
+        positionEightHandles();
         if(destroyed||workspace==null||workspace.getWidth()==0)return;int width=workspace.getWidth(),height=workspace.getHeight();if(tray!=null){tray.fitWidth(width);tray.bounds(desktopCutoutLeft,desktopCutoutRight,windowTopInset);}if(tenTasks!=null)tenTasks.safeInsets(desktopCutoutLeft,desktopCutoutRight,windowTopInset);if(tenActions!=null)tenActions.safeInsets(desktopCutoutLeft,desktopCutoutRight,windowTopInset);if(tenNews!=null)tenNews.bounds(desktopCutoutLeft,desktopCutoutRight,windowTopInset);
             WindowInsets current=root.getRootWindowInsets();java.util.List<android.graphics.Rect> holes=new ArrayList<>();
             if(current!=null&&Build.VERSION.SDK_INT>=28&&current.getDisplayCutout()!=null)holes.addAll(current.getDisplayCutout().getBoundingRects());
@@ -1712,14 +1713,14 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
     private void peekEightTaskbar(boolean show){
         if(eightTaskbar==null||eightLayer==null||show==eightTaskbarPeek)return;
         main.removeCallbacks(hideEightTaskbar);ViewGroup parent=(ViewGroup)eightTaskbar.getParent();if(parent!=null)parent.removeView(eightTaskbar);eightTaskbarPeek=show;
-        if(show){eightTaskbar.setElevation(dp(46));eightLayer.addView(eightTaskbar,new FrameLayout.LayoutParams(-1,dp(48),Gravity.BOTTOM));}
-        else{eightTaskbar.setElevation(dp(2));shell.addView(eightTaskbar,new LinearLayout.LayoutParams(-1,dp(48)));}
+        if(show){eightTaskbar.setElevation(dp(46));eightLayer.addView(eightTaskbar,new FrameLayout.LayoutParams(-1,dp(store.prefs.getBoolean("taskbar_expanded",false)?96:48),Gravity.BOTTOM));}
+        else{eightTaskbar.setElevation(dp(2));shell.addView(eightTaskbar,new LinearLayout.LayoutParams(-1,dp(store.prefs.getBoolean("taskbar_expanded",false)?96:48)));}
         positionEightHandles();
     }
     @Override public boolean dispatchGenericMotionEvent(MotionEvent event){
         if(eightCharms!=null&&event.isFromSource(android.view.InputDevice.SOURCE_MOUSE)&&event.getActionMasked()==MotionEvent.ACTION_HOVER_MOVE){int[] origin=new int[2];eightLayer.getLocationOnScreen(origin);eightCharms.pointer(event.getRawX()-origin[0]-eightLayer.getPaddingLeft(),event.getRawY()-origin[1]-eightLayer.getPaddingTop(),eightLayer.getWidth()-eightLayer.getPaddingLeft()-eightLayer.getPaddingRight(),eightLayer.getHeight()-eightLayer.getPaddingTop()-eightLayer.getPaddingBottom());}
         if(root!=null&&EightDefaults.profile(store)==EightProfile.EIGHT_POINT_ONE&&store.prefs.getBoolean("eight_81_update",false)&&event.isFromSource(android.view.InputDevice.SOURCE_MOUSE)){
-            float bottom=root.getHeight()-shell.getPaddingBottom();if(event.getActionMasked()==MotionEvent.ACTION_HOVER_MOVE){if(event.getY()>bottom-dp(10)&&(startMenu.getVisibility()==View.VISIBLE||eightImmersive.visible()))peekEightTaskbar(true);if(eightTaskbarPeek){main.removeCallbacks(hideEightTaskbar);if(event.getY()<bottom-dp(52))main.postDelayed(hideEightTaskbar,900);}}
+            float bottom=root.getHeight()-shell.getPaddingBottom();if(event.getActionMasked()==MotionEvent.ACTION_HOVER_MOVE){if(event.getY()>bottom-dp(10)&&(startMenu.getVisibility()==View.VISIBLE||eightImmersive.visible()))peekEightTaskbar(true);if(eightTaskbarPeek){main.removeCallbacks(hideEightTaskbar);if(event.getY()<bottom-dp(store.prefs.getBoolean("taskbar_expanded",false)?100:52))main.postDelayed(hideEightTaskbar,900);}}
         }
         return super.dispatchGenericMotionEvent(event);
     }

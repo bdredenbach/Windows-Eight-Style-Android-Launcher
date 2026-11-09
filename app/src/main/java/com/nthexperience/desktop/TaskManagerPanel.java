@@ -67,14 +67,14 @@ final class TaskManagerPanel extends LinearLayout {
         android.content.SharedPreferences prefs=getContext().getSharedPreferences("desktop",0);
         if(tab.equals("Startup")){
             body.addView(text("Nth Desktop startup",18));
-            CheckBox boot=new CheckBox(getContext());boot.setText("Start Eight at Desktop");boot.setTextColor(Color.BLACK);boot.setChecked(prefs.getBoolean("eight_boot_desktop",false));boot.setOnCheckedChangeListener((v,on)->prefs.edit().putBoolean("eight_boot_desktop",on).apply());body.addView(boot);
+            CheckBox boot=new CheckBox(getContext());boot.setText("Start Eight at Desktop");boot.setTextColor(Color.BLACK);boot.setChecked(prefs.getBoolean("eight_boot_desktop",false));boot.setOnCheckedChangeListener((v,on)->prefs.edit().putBoolean("eight_boot_desktop",on).apply());if("81".equals(prefs.getString("eight_profile","8")))body.addView(boot);else body.addView(text("Starting at Desktop is available with the EightPoint One shell.",12));
             CheckBox sound=new CheckBox(getContext());sound.setText("Play startup sound");sound.setTextColor(Color.BLACK);sound.setChecked(prefs.getBoolean("startup_sound",true));sound.setOnCheckedChangeListener((v,on)->prefs.edit().putBoolean("startup_sound",on).apply());body.addView(sound);
             body.addView(text("Android manages startup for other apps. Startup impact is unavailable.",12));
         }else if(tab.equals("Users")){
             body.addView(text(prefs.getString("desktop_name","Nth Experience"),18));body.addView(text("Current Android user • Active",13));body.addView(text("Other Android users and their processes are private.",12));
         }else{
             body.addView(text("Services",18));body.addView(text("Android manages system services. Nth Desktop cannot enumerate or stop services belonging to other apps.",13));
-            body.addView(Aero.button(getContext(),"Open Android app settings",()->host.open("android:settings")));
+            body.addView(Aero.button(getContext(),"Open Android app settings",()->host.open("setting:android:settings")));
         }
     }
     private static final String[] METRICS={"CPU","Memory","Java heap","Received","Sent"};
