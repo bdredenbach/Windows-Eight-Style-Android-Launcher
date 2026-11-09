@@ -35,7 +35,7 @@ public final class EightTaskbarStabilitySmoke extends Instrumentation {
         scenario("free-placed",true,false,false);
         scenario("scrolled",true,true,true);
         recentTaskbarStability();
-        result.putString("stream","PASS: "+scenarios+" taskbar height scenarios / "+frames+" actual pre-draw frames; 21 desktop icons retain screen positions, cell sizes and icon sizes across repeated menu and Control Panel Apply expansion/collapse; 5x9 imported-style grid at 80% icon size, both 8/8.1 shells, portrait/landscape, automatic unsaved layout, free placement and scrolled sheet; saved coordinates unchanged; unpinned Android task buttons retain order and row positions when Control Panel opens/closes; manual drag order and pin edits honored; taller taskbar only reduces visible scroll area\n");finish(Activity.RESULT_OK,result);
+        result.putString("stream","PASS: "+scenarios+" taskbar height scenarios / "+frames+" actual pre-draw frames; 21 desktop icons retain screen positions, cell sizes and icon sizes across repeated menu and Control Panel Apply expansion/collapse; 5x9 imported-style grid at 80% icon size, both 8/8.1 shells, portrait/landscape, automatic unsaved layout, free placement and scrolled sheet; saved coordinates unchanged; unpinned Android task buttons retain order and row positions when Control Panel opens/closes; manual drag order and pin edits honored; taller taskbar only reduces visible scroll area; Start, tray icons, clock and Show desktop retain their screen positions in the bottom 48dp row through expansion/collapse\n");finish(Activity.RESULT_OK,result);
     }catch(Throwable error){result.putString("stream","FAIL: "+android.util.Log.getStackTraceString(error));try{shot("eight710-failure");}catch(Exception ignored){}finish(Activity.RESULT_CANCELED,result);}}
     void recentTaskbarStability()throws Exception{
         List<String> probes=new ArrayList<>();for(AppCatalog.Entry entry:AppCatalog.load(home))if(entry.id.startsWith("com.nthexperience.desktop.fixture/"))probes.add(entry.id);
@@ -82,8 +82,19 @@ public final class EightTaskbarStabilitySmoke extends Instrumentation {
     }
     void verify(Watcher watcher,String action){check(watcher.failure==null,action+": "+watcher.failure);}
     final class Watcher implements ViewTreeObserver.OnPreDrawListener{
-        final Map<String,String> baseline=geometry();int count;String failure;
-        public boolean onPreDraw(){count++;Map<String,String> now=geometry();if(failure==null&&!baseline.equals(now)){for(String id:baseline.keySet())if(!Objects.equals(baseline.get(id),now.get(id))){failure=id+" moved from "+baseline.get(id)+" to "+now.get(id);break;}if(failure==null)failure="Desktop membership changed";}return true;}
+        final Map<String,String> baseline=geometry(),fixedBaseline=fixedGeometry();int count;String failure;
+        public boolean onPreDraw(){count++;Map<String,String> now=geometry();if(failure==null)failure=fixedRowFailure();if(failure==null&&!fixedBaseline.equals(fixedGeometry()))failure="Start, tray, clock or Show desktop moved vertically";if(failure==null&&!baseline.equals(now)){for(String id:baseline.keySet())if(!Objects.equals(baseline.get(id),now.get(id))){failure=id+" moved from "+baseline.get(id)+" to "+now.get(id);break;}if(failure==null)failure="Desktop membership changed";}return true;}
+    }
+    Map<String,String> fixedGeometry(){
+        ViewGroup bar=(ViewGroup)EightSmoke.description(root,"Desktop taskbar");Map<String,String> values=new LinkedHashMap<>();
+        for(int i=0;i<bar.getChildCount();i++){if(i==1)continue;View child=bar.getChildAt(i);int[] at=new int[2];child.getLocationOnScreen(at);values.put("control-"+i,at[1]+","+child.getHeight());
+            if(child instanceof SystemTray){ViewGroup tray=(ViewGroup)child;for(int n=0;n<tray.getChildCount();n++){View icon=tray.getChildAt(n);if(icon.getVisibility()!=View.VISIBLE)continue;icon.getLocationOnScreen(at);values.put("tray-"+n,at[1]+","+icon.getHeight());}}
+        }return values;
+    }
+    String fixedRowFailure(){
+        ViewGroup bar=(ViewGroup)EightSmoke.description(root,"Desktop taskbar");int row=Aero.dp(home,48);
+        for(int i=0;i<bar.getChildCount();i++){if(i==1)continue;View child=bar.getChildAt(i);if(child.getHeight()!=row||child.getBottom()!=bar.getHeight())return "Fixed control "+i+" is outside the bottom row: top="+child.getTop()+", height="+child.getHeight()+", bar="+bar.getHeight();}
+        return null;
     }
     Map<String,String> geometry(){
         DesktopIconGrid grid=find(DesktopIconGrid.class);Map<String,String> values=new LinkedHashMap<>();
