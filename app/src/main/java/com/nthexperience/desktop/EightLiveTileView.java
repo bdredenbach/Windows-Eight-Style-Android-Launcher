@@ -25,13 +25,13 @@ final class EightLiveTileView extends FrameLayout {
         badge=Aero.text(c,"",13,Color.WHITE);badge.setGravity(Gravity.CENTER);badge.setBackgroundColor(0x99000000);FrameLayout.LayoutParams bp=new FrameLayout.LayoutParams(dp(32),dp(26),Gravity.BOTTOM|Gravity.END);addView(badge,bp);badge.setVisibility(GONE);
     }
     private int dp(int n){return Aero.dp(getContext(),n);}
-    private void fit(){int room=getHeight()-dp(36);detail.setVisibility(room<dp(36)?GONE:VISIBLE);detail.setMaxLines(large?detailLines:room<dp(56)?1:detailLines);}
-    @Override protected void onSizeChanged(int w,int h,int oldw,int oldh){super.onSizeChanged(w,h,oldw,oldh);fit();}
+    private void fit(int height){if(height<=0)return;int room=height-dp(36);detail.setVisibility(room<dp(36)?GONE:VISIBLE);detail.setMaxLines(large?detailLines:room<dp(56)?1:detailLines);}
+    @Override protected void onSizeChanged(int w,int h,int oldw,int oldh){super.onSizeChanged(w,h,oldw,oldh);fit(h);}
     void pause(){animate().cancel();setTranslationY(0);setAlpha(1);}
     void show(EightTileSnapshot snapshot,int index,boolean motion){
         if(snapshot==null||snapshot.items.isEmpty())return;EightTileSnapshot.Item item=snapshot.items.get(Math.floorMod(index,snapshot.items.size()));badge.setText(snapshot.badgeText());badge.setVisibility(snapshot.badge==0?GONE:VISIBLE);
         android.graphics.Rect visible=new android.graphics.Rect();if(!item.image.equals(requested)&&(item.image.isEmpty()||getGlobalVisibleRect(visible))){requested=item.image;loadImage(item.image);}
-        if(item.key().equals(current))return;boolean slide=motion&&!current.isEmpty()&&isShown();pause();current=item.key();boolean number=item.tag.equals("date")||item.tag.equals("current")||item.tag.equals("count"),time=item.tag.startsWith("time");heading.setText(item.title);heading.setAutoSizeTextTypeUniformWithConfiguration(12,number?large?54:28:time?large?40:24:large?24:20,1,android.util.TypedValue.COMPLEX_UNIT_SP);heading.setMaxLines(large?5:number||time?1:wide?2:1);detailLines=large?4:number||time?2:1;detail.setText(item.detail);fit();
+        if(item.key().equals(current))return;boolean slide=motion&&!current.isEmpty()&&isShown();pause();current=item.key();boolean number=item.tag.equals("date")||item.tag.equals("current")||item.tag.equals("count"),time=item.tag.startsWith("time");heading.setText(item.title);heading.setAutoSizeTextTypeUniformWithConfiguration(12,number?large?54:28:time?large?40:24:large?24:20,1,android.util.TypedValue.COMPLEX_UNIT_SP);heading.setMaxLines(large?5:number||time?1:wide?2:1);detailLines=large?4:number||time?2:1;detail.setText(item.detail);fit(getHeight());
         if(slide){setTranslationY(dp(18));setAlpha(.5f);animate().translationY(0).alpha(1).setDuration(300).start();}
     }
     private void clearBitmap(){image.setImageDrawable(null);if(bitmap!=null){bitmap.recycle();bitmap=null;}}

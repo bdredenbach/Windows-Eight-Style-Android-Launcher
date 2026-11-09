@@ -58,7 +58,7 @@ public final class EightNthTilesSmoke extends Instrumentation {
         if(!(tile instanceof ViewGroup))return;
         for(int i=0;i<((ViewGroup)tile).getChildCount();i++){
             View child=((ViewGroup)tile).getChildAt(i);if(!(child instanceof EightLiveTileView)||child.getVisibility()!=View.VISIBLE)continue;
-            ViewGroup live=(ViewGroup)child,body=(ViewGroup)live.getChildAt(1);View detail=body.getChildAt(1),caption=live.getChildAt(2);int[] textAt=new int[2],captionAt=new int[2];detail.getLocationOnScreen(textAt);caption.getLocationOnScreen(captionAt);check(textAt[1]+detail.getHeight()<=captionAt[1],"Live text fits above caption: "+tile.getContentDescription());
+            ViewGroup live=(ViewGroup)child,body=(ViewGroup)live.getChildAt(1);View detail=body.getChildAt(1),caption=live.getChildAt(2);check(detail.getVisibility()==View.VISIBLE&&detail.getHeight()>0,"Live subtitle remains visible: "+tile.getContentDescription());int[] textAt=new int[2],captionAt=new int[2];detail.getLocationOnScreen(textAt);caption.getLocationOnScreen(captionAt);check(textAt[1]+detail.getHeight()<=captionAt[1],"Live text fits above caption: "+tile.getContentDescription());
         }
     }
     private View tile(EightTileCatalog.Entry e){return description(screen,e.title(screen.profile)+", "+screen.data.item(e.id).size+" Start tile");}
