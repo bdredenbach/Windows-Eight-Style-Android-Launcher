@@ -13,7 +13,10 @@ final class EightDefaults {
     }
     static void initialize(DesktopStore store){
         if(!store.prefs.getBoolean("eight_v3_surfaces",false)){store.prefs.edit().putBoolean("eight_v3_surfaces",true).putBoolean("ten_apps_dark",false).putBoolean("ten_light",true).putBoolean("ten_accent_titles",true).putBoolean("ten_accent_shell",false).putBoolean("ten_transparency",false).apply();}
-        if(store.prefs.getBoolean("eight_initialized",false))return;
+        if(store.prefs.getBoolean("eight_initialized",false)){
+            if(!store.prefs.getBoolean(EightTileCatalog.SEEDED,false)){for(EightProfile profile:EightProfile.values())new EightStartData(store,profile).addMissingApps();store.prefs.edit().putBoolean(EightTileCatalog.SEEDED,true).apply();}
+            return;
+        }
         store.prefs.edit().putBoolean("eight_initialized",true).putString("eight_profile","8")
             .putBoolean("ten_initialized",true).putBoolean("ten_v2_defaults",true)
             .putBoolean("ten_v13_taskbar_defaults",true).putBoolean("taskbar_static",false)
@@ -21,7 +24,7 @@ final class EightDefaults {
             .putBoolean("ten_apps_dark",false).putBoolean("ten_accent_titles",true)
             .putString("ten_shell_style","Ten").putInt("ten_accent",0xff5899c0)
             .putInt("wallpaper",11).putBoolean("ten_ribbon_expanded",false)
-            .putString("desktop_name","Nth Experience").apply();
+            .putString("desktop_name","Nth Experience").putBoolean("eight_live_tiles",true).putBoolean(EightTileCatalog.SEEDED,true).apply();
         for(EightProfile profile:EightProfile.values())new EightStartData(store,profile).save();
     }
     private EightDefaults(){}
