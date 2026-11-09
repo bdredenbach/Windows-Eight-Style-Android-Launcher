@@ -1,6 +1,6 @@
 # Nth Desktop Eight
 
-Current preview: **0.7.11** gives every built-in Nth app and tool a Start tile: 54 tiles in seven groups, varied colors/styles/sizes and 19 live-capable tiles. Fresh installations get the complete layout in both shells; existing installations add missing tiles once while keeping existing arrangements. See [the Start tile update and validation](docs/EIGHT_0_7_11.md). The [0.7.10 expanded-taskbar stability fix](docs/EIGHT_0_7_10.md) and [0.7.9 shared backups and Windows 8 Task Manager](docs/EIGHT_0_7_9.md) remain included.
+Current preview: **0.7.12** keeps Start, the notification area, clock and Show desktop in the bottom row when the taskbar expands. App buttons retain the added row above. See [the bottom-row fix and validation](docs/EIGHT_0_7_12.md). The [0.7.11 Nth Start tiles](docs/EIGHT_0_7_11.md), [0.7.10 expanded-taskbar stability fix](docs/EIGHT_0_7_10.md) and [0.7.9 shared backups and Windows 8 Task Manager](docs/EIGHT_0_7_9.md) remain included.
 
 A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Android 8.0+; targets Android 16.
 
