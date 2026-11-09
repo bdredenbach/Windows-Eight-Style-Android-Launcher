@@ -1,6 +1,6 @@
 # Nth Desktop Eight
 
-Current preview: **0.7.10** stops restored desktop icons resnapping when the taskbar expands or collapses, and keeps Android task buttons in their existing slots when Control Panel opens/closes. See [the recording-driven stability fix and validation](docs/EIGHT_0_7_10.md). The [0.7.9 shared backups, expanded taskbar and Windows 8 Task Manager](docs/EIGHT_0_7_9.md) and earlier updates remain included.
+Current preview: **0.7.11** gives every built-in Nth app and tool a Start tile: 54 tiles in seven groups, varied colors/styles/sizes and 19 live-capable tiles. Fresh installations get the complete layout in both shells; existing installations add missing tiles once while keeping existing arrangements. See [the Start tile update and validation](docs/EIGHT_0_7_11.md). The [0.7.10 expanded-taskbar stability fix](docs/EIGHT_0_7_10.md) and [0.7.9 shared backups and Windows 8 Task Manager](docs/EIGHT_0_7_9.md) remain included.
 
 A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Android 8.0+; targets Android 16.
 
@@ -50,7 +50,7 @@ The [research implementation notes](docs/EIGHT_0_5.md) describe the retained liv
 
 Calendar supports local appointments, Day/Week/Month/Agenda, optional device calendars and .ics export. People has local/favorite contacts and optional device contacts, with actions to compose in Mail or find an address in Maps. Mail keeps local drafts and read-only attachments and hands sending/inbox access to an Android email app. Maps provides an attributed online map, address/coordinate lookup, saved places and a directions handoff. Photos remembers chosen folder albums with real thumbnails. Media Player adds folder import and metadata-based Music, Artists, Albums, Videos, Recent and search.
 
-Existing Start layouts are preserved. Find **Mail**, **People** and **Maps** in Apps/search and hold to pin them. New installations include their default tiles. The [0.6.3 promotion review](docs/EIGHT_0_6_3_REVIEW.md) is a historical snapshot; the three gaps it lists are addressed within the scope documented for 0.7.0.
+Existing Start groups, sizes and ordering are preserved. Version 0.7.11 appends missing Nth app tiles once; later unpins remain unpinned. PC settings > Personalize > Add missing Nth app tiles restores missing tiles on demand. Restoring an older backup keeps its saved tile layout. The [0.6.3 promotion review](docs/EIGHT_0_6_3_REVIEW.md) is a historical snapshot; the three gaps it lists are addressed within the scope documented for 0.7.0.
 
 ## Build commands
 
