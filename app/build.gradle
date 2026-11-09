@@ -9,8 +9,8 @@ android {
         buildConfigField 'String', 'AI_GATEWAY_URL', '"https://nth-nota-free-ai.bdredenbach.workers.dev/v1/write"'
         minSdk 26
         targetSdk 36
-        versionCode 19
-        versionName '0.7.9'
+        versionCode 20
+        versionName '0.7.10'
         testInstrumentationRunner 'com.nthexperience.desktop.EightSmoke'
     }
     // CI tests the non-debuggable release variant; delivery is re-signed with the retained owner key.

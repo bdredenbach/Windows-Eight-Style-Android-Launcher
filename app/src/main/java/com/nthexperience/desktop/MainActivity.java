@@ -87,6 +87,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
     private EightStartScreen startMenu;
     private EightSurfaceMotion eightMotion;private FrameLayout eightLayer;private EightPCSettings eightSettings;private EightCharms eightCharms;private String eightReturn="desktop",eightSettingsReturn="desktop";private boolean eightMetaChord,eightPreparingImmersive;private EightImmersive eightImmersive;private EightAppSwitcher eightSwitcher;private View eightTaskbar,eightSwitchHandle,eightCharmsHandle;private boolean eightTaskbarPeek;private final Runnable hideEightTaskbar=()->peekEightTaskbar(false);
     private TaskbarReorder taskbarReorder;private final Map<String,Integer> taskColors=new HashMap<>();
+    private List<String> liveTaskbarOrder=Collections.emptyList(),liveTaskbarPins=Collections.emptyList();
     private SystemTray tray;private WindowPreviews previews;private BrightnessControl brightness;
     private TextView clock;private View tenStartButton;
     private AeroWallpaper wallpaper;
@@ -198,9 +199,11 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
     }
     private void layoutWorkspace(){
         positionEightHandles();
-        if(destroyed||workspace==null||workspace.getWidth()==0)return;int width=workspace.getWidth(),height=workspace.getHeight();if(tray!=null){tray.fitWidth(width);tray.bounds(desktopCutoutLeft,desktopCutoutRight,windowTopInset);}if(tenTasks!=null)tenTasks.safeInsets(desktopCutoutLeft,desktopCutoutRight,windowTopInset);if(tenActions!=null)tenActions.safeInsets(desktopCutoutLeft,desktopCutoutRight,windowTopInset);if(tenNews!=null)tenNews.bounds(desktopCutoutLeft,desktopCutoutRight,windowTopInset);
+        if(destroyed||workspace==null||workspace.getWidth()==0)return;int width=workspace.getWidth(),height=Math.max(1,shell.getHeight()-shell.getPaddingTop()-shell.getPaddingBottom()-dp(48));if(tray!=null){tray.fitWidth(width);tray.bounds(desktopCutoutLeft,desktopCutoutRight,windowTopInset);}if(tenTasks!=null)tenTasks.safeInsets(desktopCutoutLeft,desktopCutoutRight,windowTopInset);if(tenActions!=null)tenActions.safeInsets(desktopCutoutLeft,desktopCutoutRight,windowTopInset);if(tenNews!=null)tenNews.bounds(desktopCutoutLeft,desktopCutoutRight,windowTopInset);
             WindowInsets current=root.getRootWindowInsets();java.util.List<android.graphics.Rect> holes=new ArrayList<>();
             if(current!=null&&Build.VERSION.SDK_INT>=28&&current.getDisplayCutout()!=null)holes.addAll(current.getDisplayCutout().getBoundingRects());
+            // Keep desktop rows anchored to the one-row work area. A taller taskbar
+            // crops the scroll viewport; it must not resnap or repack saved icon positions.
             desktop.configure(dp(store.tileWidth()),dp(store.tileHeight()),holes);desktop.viewport(Math.max(1,height-desktopScroll.getPaddingTop()-desktopScroll.getPaddingBottom()));
             for(DesktopWindow tool:windows.values())tool.safeTop(windowTopInset);
     }
@@ -396,7 +399,11 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
         for(LinearLayout button:buttons.values())taskItems.addView(button);
         Map<String,View> ordered=new LinkedHashMap<>();
         for(int i=firstTask;i<taskItems.getChildCount();i++){View button=taskItems.getChildAt(i);ordered.put(TaskbarReorder.key(button),button);}
-        List<String> order=TaskbarOrder.apply(new ArrayList<>(ordered.keySet()),store.taskbarOrder());
+        // Keep existing session slots when an unpinned Nth window joins Android app buttons.
+        // Explicit drag order still wins; changing the pinned list resets its default order.
+        if(!pins.equals(liveTaskbarPins)){liveTaskbarOrder=Collections.emptyList();liveTaskbarPins=new ArrayList<>(pins);}
+        List<String> order=TaskbarOrder.apply(TaskbarOrder.apply(new ArrayList<>(ordered.keySet()),liveTaskbarOrder),store.taskbarOrder());
+        liveTaskbarOrder=new ArrayList<>(order);
         for(int i=taskItems.getChildCount()-1;i>=firstTask;i--)taskItems.removeViewAt(i);
         for(String id:order)taskItems.addView(ordered.get(id));
         if(focusedTask!=null&&ordered.containsKey(focusedTask))ordered.get(focusedTask).requestFocus();
