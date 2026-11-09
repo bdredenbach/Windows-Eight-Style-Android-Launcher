@@ -15,7 +15,7 @@ import java.util.concurrent.*;
 /** Shared backup migration, atomic Undo, taskbar controls and measured Eight Task Manager. */
 public final class EightCompatibilitySmoke extends Instrumentation {
     MainActivity home;View root;DesktopStore store;
-    @Override public void onCreate(Bundle args){super.onCreate(args);start();}
+    @Override public void onCreate(Bundle args){EightTestSetup.afterInitialization(getTargetContext());super.onCreate(args);start();}
     @Override public void onStart(){Bundle result=new Bundle();try{
         store=new DesktopStore(getTargetContext());EightDefaults.initialize(store);
         store.prefs.edit().putString("eight_profile","81").putBoolean("eight_boot_desktop",true).putInt("startup_mode",2).putBoolean("welcome_on_start",false).putBoolean("reduce_motion",true).commit();

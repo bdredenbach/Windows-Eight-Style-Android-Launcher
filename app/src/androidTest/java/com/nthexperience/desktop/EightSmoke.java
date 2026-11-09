@@ -15,7 +15,7 @@ import org.json.*;
 public final class EightSmoke extends Instrumentation {
     private void choose(EightProfile profile)throws Exception{home=EightShellSwitch.choose(this,home,profile);root=home.getWindow().getDecorView();}
     MainActivity home;View root;DesktopStore store;
-    @Override public void onCreate(Bundle args){super.onCreate(args);start();}
+    @Override public void onCreate(Bundle args){EightTestSetup.afterInitialization(getTargetContext());super.onCreate(args);start();}
     @Override public void onStart(){Bundle result=new Bundle();try{
         store=new DesktopStore(getTargetContext());EightDefaults.initialize(store);
         store.prefs.edit().putString("eight_profile","8").putInt("startup_mode",2).putBoolean("welcome_on_start",false).putBoolean("reduce_motion",true).putBoolean("taskbar_apps",false).commit();

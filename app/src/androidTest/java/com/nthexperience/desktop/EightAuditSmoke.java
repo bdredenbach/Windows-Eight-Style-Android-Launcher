@@ -16,7 +16,7 @@ import org.json.JSONObject;
 public final class EightAuditSmoke extends Instrumentation {
     private void choose(EightProfile profile)throws Exception{home=EightShellSwitch.choose(this,home,profile);root=home.getWindow().getDecorView();}
     MainActivity home;View root;DesktopStore store;
-    @Override public void onCreate(Bundle args){super.onCreate(args);start();}
+    @Override public void onCreate(Bundle args){EightTestSetup.afterInitialization(getTargetContext());super.onCreate(args);start();}
     @Override public void onStart(){Bundle result=new Bundle();try{
         store=new DesktopStore(getTargetContext());EightDefaults.initialize(store);store.prefs.edit().putInt("startup_mode",2).putBoolean("welcome_on_start",false).putBoolean("reduce_motion",true).commit();getTargetContext().getSharedPreferences(StorageAccess.PREFS,0).edit().putBoolean("seen",true).commit();getTargetContext().getSharedPreferences(StartupExperience.SESSION,0).edit().putBoolean("seen",true).putBoolean("welcome_seen",true).putBoolean(StartupExperience.HOME_OFFERED,true).commit();
         home=(MainActivity)startActivitySync(new Intent(Intent.ACTION_MAIN).setComponent(new ComponentName(getTargetContext(),MainActivity.class)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));root=home.getWindow().getDecorView();waitForIdleSync();

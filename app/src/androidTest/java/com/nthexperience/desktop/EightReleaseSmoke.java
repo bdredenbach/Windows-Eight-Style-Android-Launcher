@@ -14,7 +14,7 @@ import java.util.concurrent.*;
 /** Pre-promotion routes on the actual non-debuggable release application. */
 public final class EightReleaseSmoke extends Instrumentation {
     MainActivity home;View root;DesktopStore store;EightStartScreen start;EightImmersive apps;
-    @Override public void onCreate(Bundle args){super.onCreate(args);start();}
+    @Override public void onCreate(Bundle args){EightTestSetup.afterInitialization(getTargetContext());super.onCreate(args);start();}
     @Override public void onStart(){Bundle result=new Bundle();try{
         check((getTargetContext().getApplicationInfo().flags&ApplicationInfo.FLAG_DEBUGGABLE)==0,"Tests exercise the non-debuggable release APK");
         store=new DesktopStore(getTargetContext());EightDefaults.initialize(store);store.prefs.edit().putInt("startup_mode",2).putBoolean("welcome_on_start",false).putBoolean("reduce_motion",true).commit();
