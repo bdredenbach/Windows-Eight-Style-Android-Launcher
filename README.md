@@ -1,6 +1,6 @@
 # Nth Desktop Eight
 
-Current preview: **0.7.8** adds main instructions and input hints for all six Nota categories, with guidance kept separate from real replies. See [the Nota category instructions record](docs/EIGHT_0_7_8.md). The [0.7.7 task summaries and 8.1 spacing](docs/EIGHT_0_7_7.md), [0.7.6 touch and app-command fixes](docs/EIGHT_0_7_6.md), [0.7.5 Control Panel navigation](docs/EIGHT_0_7_5.md), [0.7.4 shell defaults/refresh](docs/EIGHT_0_7_4.md), [0.7.3 settings colors](docs/EIGHT_0_7_3.md), [0.7.2 Maps location](docs/EIGHT_0_7_2.md) and [0.7.0 connected apps](docs/EIGHT_0_7.md) remain included.
+Current preview: **0.7.9** restores shared Nth Desktop backups, adds a two-row taskbar through its menu and Control Panel, and brings compact/detailed Windows 8 Task Manager views with selectable measured performance graphs. See [the compatibility and desktop checklist record](docs/EIGHT_0_7_9.md). The [0.7.8 Nota category instructions](docs/EIGHT_0_7_8.md) and earlier updates remain included.
 
 A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Android 8.0+; targets Android 16.
 
@@ -22,7 +22,7 @@ See [the 0.4 gesture and app audit](docs/EIGHT_0_4_AUDIT.md) and [device validat
 - PC settings uses separate original Eight and expanded 8.1 category hierarchies. Traditional Control Panel remains a desktop destination.
 - Optional 8.1 Update behavior coordinates mouse-revealed close/minimize controls, immersive app buttons in the desktop taskbar, and a taskbar peek from the bottom with a mouse.
 - Eight desktop chrome uses opaque accent frames, a red close control and a softly tinted taskbar. Aero is an independent optional desktop finish.
-- Session restoration keeps immersive apps, their contents, the snapped pair and the preceding Start/Settings/Desktop surface. Eight-only backups validate both profile layouts and supported appearance settings.
+- Session restoration keeps immersive apps, their contents, the snapped pair and the preceding Start/Settings/Desktop surface. Shared Nth Desktop backups restore common desktop data while keeping the Eight shell; older Eight backups continue to validate and restore both profile layouts.
 
 Choose the shell in **Charms → Settings → Change PC settings → Personalize / PC and devices**. The 8.1 Update controls are optional on that page.
 
@@ -60,7 +60,7 @@ Use Java 17 and Android SDK 36:
 ./gradlew :app:testReleaseUnitTest :app:assembleRelease :app:assembleDebug :app:assembleDebugAndroidTest :fixture:assembleDebug :installprobe:assembleDebug
 ```
 
-The main workflow tests the non-debuggable release on Android 11 and Android 16 with 37 unit tests and fifteen native suites for connected apps, shell/profiles, gestures, retained sessions/snap, research utilities and shared Browser, Explorer, Photo and Media behavior. It uploads release APKs and native evidence. `checks/EightTileLayoutCheck.java` checks 77,325 placements for bounds, overlap, determinism and profile-specific formats. `checks/EightSnapCheck.java` checks 308,182 supported combinations for classic/flexible sizing, per-app minimum widths and narrow fallback. Unit tests cover website tile validation and deduplication, tile queue/expiry/badge and settings-route invariants alongside the shared calculator, AI lifecycle and accent checks. Historical Ten suites are preserved as source reference and are not asserted to pass against Eight's replacement shell.
+The main workflow tests the non-debuggable release on Android 11 and Android 16 with 37 unit tests and sixteen native suites for connected apps, shell/profiles, gestures, retained sessions/snap, research utilities and shared Browser, Explorer, Photo and Media behavior. It uploads release APKs and native evidence. `checks/EightTileLayoutCheck.java` checks 77,325 placements for bounds, overlap, determinism and profile-specific formats. `checks/EightSnapCheck.java` checks 308,182 supported combinations for classic/flexible sizing, per-app minimum widths and narrow fallback. Unit tests cover website tile validation and deduplication, tile queue/expiry/badge and settings-route invariants alongside the shared calculator, AI lifecycle and accent checks. Historical Ten suites are preserved as source reference and are not asserted to pass against Eight's replacement shell.
 
 The complete visual gallery and illustrated brief are in the owner-supplied handoff ZIP; research text and source attribution are retained here.
 
