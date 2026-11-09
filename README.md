@@ -73,3 +73,7 @@ See [the expanded Windows 8 / 8.1 investigation and proposed live-tile plan](doc
 Forked from Nth Desktop Ten 0.15.0 at `89cd0dd3d22205bbb43b450b3b4a27d14a7fdfcf`. The original Ten README is retained in `docs/TEN_BASELINE_README.md`. Internal Ten/Vista class names identify shared engine lineage; visible product branding and Android identity belong to Eight.
 
 Independent Nth project; not affiliated with Microsoft. Windows is a Microsoft trademark. Preserve [third-party notices](THIRD_PARTY_NOTICES.md) and the attribution accompanying research references.
+
+## Shared desktop consistency update
+
+See [desktop caching, restore compatibility and Task Manager changes](docs/DESKTOP_CONSISTENCY.md) for the current source changes and validation scope.
