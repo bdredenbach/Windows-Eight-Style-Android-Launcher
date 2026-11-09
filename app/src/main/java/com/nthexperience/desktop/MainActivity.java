@@ -208,8 +208,10 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
         if(destroyed||workspace==null||workspace.getWidth()==0)return;int width=workspace.getWidth(),height=Math.max(1,shell.getHeight()-shell.getPaddingTop()-shell.getPaddingBottom()-dp(48));if(tray!=null){tray.fitWidth(width);tray.bounds(desktopCutoutLeft,desktopCutoutRight,windowTopInset);}if(tenTasks!=null)tenTasks.safeInsets(desktopCutoutLeft,desktopCutoutRight,windowTopInset);if(tenActions!=null)tenActions.safeInsets(desktopCutoutLeft,desktopCutoutRight,windowTopInset);if(tenNews!=null)tenNews.bounds(desktopCutoutLeft,desktopCutoutRight,windowTopInset);
             WindowInsets current=root.getRootWindowInsets();java.util.List<android.graphics.Rect> holes=new ArrayList<>();
             if(current!=null&&Build.VERSION.SDK_INT>=28&&current.getDisplayCutout()!=null)holes.addAll(current.getDisplayCutout().getBoundingRects());
-            // Fit complete icon rows above the taskbar without rewriting saved positions.
-            desktop.configure(dp(store.tileWidth()),dp(store.tileHeight()),holes);desktop.viewport(Math.max(1,workspace.getHeight()-desktopScroll.getPaddingTop()-desktopScroll.getPaddingBottom()),Math.max(1,height-desktopScroll.getPaddingTop()-desktopScroll.getPaddingBottom()));
+            // Reserve the expanded bar's extra row in both modes: labels fit without
+            // changing cells or saved positions when the actual scroll viewport shrinks.
+            int normalGridHeight=Math.max(1,height-desktopScroll.getPaddingTop()-desktopScroll.getPaddingBottom());
+            desktop.configure(dp(store.tileWidth()),dp(store.tileHeight()),holes);desktop.viewport(Math.max(1,normalGridHeight-dp(48)),normalGridHeight);
             for(DesktopWindow tool:windows.values())tool.safeTop(windowTopInset);
     }
 
