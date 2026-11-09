@@ -1,6 +1,6 @@
 # Nth Desktop Eight
 
-Current preview: **0.7.9** restores shared Nth Desktop backups, adds a two-row taskbar through its menu and Control Panel, and brings compact/detailed Windows 8 Task Manager views with selectable measured performance graphs. See [the compatibility and desktop checklist record](docs/EIGHT_0_7_9.md). The [0.7.8 Nota category instructions](docs/EIGHT_0_7_8.md) and earlier updates remain included.
+Current preview: **0.7.10** stops restored desktop icons resnapping when the taskbar expands or collapses, and keeps Android task buttons in their existing slots when Control Panel opens/closes. See [the recording-driven stability fix and validation](docs/EIGHT_0_7_10.md). The [0.7.9 shared backups, expanded taskbar and Windows 8 Task Manager](docs/EIGHT_0_7_9.md) and earlier updates remain included.
 
 A Windows 8-inspired Android launcher by **An Nth Experience**, with a selectable Windows 8.1 shell. Android 8.0+; targets Android 16.
 
@@ -60,7 +60,7 @@ Use Java 17 and Android SDK 36:
 ./gradlew :app:testReleaseUnitTest :app:assembleRelease :app:assembleDebug :app:assembleDebugAndroidTest :fixture:assembleDebug :installprobe:assembleDebug
 ```
 
-The main workflow tests the non-debuggable release on Android 11 and Android 16 with 37 unit tests and sixteen native suites for connected apps, shell/profiles, gestures, retained sessions/snap, research utilities and shared Browser, Explorer, Photo and Media behavior. It uploads release APKs and native evidence. `checks/EightTileLayoutCheck.java` checks 77,325 placements for bounds, overlap, determinism and profile-specific formats. `checks/EightSnapCheck.java` checks 308,182 supported combinations for classic/flexible sizing, per-app minimum widths and narrow fallback. Unit tests cover website tile validation and deduplication, tile queue/expiry/badge and settings-route invariants alongside the shared calculator, AI lifecycle and accent checks. Historical Ten suites are preserved as source reference and are not asserted to pass against Eight's replacement shell.
+The main workflow tests the non-debuggable release on Android 11 and Android 16 with 37 unit tests and seventeen native suites for connected apps, shell/profiles, gestures, retained sessions/snap, research utilities and shared Browser, Explorer, Photo and Media behavior. It uploads release APKs and native evidence. `checks/EightTileLayoutCheck.java` checks 77,325 placements for bounds, overlap, determinism and profile-specific formats. `checks/EightSnapCheck.java` checks 308,182 supported combinations for classic/flexible sizing, per-app minimum widths and narrow fallback. Unit tests cover website tile validation and deduplication, tile queue/expiry/badge and settings-route invariants alongside the shared calculator, AI lifecycle and accent checks. Historical Ten suites are preserved as source reference and are not asserted to pass against Eight's replacement shell.
 
 The complete visual gallery and illustrated brief are in the owner-supplied handoff ZIP; research text and source attribution are retained here.
 
