@@ -87,6 +87,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
     private EightStartScreen startMenu;
     private EightSurfaceMotion eightMotion;private FrameLayout eightLayer;private EightPCSettings eightSettings;private EightCharms eightCharms;private String eightReturn="desktop",eightSettingsReturn="desktop";private boolean eightMetaChord,eightPreparingImmersive;private EightImmersive eightImmersive;private EightAppSwitcher eightSwitcher;private View eightTaskbar,eightSwitchHandle,eightCharmsHandle;private boolean eightTaskbarPeek;private final Runnable hideEightTaskbar=()->peekEightTaskbar(false);
     private TaskbarReorder taskbarReorder;private final Map<String,Integer> taskColors=new HashMap<>();
+    private List<String> liveTaskbarOrder=Collections.emptyList(),liveTaskbarPins=Collections.emptyList();
     private SystemTray tray;private WindowPreviews previews;private BrightnessControl brightness;
     private TextView clock;private View tenStartButton;
     private AeroWallpaper wallpaper;
@@ -398,7 +399,11 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
         for(LinearLayout button:buttons.values())taskItems.addView(button);
         Map<String,View> ordered=new LinkedHashMap<>();
         for(int i=firstTask;i<taskItems.getChildCount();i++){View button=taskItems.getChildAt(i);ordered.put(TaskbarReorder.key(button),button);}
-        List<String> order=TaskbarOrder.apply(new ArrayList<>(ordered.keySet()),store.taskbarOrder());
+        // Keep existing session slots when an unpinned Nth window joins Android app buttons.
+        // Explicit drag order still wins; changing the pinned list resets its default order.
+        if(!pins.equals(liveTaskbarPins)){liveTaskbarOrder=Collections.emptyList();liveTaskbarPins=new ArrayList<>(pins);}
+        List<String> order=TaskbarOrder.apply(TaskbarOrder.apply(new ArrayList<>(ordered.keySet()),liveTaskbarOrder),store.taskbarOrder());
+        liveTaskbarOrder=new ArrayList<>(order);
         for(int i=taskItems.getChildCount()-1;i>=firstTask;i--)taskItems.removeViewAt(i);
         for(String id:order)taskItems.addView(ordered.get(id));
         if(focusedTask!=null&&ordered.containsKey(focusedTask))ordered.get(focusedTask).requestFocus();

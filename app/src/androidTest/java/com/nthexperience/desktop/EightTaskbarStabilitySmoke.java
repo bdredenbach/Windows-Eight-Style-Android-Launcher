@@ -34,8 +34,26 @@ public final class EightTaskbarStabilitySmoke extends Instrumentation {
         scenario("automatic-unsaved",false,true,false);
         scenario("free-placed",true,false,false);
         scenario("scrolled",true,true,true);
-        result.putString("stream","PASS: "+scenarios+" taskbar height scenarios / "+frames+" actual pre-draw frames; 21 desktop icons retain screen positions, cell sizes and icon sizes across repeated menu and Control Panel Apply expansion/collapse; 5x9 imported-style grid at 80% icon size, both 8/8.1 shells, portrait/landscape, automatic unsaved layout, free placement and scrolled sheet; saved coordinates unchanged; taller taskbar only reduces visible scroll area\n");finish(Activity.RESULT_OK,result);
+        recentTaskbarStability();
+        result.putString("stream","PASS: "+scenarios+" taskbar height scenarios / "+frames+" actual pre-draw frames; 21 desktop icons retain screen positions, cell sizes and icon sizes across repeated menu and Control Panel Apply expansion/collapse; 5x9 imported-style grid at 80% icon size, both 8/8.1 shells, portrait/landscape, automatic unsaved layout, free placement and scrolled sheet; saved coordinates unchanged; unpinned Android task buttons retain order and row positions when Control Panel opens/closes; manual drag order and pin edits honored; taller taskbar only reduces visible scroll area\n");finish(Activity.RESULT_OK,result);
     }catch(Throwable error){result.putString("stream","FAIL: "+android.util.Log.getStackTraceString(error));try{shot("eight710-failure");}catch(Exception ignored){}finish(Activity.RESULT_CANCELED,result);}}
+    void recentTaskbarStability()throws Exception{
+        List<String> probes=new ArrayList<>();for(AppCatalog.Entry entry:AppCatalog.load(home))if(entry.id.startsWith("com.nthexperience.desktop.fixture/"))probes.add(entry.id);
+        check(probes.size()>=5,"Five installed Android fixture shortcuts");probes=new ArrayList<>(probes.subList(0,5));final List<String> apps=probes;
+        ui(()->{for(String id:ExternalTasks.list())ExternalTasks.remove(id);for(String id:apps)ExternalTasks.opened(id);store.quickLaunch(Collections.emptyList());store.prefs.edit().putBoolean("taskbar_apps",true).putBoolean("taskbar_expanded",true).commit();home.applyTenAppearance();});settle();
+        check(barKeys().equals(apps),"Unpinned Android button order established");
+        for(int n=0;n<2;n++){
+            Map<String,String> before=barGeometry();
+            ui(()->home.open("eight-desktop:taskbar"));settle();check(barKeys().subList(0,5).equals(apps),"Opening Control Panel appends its button after Android apps");check(barGeometry().entrySet().containsAll(before.entrySet()),"Existing buttons keep their rows while Control Panel is open");
+            ui(this::closeProperties);settle();check(barKeys().equals(apps),"Closing Control Panel retains Android button order");check(barGeometry().equals(before),"Closing Control Panel does not flip existing rows");
+            ui(this::toggleMenu);settle();check(barKeys().equals(apps),"Collapse retains session order");ui(this::toggleMenu);settle();check(barKeys().equals(apps),"Expansion retains session order");
+        }
+        List<String> manual=new ArrayList<>(apps);Collections.reverse(manual);ui(()->{store.taskbarOrder(manual);home.refreshTen();});settle();check(barKeys().equals(manual),"Explicit saved drag order wins over session order");
+        ui(()->{store.quickLaunch(Collections.singletonList(apps.get(0)));home.refreshTen();});settle();check(barKeys().get(0).equals(apps.get(0)),"Changed pins reset the default pinned order");shot("eight710-stable-android-taskbar");
+    }
+    List<String> barKeys()throws Exception{List<String> ids=new ArrayList<>();ui(()->{EightTaskbarItems items=find(EightTaskbarItems.class);for(int n=0;n<items.getChildCount();n++){String id=TaskbarReorder.key(items.getChildAt(n));if(id!=null)ids.add(id);}});return ids;}
+    Map<String,String> barGeometry()throws Exception{Map<String,String> values=new LinkedHashMap<>();ui(()->{EightTaskbarItems items=find(EightTaskbarItems.class);for(int n=0;n<items.getChildCount();n++){View child=items.getChildAt(n);String id=TaskbarReorder.key(child);if(id!=null)values.put(id,child.getLeft()+","+child.getTop()+","+child.getWidth()+","+child.getHeight());}});return values;}
+    void closeProperties(){View parent=find(EightTaskbarProperties.class);while(!(parent instanceof DesktopWindow))parent=(View)parent.getParent();((DesktopWindow)parent).closeWindow();}
     void scenario(String name,boolean custom,boolean snap,boolean scrolled)throws Exception{
         ui(()->{
             home.open("@desktop");store.prefs.edit().putBoolean("taskbar_expanded",false).putBoolean("taskbar_static",true).putBoolean("snap_desktop",snap).putInt("desktop_columns_portrait",custom?5:0).putInt("desktop_rows_portrait",custom?9:0).putInt("desktop_columns_landscape",custom?5:0).putInt("desktop_rows_landscape",custom?6:0).putInt("desktop_icon_percent",80).putInt("desktop_spacing_x",0).putInt("desktop_spacing_y",0).commit();
