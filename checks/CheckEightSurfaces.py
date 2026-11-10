@@ -4,7 +4,7 @@ root=Path('app/src/main/java/com/nthexperience/desktop')
 main=(root/'MainActivity.java').read_text()
 for name in ('TenSettings','TenTaskView','TenActionCenter','TenNewsFlyout','TenCalculator'):
     assert 'new '+name+'(' not in main,'Eight constructs '+name
-assert 'new UsageAccessCard(this)' in main
+assert 'new UsageAccessExample(this)' in main
 assert 'usage_access_app_info' not in main
 assert not Path('app/src/main/res/drawable-nodpi/usage_access_app_info.webp').exists()
 for name in ('WelcomeCenter','EightPCSettings','EightDesktopOptions','EightCharms'):

@@ -1294,7 +1294,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
             case "sidebar-show":case "sidebar-hide":case "sidebar-apply":open("@news");return;
             case "taskbar-refresh":rebuildTenTaskbar();workspace.post(this::layoutWorkspace);return;
             case "taskbar-usage-welcome":
-                if(ExternalTasks.permitted(this))open("setting:page:taskbar");
+                if(ExternalTasks.permitted(this))open("eight-desktop:taskbar");
                 else showTaskbarUsageGuide(UsageGuide.MANUAL);
                 return;
             case "taskbar-usage-enable":
@@ -1342,14 +1342,14 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
         content.addView(Aero.text(this,message,14,Aero.INK));
         if(showAppInfo){
             String steps="In App info, tap the three dots (⋮) and choose Allow restricted settings if shown. "
-                    +"Then press Back to return to the Usage Access switch.";
+                    +"Then press Back to return to this guide and tap OK to try Usage Access again.";
             if(!returning)steps="If Android says ‘App was denied access’, tap Close, then press Back to "+appName+". "
                     +"This guide will reopen. Tap Open App info below. "+steps;
             TextView recovery=Aero.text(this,steps,14,Aero.INK);
             recovery.setPadding(0,dp(12),0,dp(10));
             content.addView(recovery);
 
-            content.addView(new UsageAccessCard(this),new LinearLayout.LayoutParams(-1,-2));
+            content.addView(new UsageAccessExample(this),new LinearLayout.LayoutParams(-1,-2));
         }
 
         ScrollView scroll=new ScrollView(this);
@@ -1364,6 +1364,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
             if(!destroyed)refreshUsageAccess();
         });
         usageGuide.show();
+        Aero.styleDialog(this,usageGuide);
     }
 
     private void requestTaskbarUsage(){
@@ -1410,8 +1411,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
         int request=usageSettingsRequest;
         usageSettingsRequest=0;
         usageSettingsLeft=false;
-        if(request==REQUEST_USAGE_APP_INFO)requestTaskbarUsage();
-        else if(request==REQUEST_USAGE_ACCESS&&!ExternalTasks.permitted(this))showTaskbarUsageGuide(UsageGuide.RETURN);
+        if((request==REQUEST_USAGE_APP_INFO||request==REQUEST_USAGE_ACCESS)&&!ExternalTasks.permitted(this))showTaskbarUsageGuide(UsageGuide.RETURN);
     }
 
     private void setTaskbarUsage(boolean enabled){
