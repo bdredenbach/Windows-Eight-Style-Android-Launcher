@@ -78,7 +78,7 @@ public final class EightInitializationSmoke extends TenThemeSmoke {
  private void manualRecovery()throws Exception{
   ui(()->home.open("@welcome"));await(()->EightSmoke.find(root,WelcomeCenter.class)!=null,"Eight Welcome Center opens");systemClick("Set up Usage Access");awaitSystem("OK");
   systemClick("OK");awaitSystemPackage("com.android.settings");getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);awaitSystem("OK");
-  if(Build.VERSION.SDK_INT>=33){systemClick("Open App info");awaitSystemPackage("com.android.settings");getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);awaitSystem("OK");check(node(getUiAutomation().getRootInActiveWindow(),"Open App info")!=null,"Manual App info returns to recovery, not another Settings launch");}
+  if(Build.VERSION.SDK_INT>=33){systemClick("Open App info");awaitSystemPackage("com.android.settings");getUiAutomation().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK);awaitSystemPackage(getTargetContext().getPackageName());awaitSystem("OK");check(awaitSystem("Open App info")!=null,"Manual App info returns to recovery, not another Settings launch");}
   shot("eight714-manual-usage-return");systemClick("Cancel");check(new InitializationState(home).step()==InitializationState.Step.DONE,"Manual retry does not reset completed initialization");
  }
  private void grantedReturn()throws Exception{
