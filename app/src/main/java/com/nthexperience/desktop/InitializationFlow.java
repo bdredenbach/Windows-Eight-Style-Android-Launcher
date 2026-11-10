@@ -66,7 +66,7 @@ class InitializationFlow {
         if(step==Step.USAGE&&Build.VERSION.SDK_INT>=33){
             TextView recovery=paragraph("If Android says ‘App was denied access’, tap Close, then press Back to return to this guide. Tap Open App info below, open the three-dot menu (⋮), and choose Allow restricted settings if shown. Then press Back to return here and tap OK to try Usage Access again.");
             recovery.setPadding(0,Aero.dp(activity,12),0,Aero.dp(activity,10));content.addView(recovery);
-            content.addView(new UsageAccessExample(activity),new LinearLayout.LayoutParams(-1,-2));
+            content.addView(new UsageAccessCard(activity),new LinearLayout.LayoutParams(-1,-2));
         }
         TextView optional=paragraph("This is optional. Choose Later to continue and change access later in Android settings.");optional.setPadding(0,Aero.dp(activity,12),0,0);content.addView(optional);
         ScrollView scroll=new ScrollView(activity);scroll.setContentDescription("Initialization guide");scroll.addView(content);

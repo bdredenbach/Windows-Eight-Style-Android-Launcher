@@ -1349,7 +1349,7 @@ public final class MainActivity extends Activity implements StartMenu.Actions {
             recovery.setPadding(0,dp(12),0,dp(10));
             content.addView(recovery);
 
-            content.addView(new UsageAccessExample(this),new LinearLayout.LayoutParams(-1,-2));
+            content.addView(new UsageAccessCard(this),new LinearLayout.LayoutParams(-1,-2));
         }
 
         ScrollView scroll=new ScrollView(this);

@@ -69,7 +69,7 @@ public class InitializationFlowTest {
     }
     @Test public void usageGuideKeepsTheIllustrationAndAppInfoReturnsToTheSameStep(){
         flow.state.prefs.edit().putInt("step",Step.USAGE.ordinal()).commit();flow.pending();assertTitle("Set up Usage Access");
-        assertTrue(contains(dialog().getWindow().getDecorView(),"Allow restricted settings"));assertEquals("OK",dialog().getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
+        assertTrue(contains(dialog().getWindow().getDecorView(),"⋮  →  Allow restricted settings"));assertEquals("OK",dialog().getButton(AlertDialog.BUTTON_POSITIVE).getText().toString());
         dialog().getButton(AlertDialog.BUTTON_NEUTRAL).performClick();shadowOf(Looper.getMainLooper()).idle();
         org.robolectric.shadows.ShadowActivity.IntentForResult request=shadowOf(activity).getNextStartedActivityForResult();assertEquals(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,request.intent.getAction());assertEquals("package:"+activity.getPackageName(),request.intent.getDataString());assertEquals(InitializationFlow.USAGE_INFO,request.requestCode);
         flow.paused();flow.result(InitializationFlow.USAGE_INFO,Activity.RESULT_CANCELED,null);flow.resumed();flow.pending();assertEquals(Step.USAGE,flow.state.step());assertTitle("Set up Usage Access");
